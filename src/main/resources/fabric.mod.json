@@ -7,7 +7,10 @@
   "authors": [
     "BreadMoirai"
   ],
-  "contact": {},
+  "contact": {
+    "homepage": "https://github.com/BreadMoirai/OneClickCrafting",
+    "issues": "https://github.com/BreadMoirai/OneClickCrafting/issues"
+  },
   "license": "MIT",
   "icon": "icon.png",
   "environment": "client",

@@ -18,13 +18,6 @@ public class ClientPlayNetworkHandlerMixin {
     private void onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
         if (packet.getSlot() != 0) return;
         if (packet.getItemStack() == null) return;
-        if (OneClickCraftingClient.lastCraft == null) return;
-        if (!packet.getItemStack().isItemEqual(OneClickCraftingClient.lastCraft)) return;
-        OneClickCraftingClient.lastCraft = null;
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client.interactionManager == null) return;
-        if (!(client.currentScreen instanceof HandledScreen)) return;
-        int syncId = ((HandledScreen<?>) client.currentScreen).getScreenHandler().syncId;
-        client.interactionManager.clickSlot(syncId, 0, 0, SlotActionType.QUICK_MOVE, client.player);
+        OneClickCraftingClient.onResultSlotUpdated(packet.getItemStack());
     }
 }

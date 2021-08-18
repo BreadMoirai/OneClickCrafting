@@ -13,6 +13,6 @@ public class ClientPlayerInteractionManagerMixin {
 
     @Inject(at = @At("TAIL"), method = "clickRecipe(ILnet/minecraft/recipe/Recipe;Z)V")
     private void clickRecipe(int syncId, Recipe<?> recipe, boolean craftAll, CallbackInfo ci) {
-        OneClickCraftingClient.lastCraft = recipe.getOutput();
+        OneClickCraftingClient.recipeClicked(recipe);
     }
 }
