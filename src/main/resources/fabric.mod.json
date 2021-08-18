@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "one-click-crafting",
+  "version": "${version}",
+  "name": "One Click Crafting",
+  "description": "Craft faster with the recipe book using less clicks",
+  "authors": [
+    "BreadMoirai"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient"
+    ],
+    "main": [
+    ]
+  },
+  "mixins": [
+    "one-click-crafting.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.6",
+    "fabric": "*",
+    "minecraft": "1.17.1"
+  }
+}
