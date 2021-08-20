@@ -4,10 +4,12 @@
   "package": "com.github.breadmoirai.oneclickcrafting.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+
   ],
   "client": [
+    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "ClientPlayerInteractionManagerMixin"
+    "KeyBindingAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

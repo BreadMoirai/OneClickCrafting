@@ -9,24 +9,28 @@
   ],
   "contact": {
     "homepage": "https://github.com/BreadMoirai/OneClickCrafting",
-    "issues": "https://github.com/BreadMoirai/OneClickCrafting/issues"
+    "issues": "https://github.com/BreadMoirai/OneClickCrafting/discussions",
+    "sources": "https://github.com/BreadMoirai/OneClickCrafting"
   },
   "license": "MIT",
-  "icon": "icon.png",
+  "icon": "assets/oneclickcrafting/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
       "com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient"
     ],
-    "main": [
+    "modmenu": [
+      "com.github.breadmoirai.oneclickcrafting.config.modmenu.OneClickCraftingModMenuEntry"
     ]
   },
   "mixins": [
     "one-click-crafting.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.6",
-    "fabric": "*",
-    "minecraft": "1.17.1"
+    "fabricloader": ">=0.11.6"
+  },
+  "recommends": {
+    "modmenu": ">=2.0.0",
+    "minecraft": ">=1.17.1"
   }
 }

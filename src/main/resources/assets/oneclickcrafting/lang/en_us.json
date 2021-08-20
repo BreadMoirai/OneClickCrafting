@@ -1,0 +1,10 @@
+{
+  "config.oneclickcrafting.title": "One Click Crafting Config",
+  "config.oneclickcrafting.always_on": "Always On",
+  "config.oneclickcrafting.alt_hold": "Alt Toggle (Hold)",
+  "config.oneclickcrafting.alt_hold.tooltip": "Enables holding Alt to toggle the mod's functionality",
+  "config.oneclickcrafting.ctrl_hold": "Ctrl Toggle (Hold)",
+  "config.oneclickcrafting.ctrl_hold.tooltip": "Enables holding Ctrl to toggle the mod's functionality",
+  "config.oneclickcrafting.drop_enable": "Enable Drop Key on Craft",
+  "config.oneclickcrafting.drop_enable.tooltip": "Holding your drop key and clicking on a recipe will craft it and drop it instead of moving it to your inventory. Does not work with shift."
+}
