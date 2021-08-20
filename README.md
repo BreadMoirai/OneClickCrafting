@@ -10,3 +10,7 @@ After selecting a recipe in the recipe book, the client with shift-click the cra
 - Holding the drop key, shift, and clicking on a recipe will drop a stack's worth of crafts.
 
 ModMenu can be installed to configure the mod.
+
+## Contributing
+Feel free to fork this repo and submit PRs for fixes and/or improvements.
+I can be reached on Discord on the Fabric Modding server 
