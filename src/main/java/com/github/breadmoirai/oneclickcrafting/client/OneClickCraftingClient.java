@@ -3,49 +3,76 @@ package com.github.breadmoirai.oneclickcrafting.client;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyBindingAccessor;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.slot.SlotActionType;
+import org.lwjgl.glfw.GLFW;
 
 @net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
 public class OneClickCraftingClient implements ClientModInitializer {
 
-    public static ItemStack lastCraft;
-    private static boolean isDropping;
-    private static boolean isShiftDropping;
-    private static boolean startedDropCrafting;
-    private static OneClickCraftingConfig config;
-    @Override
-    public void onInitializeClient() {
-        OneClickCraftingConfig.loadModConfig();
-        config = OneClickCraftingConfig.getInstance();
+    private static OneClickCraftingClient INSTANCE;
+
+    public ItemStack lastCraft;
+    private boolean isDropping;
+    private boolean isShiftDropping;
+    private boolean startedDropCrafting;
+    private OneClickCraftingConfig config;
+    private KeyBinding toggleHold;
+
+    public static OneClickCraftingClient getInstance() {
+        return INSTANCE;
     }
 
-    public static void recipeClicked(Recipe<?> recipe) {
-        if (config.isAlwaysOn()) {
-            if (config.isAltHold() && Screen.hasAltDown()) return;
-            if (config.isCtrlHold() && Screen.hasControlDown()) return;
-            isDropping = config.isDropEnable() && isDropPressed();
-            isShiftDropping = isDropping && Screen.hasShiftDown();
-            lastCraft = recipe.getOutput();
-        } else if ((config.isAltHold() && Screen.hasAltDown()) ||
-                (config.isAltHold() && Screen.hasControlDown())) {
+    @Override
+    public void onInitializeClient() {
+        INSTANCE = this;
+        OneClickCraftingConfig.loadModConfig();
+        config = OneClickCraftingConfig.getInstance();
+        toggleHold = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.oneclickcrafting.toggle_hold",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                "category.oneclickcrafting.keybindings"
+        ));
+    }
+
+    public void recipeClicked(Recipe<?> recipe) {
+        if (isEnabled()) {
             isDropping = config.isDropEnable() && isDropPressed();
             isShiftDropping = isDropping && Screen.hasShiftDown();
             lastCraft = recipe.getOutput();
         }
     }
 
-    private static boolean isDropPressed() {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), ((KeyBindingAccessor) MinecraftClient.getInstance().options.keyDrop).getBoundKey().getCode());
+    private boolean isEnabled() {
+        boolean alwaysOn = config.isAlwaysOn();
+        if (config.isCtrlHold() && Screen.hasControlDown()) return !alwaysOn;
+        if (config.isAltHold() && Screen.hasAltDown()) return !alwaysOn;
+        if (!toggleHold.isUnbound() && isToggleHoldPressed()) return !alwaysOn;
+        return alwaysOn;
     }
 
-    public static void onResultSlotUpdated(ItemStack itemStack) {
+    private boolean isToggleHoldPressed() {
+        return isKeybindingPressed(toggleHold);
+    }
+
+    private boolean isDropPressed() {
+        return isKeybindingPressed(MinecraftClient.getInstance().options.keyDrop);
+    }
+
+    private boolean isKeybindingPressed(KeyBinding keyBinding) {
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), ((KeyBindingAccessor) keyBinding).getBoundKey().getCode());
+    }
+
+    public void onResultSlotUpdated(ItemStack itemStack) {
         if (lastCraft == null) return;
         if (itemStack.getItem() == Items.AIR) {
             if (startedDropCrafting) {

@@ -15,6 +15,6 @@ public class ClientPlayNetworkHandlerMixin {
     private void onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
         if (packet.getSlot() != 0) return;
         if (packet.getItemStack() == null) return;
-        OneClickCraftingClient.onResultSlotUpdated(packet.getItemStack());
+        OneClickCraftingClient.getInstance().onResultSlotUpdated(packet.getItemStack());
     }
 }

@@ -27,7 +27,8 @@
     "one-click-crafting.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.11.6"
+    "fabricloader": ">=0.11.6",
+    "fabric-key-binding-api-v1": "*"
   },
   "recommends": {
     "modmenu": ">=2.0.0",
