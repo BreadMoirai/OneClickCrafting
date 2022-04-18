@@ -65,7 +65,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     private boolean isDropPressed() {
-        return isKeybindingPressed(MinecraftClient.getInstance().options.keyDrop);
+        return isKeybindingPressed(MinecraftClient.getInstance().options.dropKey);
     }
 
     private boolean isKeybindingPressed(KeyBinding keyBinding) {

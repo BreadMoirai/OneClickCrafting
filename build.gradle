@@ -1,10 +1,13 @@
+import java.util.concurrent.Callable
+
 plugins {
-    id 'fabric-loom' version '0.9-SNAPSHOT'
+    id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
+    id 'com.github.breadmoirai.github-release' version "2.3.7"
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -19,6 +22,7 @@ repositories {
         name 'TerraformersMC'
         url "https://maven.terraformersmc.com/releases/"
     }
+
 }
 
 dependencies {
@@ -63,7 +67,7 @@ tasks.withType(JavaCompile) {
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
+    archiveClassifier.set "sources"
     from sourceSets.main.allSource
 }
 
@@ -71,23 +75,21 @@ jar {
     from "LICENSE"
 }
 
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-        }
-    }
-
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
-    }
+githubRelease {
+    token getProperty("oneclickcrafting.github.key") as String
+    // This is your personal access token with Repo permissions
+    // You get this from your user settings > developer settings > Personal Access Tokens
+//    owner "breadmoirai" // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
+//    repo "github-release" // by default this is set to your project name
+//    tagName "v1.0.0" // by default this is set to "v${project.version}"
+//    targetCommitish "main" // by default this is set to "main"
+//    releaseName "v1.0.0" // Release title, by default this is the same as the tagName
+    body.set provider(changelog {}) // by default this is empty
+    draft.set true // by default this is false
+//    prerelease false // by default this is false
+//    releaseAssets remapJar.archiveFile // this points to which files you want to upload as assets with your release
+//
+    allowUploadToExisting.set true
+    overwrite.set false // by default false; if set to true, will delete an existing release with the same tag and name
+//    dryRun false // by default false; you can use this to see what actions would be taken without making a release
 }
