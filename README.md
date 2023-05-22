@@ -10,7 +10,7 @@ After selecting a recipe in the recipe book, the client with shift-click the cra
 - Holding Ctrl or Alt will temporarily disable this.
 - A keybinding can be configured as an alternative to Ctrl or Alt
 
-ModMenu can be installed to configure the mod.
+[ModMenu](https://modrinth.com/mod/modmenu) can be installed to configure the mod.
 
 ## Contributing
 Feel free to fork this repo and submit PRs for fixes and/or improvements.
