@@ -1,7 +1,7 @@
 import java.util.concurrent.Callable
 
 plugins {
-    id 'fabric-loom' version '0.10-SNAPSHOT'
+    id 'fabric-loom' version '1.2-SNAPSHOT'
     id 'maven-publish'
     id 'com.github.breadmoirai.github-release' version "2.3.7"
 }
@@ -76,7 +76,7 @@ jar {
 }
 
 githubRelease {
-    token getProperty("oneclickcrafting.github.key") as String
+//    token getProperty("oneclickcrafting.github.key") as String
     // This is your personal access token with Repo permissions
     // You get this from your user settings > developer settings > Personal Access Tokens
 //    owner "breadmoirai" // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
@@ -84,7 +84,7 @@ githubRelease {
 //    tagName "v1.0.0" // by default this is set to "v${project.version}"
 //    targetCommitish "main" // by default this is set to "main"
 //    releaseName "v1.0.0" // Release title, by default this is the same as the tagName
-    body.set provider(changelog {}) // by default this is empty
+//    body.set provider<String>(changelog {}) as Provider<? extends CharSequence> // by default this is empty)
     draft.set false // by default this is false
 //    prerelease false // by default this is false
     releaseAssets remapJar.archiveFile // this points to which files you want to upload as assets with your release

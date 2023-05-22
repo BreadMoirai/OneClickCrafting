@@ -10,14 +10,14 @@ import dev.lambdaurora.spruceui.wrapper.VanillaButtonWrapper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 
 @Environment(EnvType.CLIENT)
 public class OneClickCraftingConfigScreen extends SpruceScreen {
     private final Screen parent;
 
     public OneClickCraftingConfigScreen(Screen parent) {
-        super(new TranslatableText("config.oneclickcrafting.title"));
+        super(Text.translatable("config.oneclickcrafting.title"));
         this.parent = parent;
     }
 
@@ -37,19 +37,19 @@ public class OneClickCraftingConfigScreen extends SpruceScreen {
                 "config.oneclickcrafting.alt_hold",
                 config::isAltHold,
                 config::setAltHold,
-                new TranslatableText("config.oneclickcrafting.alt_hold.tooltip")
+                Text.translatable("config.oneclickcrafting.alt_hold.tooltip")
         );
         SpruceBooleanOption ctrlHold = new SpruceBooleanOption(
                 "config.oneclickcrafting.ctrl_hold",
                 config::isCtrlHold,
                 config::setCtrlHold,
-                new TranslatableText("config.oneclickcrafting.ctrl_hold.tooltip")
+                Text.translatable("config.oneclickcrafting.ctrl_hold.tooltip")
         );
         SpruceBooleanOption dropEnable = new SpruceBooleanOption(
                 "config.oneclickcrafting.drop_enable",
                 config::isDropEnable,
                 config::setDropEnable,
-                new TranslatableText("config.oneclickcrafting.drop_enable.tooltip")
+                Text.translatable("config.oneclickcrafting.drop_enable.tooltip")
         );
 
         list.addSingleOptionEntry(alwaysOn);
