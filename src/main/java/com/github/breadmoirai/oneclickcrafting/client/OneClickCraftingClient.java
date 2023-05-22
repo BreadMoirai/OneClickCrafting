@@ -12,6 +12,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.slot.SlotActionType;
 import org.lwjgl.glfw.GLFW;
 
@@ -48,7 +49,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
         if (isEnabled()) {
             isDropping = config.isDropEnable() && isDropPressed();
             isShiftDropping = isDropping && Screen.hasShiftDown();
-            lastCraft = recipe.getOutput();
+            lastCraft = recipe.getOutput(MinecraftClient.getInstance().world.getRegistryManager());
         }
     }
 
