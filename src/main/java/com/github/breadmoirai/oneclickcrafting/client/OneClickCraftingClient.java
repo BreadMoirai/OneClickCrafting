@@ -46,8 +46,8 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     public void recipeClicked(Recipe<?> recipe) {
-        System.out.println("recipe clicked " + recipe.getId());
-        System.out.println("enabled = " + isEnabled());
+        //System.out.println("recipe clicked " + recipe.getId());
+        //System.out.println("enabled = " + isEnabled());
         if (isEnabled()) {
             isDropping = config.isDropEnable() && isDropPressed();
             isShiftDropping = isDropping && Screen.hasShiftDown();
@@ -80,7 +80,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     public void onResultSlotUpdated(ItemStack itemStack) {
-        System.out.println("Result Slot Updated with " + itemStack);
+        //System.out.println("Result Slot Updated with " + itemStack);
         if (lastCraft == null) return;
         if (itemStack.getItem() == Items.AIR) {
             if (startedDropCrafting) {
@@ -90,7 +90,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
             }
             return;
         }
-        if (!itemStack.isItemEqual(lastCraft)) {
+        if (!ItemStack.areItemsEqual(itemStack, lastCraft)) {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
