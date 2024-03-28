@@ -13,7 +13,7 @@ public class ClientPlayNetworkHandlerMixin {
 
     @Inject(at = @At("TAIL"), method = "onScreenHandlerSlotUpdate(Lnet/minecraft/network/packet/s2c/play/ScreenHandlerSlotUpdateS2CPacket;)V")
     private void onScreenHandlerSlotUpdate(ScreenHandlerSlotUpdateS2CPacket packet, CallbackInfo ci) {
-        if (packet.getSlot() == 0 && packet.getItemStack() != null)
-            OneClickCraftingClient.getInstance().onResultSlotUpdated(packet.getItemStack());
+        if (packet.getSlot() == 0 && packet.getStack() != null)
+            OneClickCraftingClient.getInstance().onResultSlotUpdated(packet.getStack());
     }
 }
