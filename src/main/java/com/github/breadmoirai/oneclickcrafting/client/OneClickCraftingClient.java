@@ -11,8 +11,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.screen.slot.SlotActionType;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,13 +44,13 @@ public class OneClickCraftingClient implements ClientModInitializer {
         ));
     }
 
-    public void recipeClicked(Recipe<?> recipe) {
+    public void recipeClicked(RecipeEntry<?> recipe) {
         //System.out.println("recipe clicked " + recipe.getId());
         //System.out.println("enabled = " + isEnabled());
         if (isEnabled()) {
             isDropping = config.isDropEnable() && isDropPressed();
             isShiftDropping = isDropping && Screen.hasShiftDown();
-            lastCraft = recipe.getOutput(MinecraftClient.getInstance().world.getRegistryManager());
+            lastCraft = recipe.value().getResult((MinecraftClient.getInstance().world.getRegistryManager()));
         } else {
             isDropping = false;
             isShiftDropping = false;
