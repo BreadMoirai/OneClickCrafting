@@ -6,7 +6,6 @@ import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
 import dev.lambdaurora.spruceui.screen.SpruceScreen;
 import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
 import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
-import dev.lambdaurora.spruceui.wrapper.VanillaButtonWrapper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
@@ -57,12 +56,12 @@ public class OneClickCraftingConfigScreen extends SpruceScreen {
         list.addSingleOptionEntry(altHold);
         list.addSingleOptionEntry(dropEnable);
 
-        VanillaButtonWrapper done = new SpruceButtonWidget(Position.of(this, this.width / 2 + 4, this.height - 28), 150, 20, SpruceTexts.GUI_DONE,
+        SpruceButtonWidget done = new SpruceButtonWidget(Position.of(this, this.width / 2 + 4, this.height - 28), 150, 20, SpruceTexts.GUI_DONE,
                 btn -> {
                     if (this.client != null) {
                         this.client.setScreen(this.parent);
                     }
-                }).asVanilla();
+                });
 
         addDrawableChild(list);
         addDrawableChild(done);
