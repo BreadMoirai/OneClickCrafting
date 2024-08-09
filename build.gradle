@@ -1,7 +1,7 @@
 import java.util.concurrent.Callable
 
 plugins {
-    id 'fabric-loom' version '1.5-SNAPSHOT'
+    id 'fabric-loom' version '1.7-SNAPSHOT'
     id 'maven-publish'
     id 'com.github.breadmoirai.github-release' version "2.3.7"
 }
