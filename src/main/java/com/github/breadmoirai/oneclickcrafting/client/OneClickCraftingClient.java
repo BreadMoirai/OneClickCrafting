@@ -7,11 +7,11 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.slot.SlotActionType;
 import org.lwjgl.glfw.GLFW;
 
@@ -44,17 +44,18 @@ public class OneClickCraftingClient implements ClientModInitializer {
         ));
     }
 
-    public void recipeClicked(RecipeEntry<?> recipe) {
-        //System.out.println("recipe clicked " + recipe.getId());
-        //System.out.println("enabled = " + isEnabled());
+    public void recipeClicked(Recipe<?> recipe) {
+        isDropping = false;
+        isShiftDropping = false;
+        lastCraft = null;
         if (isEnabled()) {
-            isDropping = config.isDropEnable() && isDropPressed();
-            isShiftDropping = isDropping && Screen.hasShiftDown();
-            lastCraft = recipe.value().getResult((MinecraftClient.getInstance().world.getRegistryManager()));
-        } else {
-            isDropping = false;
-            isShiftDropping = false;
-            lastCraft = null;
+            boolean dropping = config.isDropEnable() && isDropPressed();
+            boolean isShiftDown = Screen.hasShiftDown();
+            if (isShiftDown || dropping || config.isSingleClickEnable()) {
+                isDropping = dropping;
+                isShiftDropping = isDropping && isShiftDown;
+                lastCraft = recipe.getOutput();
+            }
         }
     }
 
@@ -71,7 +72,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     private boolean isDropPressed() {
-        return isKeybindingPressed(MinecraftClient.getInstance().options.dropKey);
+        return isKeybindingPressed(MinecraftClient.getInstance().options.keyDrop);
     }
 
     private boolean isKeybindingPressed(KeyBinding keyBinding) {
@@ -79,7 +80,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     public void onResultSlotUpdated(ItemStack itemStack) {
-        //System.out.println("Result Slot Updated with " + itemStack);
         if (lastCraft == null) return;
         if (itemStack.getItem() == Items.AIR) {
             if (startedDropCrafting) {
@@ -89,7 +89,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
             }
             return;
         }
-        if (!ItemStack.areItemsEqual(itemStack, lastCraft)) {
+        if (!itemStack.isItemEqual(lastCraft)) {
             return;
         }
         MinecraftClient client = MinecraftClient.getInstance();
