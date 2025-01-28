@@ -1,19 +1,20 @@
 import java.util.concurrent.Callable
 
 plugins {
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
     id 'com.github.breadmoirai.github-release' version "2.3.7"
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version
+version = project.minecraft_version+'-'+project.mod_version+'+v'+new Date().format('yyMMdd')
 group = project.maven_group
 
 repositories {
+    mavenLocal()
     maven {
         name 'Gegy'
         url 'https://maven.gegy.dev'

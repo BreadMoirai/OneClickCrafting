@@ -29,6 +29,7 @@ public class OneClickCraftingConfig {
     private boolean alwaysOn = true;
     private boolean altHold = true;
     private boolean ctrlHold = true;
+    private boolean singleClickEnable = false;
     private boolean dropEnable = true;
 
     public static OneClickCraftingConfig getInstance() {
@@ -44,6 +45,7 @@ public class OneClickCraftingConfig {
                 instance.alwaysOn = config.alwaysOn;
                 instance.altHold = config.altHold;
                 instance.ctrlHold = config.ctrlHold;
+		instance.singleClickEnable = config.singleClickEnable;
                 instance.dropEnable = config.dropEnable;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -84,6 +86,14 @@ public class OneClickCraftingConfig {
 
     public void setCtrlHold(boolean ctrlHold) {
         this.ctrlHold = ctrlHold;
+    }
+
+    public boolean isSingleClickEnable() {
+        return singleClickEnable;
+    }
+
+    public void setSingleClickEnable(boolean singleClickEnable) {
+        this.singleClickEnable = singleClickEnable;
     }
 
     public boolean isDropEnable() {

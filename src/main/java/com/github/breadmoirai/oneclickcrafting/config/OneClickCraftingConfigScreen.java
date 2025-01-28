@@ -1,29 +1,33 @@
 package com.github.breadmoirai.oneclickcrafting.config;
 
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.SpruceTexts;
-import dev.lambdaurora.spruceui.option.SpruceBooleanOption;
-import dev.lambdaurora.spruceui.screen.SpruceScreen;
-import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
-import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
+import me.lambdaurora.spruceui.Position;
+import me.lambdaurora.spruceui.SpruceTexts;
+import me.lambdaurora.spruceui.background.SimpleColorBackground;
+import me.lambdaurora.spruceui.option.SpruceBooleanOption;
+import me.lambdaurora.spruceui.screen.SpruceScreen;
+import me.lambdaurora.spruceui.widget.SpruceButtonWidget;
+import me.lambdaurora.spruceui.widget.SpruceSeparatorWidget;
+import me.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
+import me.lambdaurora.spruceui.wrapper.VanillaButtonWrapper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
 public class OneClickCraftingConfigScreen extends SpruceScreen {
     private final Screen parent;
 
     public OneClickCraftingConfigScreen(Screen parent) {
-        super(Text.translatable("config.oneclickcrafting.title"));
+        super(new TranslatableText("config.oneclickcrafting.title"));
         this.parent = parent;
-    }
+    };
 
     @Override
     protected void init() {
         super.init();
-        SpruceOptionListWidget list = new SpruceOptionListWidget(Position.of(0, 22), this.width, this.height - 36 - 22);
+        SpruceOptionListWidget list = new SpruceOptionListWidget(Position.of(0, 32), this.width, this.height - 36 - 32);
 
         OneClickCraftingConfig config = OneClickCraftingConfig.getInstance();
         SpruceBooleanOption alwaysOn = new SpruceBooleanOption(
@@ -36,42 +40,55 @@ public class OneClickCraftingConfigScreen extends SpruceScreen {
                 "config.oneclickcrafting.alt_hold",
                 config::isAltHold,
                 config::setAltHold,
-                Text.translatable("config.oneclickcrafting.alt_hold.tooltip")
+                new TranslatableText("config.oneclickcrafting.alt_hold.tooltip")
         );
         SpruceBooleanOption ctrlHold = new SpruceBooleanOption(
                 "config.oneclickcrafting.ctrl_hold",
                 config::isCtrlHold,
                 config::setCtrlHold,
-                Text.translatable("config.oneclickcrafting.ctrl_hold.tooltip")
+                new TranslatableText("config.oneclickcrafting.ctrl_hold.tooltip")
+        );
+        SpruceBooleanOption singleClickEnable = new SpruceBooleanOption(
+                "config.oneclickcrafting.single_click_enable",
+                config::isSingleClickEnable,
+                config::setSingleClickEnable,
+                new TranslatableText("config.oneclickcrafting.single_click_enable.tooltip")
         );
         SpruceBooleanOption dropEnable = new SpruceBooleanOption(
                 "config.oneclickcrafting.drop_enable",
                 config::isDropEnable,
                 config::setDropEnable,
-                Text.translatable("config.oneclickcrafting.drop_enable.tooltip")
+                new TranslatableText("config.oneclickcrafting.drop_enable.tooltip")
         );
 
         list.addSingleOptionEntry(alwaysOn);
         list.addSingleOptionEntry(ctrlHold);
         list.addSingleOptionEntry(altHold);
+        list.addSingleOptionEntry(singleClickEnable);
         list.addSingleOptionEntry(dropEnable);
+        list.setRenderTransition(false);
+        list.setBackground(new SimpleColorBackground(0, 0, 0, 0));
 
-        SpruceButtonWidget done = new SpruceButtonWidget(Position.of(this, this.width / 2 + 4, this.height - 28), 150, 20, SpruceTexts.GUI_DONE,
+        VanillaButtonWrapper done = new SpruceButtonWidget(Position.of(this, this.width / 2  - 75, this.height - 28), 150, 20, SpruceTexts.GUI_DONE,
                 btn -> {
                     if (this.client != null) {
-                        this.client.setScreen(this.parent);
+                        this.client.method_29970(this.parent);
                     }
-                });
+                }).asVanilla();
 
-        addDrawableChild(list);
-        addDrawableChild(done);
+        this.children.add(list);
+        this.addButton(done);
     }
 
+    @Override
+    public void renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 16, 16777215);
+    }
 
     @Override
-    public void close() {
+    public void onClose() {
         if (this.client != null) {
-            this.client.setScreen(parent);
+            this.client.method_29970(this.parent); // setScreen
         }
         OneClickCraftingConfig.saveModConfig();
     }
