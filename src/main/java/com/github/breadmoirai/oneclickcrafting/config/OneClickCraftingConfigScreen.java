@@ -80,9 +80,9 @@ public class OneClickCraftingConfigScreen extends SpruceScreen {
 
    @Override
    public void close() {
+      OneClickCraftingConfig.saveModConfig();
       if (this.client != null) {
          this.client.setScreen(parent);
       }
-      OneClickCraftingConfig.saveModConfig();
    }
 }

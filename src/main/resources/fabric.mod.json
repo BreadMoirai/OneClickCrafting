@@ -34,7 +34,5 @@
     "modmenu": ">=4.2.0",
     "minecraft": ">=1.19.2"
   },
-  "loom": {
-    "accessWidener": "oneclickcrafting.accesswidener"
-  }
+  "accessWidener": "oneclickcrafting.accesswidener"
 }
