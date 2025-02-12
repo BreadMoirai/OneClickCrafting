@@ -22,7 +22,6 @@ repositories {
         name 'TerraformersMC'
         url "https://maven.terraformersmc.com/releases/"
     }
-
 }
 
 dependencies {
@@ -74,6 +73,10 @@ tasks.register('sourcesJar', Jar) {
 
 jar {
     from "LICENSE"
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/oneclickcrafting.accesswidener")
 }
 
 githubRelease {

@@ -1,6 +1,11 @@
 {
   "config.oneclickcrafting.title": "One Click Crafting Config",
+  "config.oneclickcrafting.left_click": "Left Click",
+  "config.oneclickcrafting.left_click.tooltip": "Activate on left click",
+  "config.oneclickcrafting.right_click": "Right Click",
+  "config.oneclickcrafting.right_click.tooltip": "Activate on right click",
   "config.oneclickcrafting.always_on": "Always On",
+  "config.oneclickcrafting.always_on.tooltip": "Invert the toggle behavior of holding the alt key or ctrl key",
   "config.oneclickcrafting.alt_hold": "Alt Toggle (Hold)",
   "config.oneclickcrafting.alt_hold.tooltip": "Enables holding Alt to toggle the mod's functionality",
   "config.oneclickcrafting.ctrl_hold": "Ctrl Toggle (Hold)",
@@ -8,5 +13,6 @@
   "config.oneclickcrafting.drop_enable": "Enable Drop Key on Craft",
   "config.oneclickcrafting.drop_enable.tooltip": "Holding your drop key and clicking on a recipe will craft it and drop it instead of moving it to your inventory. Does not work with shift.",
   "category.oneclickcrafting.keybindings": "One Click Crafting",
-  "key.oneclickcrafting.toggle_hold": "Toggle (Hold)"
+  "key.oneclickcrafting.toggle_hold": "Toggle (Hold)",
+  "key.oneclickcrafting.repeat_last": "Repeats the last craft from the recipe book"
 }

@@ -1,0 +1,15 @@
+accessWidener v2 named
+
+accessible field net/minecraft/client/option/KeyBinding boundKey Lnet/minecraft/client/util/InputUtil$Key;
+
+accessible field net/minecraft/client/gui/screen/ingame/RecipeBookScreen recipeBook Lnet/minecraft/client/gui/screen/recipebook/RecipeBookWidget;
+
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget ghostRecipe Lnet/minecraft/client/gui/screen/recipebook/GhostRecipe;
+
+accessible class net/minecraft/client/gui/screen/recipebook/RecipeAlternativesWidget$AlternativeButtonWidget
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeAlternativesWidget$AlternativeButtonWidget recipeId Lnet/minecraft/recipe/NetworkRecipeId;
+
+accessible method net/minecraft/client/gui/widget/ClickableWidget mouseClicked (DDI)Z
+
+accessible field net/minecraft/client/recipebook/ClientRecipeBook recipes Ljava/util/Map;
+

@@ -4,6 +4,7 @@ This mod is clientside only.
 After selecting a recipe in the recipe book, the client with shift-click the crafted item from the result slot into your inventory.
 
 - Clicking a recipe will craft 1 of that item.  
+  - This can be limited to only left click or only right click
 - Shift-clicking a recipe will craft 1 stack of that item.
 - Holding the drop key and clicking a recipe will craft 1 of that item and drop it.  
 - Holding the drop key, Shift, and clicking on a recipe will drop a stack's worth of crafts.

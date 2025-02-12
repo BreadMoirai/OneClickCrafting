@@ -4,12 +4,12 @@
   "package": "com.github.breadmoirai.oneclickcrafting.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-
   ],
   "client": [
-    "ClientPlayerInteractionManagerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "KeyBindingAccessor"
+    "RecipeAlternativesWidgetMixin",
+    "RecipeBookResultsMixin",
+    "RecipeBookWidgetMixin"
   ],
   "injectors": {
     "defaultRequire": 1

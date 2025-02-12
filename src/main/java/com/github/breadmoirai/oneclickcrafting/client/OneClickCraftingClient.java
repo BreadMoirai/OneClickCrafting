@@ -1,21 +1,33 @@
 package com.github.breadmoirai.oneclickcrafting.client;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
-import com.github.breadmoirai.oneclickcrafting.mixin.KeyBindingAccessor;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
+import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
 import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.NetworkRecipeId;
+import net.minecraft.recipe.RecipeDisplayEntry;
+import net.minecraft.recipe.display.SlotDisplayContexts;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.sound.SoundEvents;
 import org.lwjgl.glfw.GLFW;
 
-@net.fabricmc.api.Environment(net.fabricmc.api.EnvType.CLIENT)
+import java.util.Map;
+
+@Environment(EnvType.CLIENT)
 public class OneClickCraftingClient implements ClientModInitializer {
 
     private static OneClickCraftingClient INSTANCE;
@@ -24,8 +36,11 @@ public class OneClickCraftingClient implements ClientModInitializer {
     private boolean isDropping;
     private boolean isShiftDropping;
     private boolean startedDropCrafting;
+    private int lastButton;
     private OneClickCraftingConfig config;
-    private KeyBinding toggleHold;
+    private KeyBinding toggleHoldKey;
+    private KeyBinding repeatLastKey;
+
 
     public static OneClickCraftingClient getInstance() {
         return INSTANCE;
@@ -36,38 +51,79 @@ public class OneClickCraftingClient implements ClientModInitializer {
         INSTANCE = this;
         OneClickCraftingConfig.loadModConfig();
         config = OneClickCraftingConfig.getInstance();
-        toggleHold = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        toggleHoldKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.oneclickcrafting.toggle_hold",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_UNKNOWN,
                 "category.oneclickcrafting.keybindings"
         ));
+        repeatLastKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.oneclickcrafting.repeat_last",
+                InputUtil.Type.KEYSYM,
+                GLFW.GLFW_KEY_UNKNOWN,
+                "category.oneclickcrafting.keybindings"
+        ));
+        ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
+                ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key, scancode, modifiers) -> {
+                    if (isKeybindingPressed(repeatLastKey)) {
+                        if (repeatLastCraft()) {
+                            ((RecipeBookScreen) screen).recipeBook.ghostRecipe.clear();
+                            MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                        }
+                    }
+                });
+                ScreenEvents.remove(screen).register(screen1 -> reset());
+            }
+        });
+        reset();
     }
 
-    public void recipeClicked(RecipeEntry<?> recipe) {
+    public boolean repeatLastCraft() {
+        return false;
+    }
+
+    public void setLastButton(int lastButton) {
+        this.lastButton = lastButton;
+    }
+
+    public void recipeClicked(NetworkRecipeId recipe) {
         //System.out.println("recipe clicked " + recipe.getId());
         //System.out.println("enabled = " + isEnabled());
         if (isEnabled()) {
             isDropping = config.isDropEnable() && isDropPressed();
             isShiftDropping = isDropping && Screen.hasShiftDown();
-            lastCraft = recipe.value().getResult((MinecraftClient.getInstance().world.getRegistryManager()));
+            MinecraftClient client = MinecraftClient.getInstance();
+            Map<NetworkRecipeId, RecipeDisplayEntry> recipes = client.player.getRecipeBook().recipes;
+            lastCraft = recipes.get(recipe).display().result().getStacks(SlotDisplayContexts.createParameters(client.world)).getFirst();
+            System.out.println("lastCraft = " + lastCraft.getItem().getName());
         } else {
-            isDropping = false;
-            isShiftDropping = false;
-            lastCraft = null;
+            reset();
         }
     }
 
+    private void reset() {
+        isDropping = false;
+        isShiftDropping = false;
+        lastCraft = null;
+        startedDropCrafting = false;
+        lastButton = -1;
+    }
+
+
     private boolean isEnabled() {
+        if ((lastButton == 0 && !config.isEnableLeftClick()) || (lastButton == 1 && !config.isEnableRightClick())) {
+            return false;
+        }
         boolean alwaysOn = config.isAlwaysOn();
         if (config.isCtrlHold() && Screen.hasControlDown()) return !alwaysOn;
         if (config.isAltHold() && Screen.hasAltDown()) return !alwaysOn;
-        if (!toggleHold.isUnbound() && isToggleHoldPressed()) return !alwaysOn;
+        if (!toggleHoldKey.isUnbound() && isToggleHoldPressed()) return !alwaysOn;
         return alwaysOn;
     }
 
     private boolean isToggleHoldPressed() {
-        return isKeybindingPressed(toggleHold);
+        return isKeybindingPressed(toggleHoldKey);
     }
 
     private boolean isDropPressed() {
@@ -75,7 +131,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     private boolean isKeybindingPressed(KeyBinding keyBinding) {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), ((KeyBindingAccessor) keyBinding).getBoundKey().getCode());
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), keyBinding.boundKey.getCode());
     }
 
     public void onResultSlotUpdated(ItemStack itemStack) {
@@ -83,9 +139,7 @@ public class OneClickCraftingClient implements ClientModInitializer {
         if (lastCraft == null) return;
         if (itemStack.getItem() == Items.AIR) {
             if (startedDropCrafting) {
-                isDropping = false;
-                startedDropCrafting = false;
-                lastCraft = null;
+                reset();
             }
             return;
         }
