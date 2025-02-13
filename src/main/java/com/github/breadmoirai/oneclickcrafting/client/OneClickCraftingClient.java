@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
+import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
@@ -40,6 +41,8 @@ public class OneClickCraftingClient implements ClientModInitializer {
     private OneClickCraftingConfig config;
     private KeyBinding toggleHoldKey;
     private KeyBinding repeatLastKey;
+    private RecipeResultCollection lastResult;
+    private NetworkRecipeId lastRecipe;
 
 
     public static OneClickCraftingClient getInstance() {
@@ -67,8 +70,8 @@ public class OneClickCraftingClient implements ClientModInitializer {
             if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
                 ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key, scancode, modifiers) -> {
                     if (isKeybindingPressed(repeatLastKey)) {
-                        if (repeatLastCraft()) {
-                            ((RecipeBookScreen) screen).recipeBook.ghostRecipe.clear();
+                        RecipeBookScreen<?> recipeBookScreen = (RecipeBookScreen<?>) screen;
+                        if (repeatLastCraft(recipeBookScreen)) {
                             MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         }
                     }
@@ -79,17 +82,25 @@ public class OneClickCraftingClient implements ClientModInitializer {
         reset();
     }
 
-    public boolean repeatLastCraft() {
-        return false;
+    public boolean repeatLastCraft(RecipeBookScreen<?> screen) {
+        if (startedDropCrafting) return false;
+        if (lastRecipe == null) return false;
+        if (config.isEnableLeftClick()) {
+            setLastButton(0);
+        } else if (config.isEnableRightClick()) {
+            setLastButton(1);
+        }
+        screen.recipeBook.selectedRecipe = lastRecipe;
+        return screen.recipeBook.select(lastResult, lastRecipe);
     }
 
     public void setLastButton(int lastButton) {
         this.lastButton = lastButton;
     }
 
-    public void recipeClicked(NetworkRecipeId recipe) {
-        //System.out.println("recipe clicked " + recipe.getId());
-        //System.out.println("enabled = " + isEnabled());
+    public void recipeClicked(RecipeResultCollection results, NetworkRecipeId recipe) {
+        lastResult = results;
+        lastRecipe = recipe;
         if (isEnabled()) {
             isDropping = config.isDropEnable() && isDropPressed();
             isShiftDropping = isDropping && Screen.hasShiftDown();
@@ -135,7 +146,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     public void onResultSlotUpdated(ItemStack itemStack) {
-        //System.out.println("Result Slot Updated with " + itemStack);
         if (lastCraft == null) return;
         if (itemStack.getItem() == Items.AIR) {
             if (startedDropCrafting) {

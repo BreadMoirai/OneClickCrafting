@@ -14,5 +14,5 @@
   "config.oneclickcrafting.drop_enable.tooltip": "Holding your drop key and clicking on a recipe will craft it and drop it instead of moving it to your inventory. Does not work with shift.",
   "category.oneclickcrafting.keybindings": "One Click Crafting",
   "key.oneclickcrafting.toggle_hold": "Toggle (Hold)",
-  "key.oneclickcrafting.repeat_last": "Repeats the last craft from the recipe book"
+  "key.oneclickcrafting.repeat_last": "Repeat Last"
 }

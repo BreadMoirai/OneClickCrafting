@@ -5,6 +5,8 @@ accessible field net/minecraft/client/option/KeyBinding boundKey Lnet/minecraft/
 accessible field net/minecraft/client/gui/screen/ingame/RecipeBookScreen recipeBook Lnet/minecraft/client/gui/screen/recipebook/RecipeBookWidget;
 
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget ghostRecipe Lnet/minecraft/client/gui/screen/recipebook/GhostRecipe;
+accessible method net/minecraft/client/gui/screen/recipebook/RecipeBookWidget select (Lnet/minecraft/client/gui/screen/recipebook/RecipeResultCollection;Lnet/minecraft/recipe/NetworkRecipeId;)Z
+accessible field net/minecraft/client/gui/screen/recipebook/RecipeBookWidget selectedRecipe Lnet/minecraft/recipe/NetworkRecipeId;
 
 accessible class net/minecraft/client/gui/screen/recipebook/RecipeAlternativesWidget$AlternativeButtonWidget
 accessible field net/minecraft/client/gui/screen/recipebook/RecipeAlternativesWidget$AlternativeButtonWidget recipeId Lnet/minecraft/recipe/NetworkRecipeId;

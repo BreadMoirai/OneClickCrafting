@@ -63,11 +63,9 @@ public class OneClickCraftingConfigScreen extends SpruceScreen {
               Text.translatable("config.oneclickcrafting.drop_enable.tooltip")
       );
 
-      list.addSingleOptionEntry(leftClick);
-      list.addSingleOptionEntry(rightClick);
+      list.addOptionEntry(leftClick, rightClick);
       list.addSingleOptionEntry(alwaysOn);
-      list.addSingleOptionEntry(ctrlHold);
-      list.addSingleOptionEntry(altHold);
+      list.addOptionEntry(ctrlHold, altHold);
       list.addSingleOptionEntry(dropEnable);
 
       SpruceButtonWidget done = new SpruceButtonWidget(Position.of(this, this.width / 2 + 4, this.height - 28), 150, 20, SpruceTexts.GUI_DONE,
