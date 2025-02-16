@@ -1,4 +1,5 @@
 {
+  "modmenu.descriptionTranslation.oneclickcrafting": "Craft faster with the recipe book using less clicks.",
   "config.oneclickcrafting.title": "One Click Crafting Config",
   "config.oneclickcrafting.left_click": "Left Click",
   "config.oneclickcrafting.left_click.tooltip": "Activate on left click",
@@ -14,5 +15,5 @@
   "config.oneclickcrafting.drop_enable.tooltip": "Holding your drop key and clicking on a recipe will craft it and drop it instead of moving it to your inventory. Does not work with shift.",
   "category.oneclickcrafting.keybindings": "One Click Crafting",
   "key.oneclickcrafting.toggle_hold": "Toggle (Hold)",
-  "key.oneclickcrafting.repeat_last": "Repeat Last"
+  "key.oneclickcrafting.repeat_last": "Repeat Last Craft"
 }
