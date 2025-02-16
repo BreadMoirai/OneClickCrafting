@@ -1,5 +1,7 @@
 {
-  "modmenu.descriptionTranslation.oneclickcrafting": "Schnelleres Craften mit dem Rezeptbuch durch weniger Klicks.",
+  "modmenu.nameTranslation.one-click-crafting": "One Click Crafting",
+  "modmenu.descriptionTranslation.one-click-crafting": "Schnelleres Craften mit dem Rezeptbuch durch weniger Klicks.",
+  "modmenu.summaryTranslation.one-click-crafting": "Schnelleres Craften mit dem Rezeptbuch durch weniger Klicks.",
   "config.oneclickcrafting.title": "One Click Crafting Einstellungen",
   "config.oneclickcrafting.left_click": "Linksklick",
   "config.oneclickcrafting.left_click.tooltip": "Aktiviert beim Linksklick",
@@ -13,8 +15,6 @@
   "config.oneclickcrafting.ctrl_hold.tooltip": "Ermöglicht das Halten der Strg-Taste, um die Mod-Funktionalität umzuschalten",
   "config.oneclickcrafting.drop_enable": "Drop-Taste beim Craften aktivieren",
   "config.oneclickcrafting.drop_enable.tooltip": "Wenn du die Drop-Taste hältst und auf ein Rezept klickst, wird es gecraftet und direkt fallengelassen, anstatt ins Inventar verschoben zu werden. Funktioniert nicht mit Umschalt-Taste.",
-  "config.oneclickcrafting.single_click_enable": "Einzelklick-Crafting aktivieren",
-  "config.oneclickcrafting.single_click_enable.tooltip": "Ein einzelner Klick auf ein Rezept craftet es, wenn keine anderen Zusatztasten (z. B. Drop-Taste oder Umschalt) gedrückt werden.",
   "category.oneclickcrafting.keybindings": "One Click Crafting",
   "key.oneclickcrafting.toggle_hold": "Umschalten (Halten)",
   "key.oneclickcrafting.repeat_last": "Letztes Rezept erneut herstellen"

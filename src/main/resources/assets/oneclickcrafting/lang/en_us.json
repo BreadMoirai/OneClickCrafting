@@ -1,5 +1,7 @@
 {
-  "modmenu.descriptionTranslation.oneclickcrafting": "Craft faster with the recipe book using less clicks.",
+  "modmenu.nameTranslation.one-click-crafting": "One Click Crafting",
+  "modmenu.descriptionTranslation.one-click-crafting": "Craft faster with the recipe book using less clicks.",
+  "modmenu.summaryTranslation.one-click-crafting": "Craft faster with the recipe book using less clicks.",
   "config.oneclickcrafting.title": "One Click Crafting Config",
   "config.oneclickcrafting.left_click": "Left Click",
   "config.oneclickcrafting.left_click.tooltip": "Activate on left click",
