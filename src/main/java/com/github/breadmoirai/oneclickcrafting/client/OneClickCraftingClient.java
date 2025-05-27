@@ -57,13 +57,13 @@ public class OneClickCraftingClient implements ClientModInitializer {
         toggleHoldKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.oneclickcrafting.toggle_hold",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_UNKNOWN,
+                InputUtil.UNKNOWN_KEY.getCode(),
                 "category.oneclickcrafting.keybindings"
         ));
         repeatLastKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.oneclickcrafting.repeat_last",
                 InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_UNKNOWN,
+                InputUtil.UNKNOWN_KEY.getCode(),
                 "category.oneclickcrafting.keybindings"
         ));
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
@@ -142,7 +142,10 @@ public class OneClickCraftingClient implements ClientModInitializer {
     }
 
     private boolean isKeybindingPressed(KeyBinding keyBinding) {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), keyBinding.boundKey.getCode());
+        int code = keyBinding.boundKey.getCode();
+        if (code == InputUtil.UNKNOWN_KEY.getCode())
+            return false;
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), code);
     }
 
     public void onResultSlotUpdated(ItemStack itemStack) {
