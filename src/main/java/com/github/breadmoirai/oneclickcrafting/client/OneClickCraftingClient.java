@@ -13,18 +13,19 @@ import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
+import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
+import net.minecraft.client.input.KeyCodes;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.NetworkRecipeId;
 import net.minecraft.recipe.RecipeDisplayEntry;
 import net.minecraft.recipe.display.SlotDisplayContexts;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.sound.SoundEvents;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
 
@@ -41,8 +42,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
     private OneClickCraftingConfig config;
     private KeyBinding toggleHoldKey;
     private KeyBinding repeatLastKey;
-    private RecipeResultCollection lastResult;
-    private NetworkRecipeId lastRecipe;
 
 
     public static OneClickCraftingClient getInstance() {
@@ -69,12 +68,10 @@ public class OneClickCraftingClient implements ClientModInitializer {
         ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
             if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
                 ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key, scancode, modifiers) -> {
-                    if (isKeybindingPressed(repeatLastKey)) {
-                        RecipeBookScreen<?> recipeBookScreen = (RecipeBookScreen<?>) screen;
-                        if (repeatLastCraft(recipeBookScreen)) {
-                            MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                        }
-                    }
+                    RecipeBookScreen<?> recipeBookScreen = (RecipeBookScreen<?>) screen;
+                    RecipeBookWidget<?> recipeBook = ((RecipeBookScreen<?>) screen).recipeBook;
+                   if (isKeybindingPressed(repeatLastKey) && !KeyCodes.isToggle(key) && recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
+                      recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe);
                 });
                 ScreenEvents.remove(screen).register(screen1 -> reset());
             }
@@ -82,35 +79,24 @@ public class OneClickCraftingClient implements ClientModInitializer {
         reset();
     }
 
-    public boolean repeatLastCraft(RecipeBookScreen<?> screen) {
-        if (startedDropCrafting) return false;
-        if (lastRecipe == null) return false;
-        if (config.isEnableLeftClick()) {
-            setLastButton(0);
-        } else if (config.isEnableRightClick()) {
-            setLastButton(1);
-        }
-        screen.recipeBook.selectedRecipe = lastRecipe;
-        return screen.recipeBook.select(lastResult, lastRecipe);
-    }
-
     public void setLastButton(int lastButton) {
         this.lastButton = lastButton;
     }
 
     public void recipeClicked(RecipeResultCollection results, NetworkRecipeId recipe) {
-        lastResult = results;
-        lastRecipe = recipe;
-        if (isEnabled()) {
-            isDropping = config.isDropEnable() && isDropPressed();
-            isShiftDropping = isDropping && Screen.hasShiftDown();
-            MinecraftClient client = MinecraftClient.getInstance();
-            Map<NetworkRecipeId, RecipeDisplayEntry> recipes = client.player.getRecipeBook().recipes;
-            lastCraft = recipes.get(recipe).display().result().getStacks(SlotDisplayContexts.createParameters(client.world)).getFirst();
-            System.out.println("lastCraft = " + lastCraft.getItem().getName());
-        } else {
+        if (!isEnabled()) {
             reset();
+            return;
         }
+        isDropping = config.isDropEnable() && isDropPressed();
+        isShiftDropping = isDropping && Screen.hasShiftDown();
+        MinecraftClient client = MinecraftClient.getInstance();
+        ClientWorld world = client.world;
+        if (world == null) return;
+        ClientPlayerEntity player = client.player;
+        if (player ==  null) return;
+        Map<NetworkRecipeId, RecipeDisplayEntry> recipes = player.getRecipeBook().recipes;
+        lastCraft = recipes.get(recipe).display().result().getStacks(SlotDisplayContexts.createParameters(world)).getFirst();
     }
 
     private void reset() {
@@ -123,10 +109,16 @@ public class OneClickCraftingClient implements ClientModInitializer {
 
 
     private boolean isEnabled() {
-        if ((lastButton == 0 && !config.isEnableLeftClick()) || (lastButton == 1 && !config.isEnableRightClick())) {
-            return false;
-        }
-        boolean alwaysOn = config.isAlwaysOn();
+       if (!isKeybindingPressed(repeatLastKey)) {
+          if (lastButton == 0 && !config.isEnableLeftClick()) {
+             return false;
+          } else if (lastButton == 1 && !config.isEnableRightClick()) {
+             return false;
+          } else if (lastButton == -1) {
+             return false;
+          }
+       }
+       boolean alwaysOn = config.isAlwaysOn();
         if (config.isCtrlHold() && Screen.hasControlDown()) return !alwaysOn;
         if (config.isAltHold() && Screen.hasAltDown()) return !alwaysOn;
         if (!toggleHoldKey.isUnbound() && isToggleHoldPressed()) return !alwaysOn;
