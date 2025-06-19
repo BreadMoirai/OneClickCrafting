@@ -31,8 +31,8 @@
     "fabric-key-binding-api-v1": "*"
   },
   "recommends": {
-    "modmenu": ">=4.2.0",
-    "minecraft": ">=1.21.4"
+    "modmenu": ">=15.0.0",
+    "minecraft": ">=1.21.6"
   },
   "accessWidener": "oneclickcrafting.accesswidener"
 }
