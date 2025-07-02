@@ -32,7 +32,16 @@
   },
   "recommends": {
     "modmenu": ">=15.0.0",
-    "minecraft": ">=1.21.6"
+    "minecraft": ">=1.21.7"
   },
-  "accessWidener": "oneclickcrafting.accesswidener"
+  "accessWidener": "oneclickcrafting.accesswidener",
+  "custom": {
+    "mc-publish": {
+      "modrinth": "iswuGKgg",
+      "dependencies": [
+        "fabric-api(required)",
+        "modmenu(optional)"
+      ]
+    }
+  }
 }

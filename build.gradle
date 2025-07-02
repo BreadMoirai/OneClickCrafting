@@ -3,11 +3,10 @@ import java.util.concurrent.Callable
 plugins {
     id 'fabric-loom' version '1.10-SNAPSHOT'
     id 'maven-publish'
-    id 'com.github.breadmoirai.github-release' version "2.3.7"
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -77,23 +76,4 @@ jar {
 
 loom {
     accessWidenerPath = file("src/main/resources/oneclickcrafting.accesswidener")
-}
-
-githubRelease {
-//    token getProperty("oneclickcrafting.github.key") as String
-    // This is your personal access token with Repo permissions
-    // You get this from your user settings > developer settings > Personal Access Tokens
-//    owner "breadmoirai" // default is the last part of your group. Eg group: "com.github.breadmoirai" => owner: "breadmoirai"
-    repo.set "OneClickCrafting" // by default this is set to your project name
-//    tagName "v1.0.0" // by default this is set to "v${project.version}"
-//    targetCommitish "main" // by default this is set to "main"
-//    releaseName "v1.0.0" // Release title, by default this is the same as the tagName
-//    body.set provider<String>(changelog {}) as Provider<? extends CharSequence> // by default this is empty)
-    draft.set false // by default this is false
-//    prerelease false // by default this is false
-    releaseAssets remapJar.archiveFile // this points to which files you want to upload as assets with your release
-//
-    allowUploadToExisting.set false
-    overwrite.set false // by default false; if set to true, will delete an existing release with the same tag and name
-//    dryRun false // by default false; you can use this to see what actions would be taken without making a release
 }
