@@ -32,7 +32,7 @@
   },
   "recommends": {
     "modmenu": ">=15.0.0",
-    "minecraft": ">=1.21.7"
+    "minecraft": ">=1.20.1"
   },
   "accessWidener": "oneclickcrafting.accesswidener",
   "custom": {

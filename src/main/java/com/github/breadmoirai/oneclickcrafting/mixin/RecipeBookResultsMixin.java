@@ -3,10 +3,8 @@ package com.github.breadmoirai.oneclickcrafting.mixin;
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
-import net.minecraft.client.gui.screen.recipebook.RecipeAlternativesWidget;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
-import net.minecraft.recipe.NetworkRecipeId;
 import net.minecraft.recipe.Recipe;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -26,7 +24,7 @@ public abstract class RecipeBookResultsMixin {
 
    @Shadow
    @Nullable
-   private NetworkRecipeId lastClickedRecipe;
+   private Recipe<?> lastClickedRecipe;
 
    @Shadow
    @Nullable
@@ -37,9 +35,10 @@ public abstract class RecipeBookResultsMixin {
       for (AnimatedResultButton animatedResultButton : this.resultButtons) {
          if (animatedResultButton.mouseClicked(mouseX, mouseY, button)) {
             OneClickCraftingClient.getInstance().setLastButton(button);
-            if (button == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick() && animatedResultButton.hasSingleResult()) {
-               this.lastClickedRecipe = animatedResultButton.getCurrentId();
+            if (button == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick() && animatedResultButton.hasResults()) {
+               this.lastClickedRecipe = animatedResultButton.currentRecipe();
                this.resultCollection = animatedResultButton.getResultCollection();
+               OneClickCraftingClient.getInstance().recipeClicked(this.resultCollection, this.lastClickedRecipe);
                return;
             }
             return;

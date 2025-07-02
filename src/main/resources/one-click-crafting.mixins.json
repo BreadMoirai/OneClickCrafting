@@ -8,8 +8,7 @@
   "client": [
     "ClientPlayNetworkHandlerMixin",
     "RecipeAlternativesWidgetMixin",
-    "RecipeBookResultsMixin",
-    "RecipeBookWidgetMixin"
+    "RecipeBookResultsMixin"
   ],
   "injectors": {
     "defaultRequire": 1
