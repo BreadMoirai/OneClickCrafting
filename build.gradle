@@ -61,15 +61,6 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
 }
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-tasks.register('sourcesJar', Jar) {
-    dependsOn classes
-    archiveClassifier.set "sources"
-    from sourceSets.main.allSource
-}
-
 jar {
     from "LICENSE"
 }
