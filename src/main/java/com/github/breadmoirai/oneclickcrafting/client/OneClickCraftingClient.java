@@ -67,7 +67,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
             ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key, scancode, modifiers) -> {
-               RecipeBookScreen<?> recipeBookScreen = (RecipeBookScreen<?>) screen;
                RecipeBookWidget<?> recipeBook = ((RecipeBookScreen<?>) screen).recipeBook;
                if (isKeybindingPressed(repeatLastKey) && !KeyCodes.isToggle(
                   key) && recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
@@ -143,7 +142,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
    public void onResultSlotUpdated(ItemStack itemStack) {
       if (lastCraft == null) return;
       if (itemStack.getItem() == Items.AIR) {
-         reset();
          return;
       }
       if (!ItemStack.areItemsEqual(itemStack, lastCraft)) {
@@ -158,5 +156,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
       } else {
          client.interactionManager.clickSlot(syncId, 0, 0, SlotActionType.QUICK_MOVE, client.player);
       }
+      reset();
    }
 }
