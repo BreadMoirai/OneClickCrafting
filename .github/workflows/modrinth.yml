@@ -5,7 +5,7 @@ on: [ pull_request, workflow_dispatch ]           #When your GitHub Action will 
 env:                                              #Environment variables that can later be referenced using ${{ env.MINECRAFT_VERSION }}. These are useful for repeating information and allow for quick changes for new mod updates
   MINECRAFT_VERSION: 1.21.9
   JAVA_VERSION: 21
-  MOD_VERSION: 1.8.6
+  MOD_VERSION: 1.8.7
 
 
 permissions:

@@ -83,7 +83,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
    }
 
    public void recipeClicked(NetworkRecipeId recipe) {
-      System.out.println(this.lastButton);
       if (!isEnabled()) {
          reset();
          return;
@@ -143,7 +142,6 @@ public class OneClickCraftingClient implements ClientModInitializer {
    public void onResultSlotUpdated(ItemStack itemStack) {
       if (lastCraft == null) return;
       if (itemStack.getItem() == Items.AIR) {
-         reset();
          return;
       }
       if (!ItemStack.areItemsEqual(itemStack, lastCraft)) {
@@ -154,9 +152,10 @@ public class OneClickCraftingClient implements ClientModInitializer {
       if (!(client.currentScreen instanceof HandledScreen)) return;
       int syncId = ((HandledScreen<?>) client.currentScreen).getScreenHandler().syncId;
       if (isDropping) {
-         client.interactionManager.clickSlot(syncId, 0, isShiftDropping ? 1 : 0   , SlotActionType.THROW, client.player);
+         client.interactionManager.clickSlot(syncId, 0, isShiftDropping ? 1 : 0, SlotActionType.THROW, client.player);
       } else {
          client.interactionManager.clickSlot(syncId, 0, 0, SlotActionType.QUICK_MOVE, client.player);
       }
+      reset();
    }
 }
