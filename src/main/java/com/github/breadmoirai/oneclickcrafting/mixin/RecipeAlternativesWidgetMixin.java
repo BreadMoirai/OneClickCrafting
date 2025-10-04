@@ -2,6 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.mixin;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.recipebook.RecipeAlternativesWidget;
 import net.minecraft.recipe.NetworkRecipeId;
 import org.spongepowered.asm.mixin.Final;
@@ -23,11 +24,11 @@ public abstract class RecipeAlternativesWidgetMixin {
    private NetworkRecipeId lastClickedRecipe;
 
 
-   @Inject(method = "mouseClicked(DDI)Z", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
-   private void mouseClickedRight(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-      if (button == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
+   @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
+   private void mouseClickedRight(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
+      if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
          for (var alternativeButtonWidget : this.alternativeButtons) {
-            if (alternativeButtonWidget.mouseClicked(mouseX, mouseY, 0)) {
+            if (alternativeButtonWidget.mouseClicked(click, doubled)) {
                OneClickCraftingClient.getInstance().setLastButton(1);
                this.lastClickedRecipe = alternativeButtonWidget.recipeId;
                cir.setReturnValue(true);
@@ -36,8 +37,8 @@ public abstract class RecipeAlternativesWidgetMixin {
       }
    }
 
-   @Inject(method = "mouseClicked(DDI)Z", at = @At(value = "RETURN", ordinal = 1))
-   private void mouseClickedLeft(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+   @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z", at = @At(value = "RETURN", ordinal = 1))
+   private void mouseClickedLeft(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
       OneClickCraftingClient.getInstance().setLastButton(0);
    }
 }

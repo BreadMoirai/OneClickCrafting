@@ -2,12 +2,11 @@ package com.github.breadmoirai.oneclickcrafting.mixin;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
-import net.minecraft.client.gui.screen.recipebook.RecipeAlternativesWidget;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeResultCollection;
 import net.minecraft.recipe.NetworkRecipeId;
-import net.minecraft.recipe.Recipe;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,12 +31,13 @@ public abstract class RecipeBookResultsMixin {
    @Nullable
    private RecipeResultCollection resultCollection;
 
-   @Inject(at = @At(value = "RETURN", ordinal = 3), method = "mouseClicked(DDIIIII)Z")
-   private void mouseClicked(double mouseX, double mouseY, int button, int areaLeft, int areaTop, int areaWidth, int areaHeight, CallbackInfoReturnable<Boolean> cir) {
+   @Inject(at = @At(value = "RETURN", ordinal = 3), method = "mouseClicked(Lnet/minecraft/client/gui/Click;IIIIZ)Z")
+   private void mouseClicked(Click click, int left, int top, int width, int height, boolean bl, CallbackInfoReturnable<Boolean> cir) {
       for (AnimatedResultButton animatedResultButton : this.resultButtons) {
-         if (animatedResultButton.mouseClicked(mouseX, mouseY, button)) {
-            OneClickCraftingClient.getInstance().setLastButton(button);
-            if (button == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick() && animatedResultButton.hasSingleResult()) {
+         if (animatedResultButton.mouseClicked(click, bl)) {
+            OneClickCraftingClient.getInstance().setLastButton(click.button());
+            if (click.button() == 1 && OneClickCraftingConfig.getInstance()
+               .isEnableRightClick() && animatedResultButton.hasSingleResult()) {
                this.lastClickedRecipe = animatedResultButton.getCurrentId();
                this.resultCollection = animatedResultButton.getResultCollection();
                return;

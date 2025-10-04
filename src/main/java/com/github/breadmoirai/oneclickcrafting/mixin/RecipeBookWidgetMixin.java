@@ -12,10 +12,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RecipeBookWidget.class)
 public class RecipeBookWidgetMixin {
 
-
-   @Inject(at = @At("TAIL"), method= "select(Lnet/minecraft/client/gui/screen/recipebook/RecipeResultCollection;Lnet/minecraft/recipe/NetworkRecipeId;)Z")
-   public void clickRecipeTail(RecipeResultCollection results, NetworkRecipeId recipeId, CallbackInfoReturnable<Boolean> cir) {
-      OneClickCraftingClient.getInstance().recipeClicked(results, recipeId);
+   @Inject(at = @At("TAIL"), method= "select(Lnet/minecraft/client/gui/screen/recipebook/RecipeResultCollection;Lnet/minecraft/recipe/NetworkRecipeId;Z)Z")
+   public void clickRecipeTail(RecipeResultCollection results, NetworkRecipeId recipeId, boolean bl, CallbackInfoReturnable<Boolean> cir) {
+      OneClickCraftingClient.getInstance().recipeClicked(recipeId);
    }
 
 }
