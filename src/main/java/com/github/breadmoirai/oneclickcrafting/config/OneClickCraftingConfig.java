@@ -20,10 +20,8 @@ public class OneClickCraftingConfig {
    static {
       CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("oneclickcrafting.json");
       INSTANCE = new OneClickCraftingConfig();
-      GSON = new GsonBuilder()
-              .setPrettyPrinting()
-              .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-              .create();
+      GSON = new GsonBuilder().setPrettyPrinting().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+         .create();
    }
 
    private boolean enableLeftClick = false;

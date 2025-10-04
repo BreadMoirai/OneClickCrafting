@@ -9,8 +9,8 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class OneClickCraftingModMenuEntry implements ModMenuApi {
 
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return OneClickCraftingConfigScreen::new;
-    }
+   @Override
+   public ConfigScreenFactory<?> getModConfigScreenFactory() {
+      return OneClickCraftingConfigScreen::new;
+   }
 }

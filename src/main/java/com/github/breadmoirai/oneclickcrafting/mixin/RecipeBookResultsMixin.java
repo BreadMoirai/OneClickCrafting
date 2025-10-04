@@ -37,7 +37,8 @@ public abstract class RecipeBookResultsMixin {
       for (AnimatedResultButton animatedResultButton : this.resultButtons) {
          if (animatedResultButton.mouseClicked(mouseX, mouseY, button)) {
             OneClickCraftingClient.getInstance().setLastButton(button);
-            if (button == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick() && animatedResultButton.hasSingleResult()) {
+            if (button == 1 && OneClickCraftingConfig.getInstance()
+               .isEnableRightClick() && animatedResultButton.hasSingleResult()) {
                this.lastClickedRecipe = animatedResultButton.getCurrentId();
                this.resultCollection = animatedResultButton.getResultCollection();
                return;
