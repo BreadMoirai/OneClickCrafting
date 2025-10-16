@@ -4,6 +4,7 @@ import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.recipebook.RecipeAlternativesWidget;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.recipe.NetworkRecipeId;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,7 @@ public abstract class RecipeAlternativesWidgetMixin {
    private void mouseClickedRight(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
       if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
          for (var alternativeButtonWidget : this.alternativeButtons) {
-            if (alternativeButtonWidget.mouseClicked(click, doubled)) {
+            if (alternativeButtonWidget.mouseClicked(new Click(click.x(), click.y(), new MouseInput(0, click.modifiers())), doubled)) {
                OneClickCraftingClient.getInstance().setLastButton(1);
                this.lastClickedRecipe = alternativeButtonWidget.recipeId;
                cir.setReturnValue(true);
