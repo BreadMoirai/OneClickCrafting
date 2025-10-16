@@ -32,6 +32,7 @@
   },
   "recommends": {
     "modmenu": ">=16.0.0",
+    "yacl": ">=3.8.0",
     "minecraft": ">=1.21.9"
   },
   "accessWidener": "oneclickcrafting.accesswidener",

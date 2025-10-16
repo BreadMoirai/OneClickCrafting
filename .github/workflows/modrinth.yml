@@ -49,3 +49,8 @@ jobs:
           loaders: fabric
           game-versions: "${{env.MINECRAFT_VERSION}}"
           java: "${{env.JAVA_VERSION}}"
+
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
