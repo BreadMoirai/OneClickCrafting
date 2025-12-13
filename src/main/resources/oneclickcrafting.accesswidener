@@ -14,3 +14,6 @@ accessible field net/minecraft/client/gui/screen/recipebook/RecipeAlternativesWi
 
 accessible field net/minecraft/client/recipebook/ClientRecipeBook recipes Ljava/util/Map;
 
+accessible method net/minecraft/client/gui/screen/ingame/HandledScreen onMouseClick (Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V
+
+accessible method net/minecraft/recipe/SingleStackRecipe result ()Lnet/minecraft/item/ItemStack;

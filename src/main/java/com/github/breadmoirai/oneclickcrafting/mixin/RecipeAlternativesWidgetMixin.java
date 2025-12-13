@@ -30,7 +30,7 @@ public abstract class RecipeAlternativesWidgetMixin {
       if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
          for (var alternativeButtonWidget : this.alternativeButtons) {
             if (alternativeButtonWidget.mouseClicked(new Click(click.x(), click.y(), new MouseInput(0, click.modifiers())), doubled)) {
-               OneClickCraftingClient.getInstance().setLastButton(1);
+               OneClickCraftingClient.getInstance().craftingHandler.setLastButton(1);
                this.lastClickedRecipe = alternativeButtonWidget.recipeId;
                cir.setReturnValue(true);
             }
@@ -40,6 +40,6 @@ public abstract class RecipeAlternativesWidgetMixin {
 
    @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z", at = @At(value = "RETURN", ordinal = 1))
    private void mouseClickedLeft(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
-      OneClickCraftingClient.getInstance().setLastButton(0);
+      OneClickCraftingClient.getInstance().craftingHandler.setLastButton(0);
    }
 }

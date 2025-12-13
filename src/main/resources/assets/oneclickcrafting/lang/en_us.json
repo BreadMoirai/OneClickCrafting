@@ -3,6 +3,8 @@
   "modmenu.descriptionTranslation.one-click-crafting": "Craft faster with the recipe book using less clicks.",
   "modmenu.summaryTranslation.one-click-crafting": "Craft faster with the recipe book using less clicks.",
   "config.oneclickcrafting.title": "One Click Crafting Config",
+  "config.oneclickcrafting.stonecutter": "Enable Stonecutter",
+  "config.oneclickcrafting.stonecutter.tooltip": "Enable One Click Crafting for the Stonecutter",
   "config.oneclickcrafting.left_click": "Left Click",
   "config.oneclickcrafting.left_click.tooltip": "Activate on left click",
   "config.oneclickcrafting.right_click": "Right Click",

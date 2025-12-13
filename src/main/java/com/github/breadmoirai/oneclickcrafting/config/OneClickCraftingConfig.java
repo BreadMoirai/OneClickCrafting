@@ -15,7 +15,7 @@ import java.nio.file.Path;
 public class OneClickCraftingConfig {
    private static final Path CONFIG_PATH;
    private static final OneClickCraftingConfig INSTANCE;
-   private static final transient Gson GSON;
+   private static final Gson GSON;
 
    static {
       CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("oneclickcrafting.json");
@@ -26,6 +26,7 @@ public class OneClickCraftingConfig {
               .create();
    }
 
+   private boolean enableStonecutter = true;
    private boolean enableLeftClick = false;
    private boolean enableRightClick = true;
    private boolean alwaysOn = true;
@@ -43,6 +44,7 @@ public class OneClickCraftingConfig {
             String s = Files.readString(CONFIG_PATH);
             OneClickCraftingConfig config = GSON.fromJson(s, OneClickCraftingConfig.class);
             OneClickCraftingConfig instance = getInstance();
+            instance.enableStonecutter = config.enableStonecutter;
             instance.enableLeftClick = config.enableLeftClick;
             instance.enableRightClick = config.enableRightClick;
             instance.alwaysOn = config.alwaysOn;
@@ -65,6 +67,14 @@ public class OneClickCraftingConfig {
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   public boolean isEnableStonecutter() {
+      return enableStonecutter;
+   }
+
+   public void setEnableStonecutter(boolean enableStonecutter) {
+      this.enableStonecutter = enableStonecutter;
    }
 
    public boolean isEnableLeftClick() {

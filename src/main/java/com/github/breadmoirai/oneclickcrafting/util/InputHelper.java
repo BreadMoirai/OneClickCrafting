@@ -2,6 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.util;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -26,5 +27,16 @@ public class InputHelper {
    public static boolean isAltDown() {
       return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_ALT) ||
          InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_RIGHT_ALT);
+   }
+
+   public static boolean isKeybindingPressed(KeyBinding keyBinding) {
+      int code = keyBinding.boundKey.getCode();
+      if (code == InputUtil.UNKNOWN_KEY.getCode())
+         return false;
+      return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), code);
+   }
+
+   public static boolean isDropKeyPressed() {
+      return isKeybindingPressed(MinecraftClient.getInstance().options.dropKey);
    }
 }

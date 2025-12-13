@@ -14,7 +14,7 @@ public class RecipeBookWidgetMixin {
 
    @Inject(at = @At("TAIL"), method= "select(Lnet/minecraft/client/gui/screen/recipebook/RecipeResultCollection;Lnet/minecraft/recipe/NetworkRecipeId;Z)Z")
    public void clickRecipeTail(RecipeResultCollection results, NetworkRecipeId recipeId, boolean bl, CallbackInfoReturnable<Boolean> cir) {
-      OneClickCraftingClient.getInstance().recipeClicked(recipeId);
+      OneClickCraftingClient.getInstance().craftingHandler.recipeClicked(recipeId);
    }
 
 }

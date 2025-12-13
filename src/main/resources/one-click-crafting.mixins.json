@@ -9,7 +9,8 @@
     "ClientPlayNetworkHandlerMixin",
     "RecipeAlternativesWidgetMixin",
     "RecipeBookResultsMixin",
-    "RecipeBookWidgetMixin"
+    "RecipeBookWidgetMixin",
+    "StonecutterScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
