@@ -9,6 +9,7 @@ public abstract class OneClickHandler {
    protected boolean isDropping;
    protected boolean isShiftDropping;
    protected int lastButton;
+   protected boolean isPending;
 
    public abstract void onInitialize();
 
@@ -17,6 +18,7 @@ public abstract class OneClickHandler {
       isShiftDropping = false;
       lastCraft = null;
       lastButton = -1;
+      isPending = false;
    }
 
    public boolean isEnabled() {
@@ -45,5 +47,6 @@ public abstract class OneClickHandler {
 
    public void setLastCraft(ItemStack stack) {
       this.lastCraft = stack;
+      this.isPending = true;
    }
 }

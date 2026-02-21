@@ -29,6 +29,8 @@ public class OneClickCraftingHandler extends OneClickHandler {
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
             ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key) -> {
+               OneClickCraftingHandler handler = OneClickCraftingClient.getInstance().craftingHandler;
+               if (handler.isPending) return;
                RecipeBookWidget<?> recipeBook = ((RecipeBookScreen<?>) screen).recipeBook;
                if (InputHelper.isKeybindingPressed(
                   OneClickCraftingClient.getInstance().repeatLastKey) && !InputHelper.isToggleKey(

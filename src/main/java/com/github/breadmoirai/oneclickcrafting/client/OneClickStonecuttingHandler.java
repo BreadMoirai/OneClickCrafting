@@ -36,6 +36,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof StonecutterScreen) {
             ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key) -> {
+               if (isPending) return;
                if (InputHelper.isKeybindingPressed(
                   OneClickCraftingClient.getInstance().repeatLastKey) && !InputHelper.isToggleKey(key)) {
                   StonecutterScreen stonecutterScreen = (StonecutterScreen) screen2;
@@ -46,12 +47,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
                      lastSelected);
                }
             });
-            ScreenEvents.remove(screen).register(screen1 -> {
-               lastSelected = -1;
-               lastButton = -1;
-               lastCraft = null;
-               lastIngredient = null;
-            });
+            ScreenEvents.remove(screen).register(screen1 -> reset());
          }
       });
    }
@@ -90,6 +86,8 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
             InventoryUtils.leftClickSlot(gui, 0);
             if (shouldRefill) {
                refill(gui);
+            } else {
+               isPending = false;
             }
          }
       } else {
@@ -124,6 +122,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
                   this.onNextUpdate = null;
                   InventoryUtils.shiftClickSlot(gui, 1);
                   InventoryUtils.leftClickSlot(gui, 0);
+                  isPending = false;
                };
                return;
             } else {
@@ -145,6 +144,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
             InventoryUtils.leftClickSlot(gui, slot);
          }
       });
+      isPending = false;
    }
 
    private boolean resultStackDoesNotMatch(ItemStack itemStack) {
@@ -192,6 +192,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
    @Override
    public void reset() {
       this.isShifting = false;
+      this.lastIngredient = null;
       super.reset();
    }
 
