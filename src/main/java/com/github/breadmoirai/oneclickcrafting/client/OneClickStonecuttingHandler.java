@@ -78,6 +78,9 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
                   refill(gui);
                };
                return;
+            } else {
+               InventoryUtils.dropStack(gui, 1);
+               refill(gui);
             }
          } else {
             boolean shouldRefill = input.getStack().getCount() == 1;
