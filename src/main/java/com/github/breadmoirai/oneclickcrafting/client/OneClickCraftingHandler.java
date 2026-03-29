@@ -28,15 +28,27 @@ public class OneClickCraftingHandler extends OneClickHandler {
    public void onInitialize() {
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
-            ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key) -> {
+            ScreenEvents.afterTick(screen).register(screen2 ->
+               OneClickCraftingClient.getInstance().craftingHandler.tick());
+            ScreenKeyboardEvents.beforeKeyPress(screen).register((screen2, key) -> {
                OneClickCraftingHandler handler = OneClickCraftingClient.getInstance().craftingHandler;
-               if (handler.isPending) return;
+               if (handler.isPending) return; // OS key-repeat guard while craft is in progress
+               if (!InputHelper.isKeyInputFor(key, OneClickCraftingClient.getInstance().repeatLastKey)) return;
+               if (handler.repeatInitialPressTime != -1) return; // already in a hold sequence; tick handles repeats
+               handler.repeatInitialPressTime = System.currentTimeMillis();
+               handler.repeatCraftCount = 0;
                RecipeBookWidget<?> recipeBook = ((RecipeBookScreen<?>) screen).recipeBook;
-               if (InputHelper.isKeybindingPressed(
-                  OneClickCraftingClient.getInstance().repeatLastKey) && !InputHelper.isToggleKey(
-                  key) && recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
+               if (recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
                   recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe,
                      InputHelper.isShiftDown());
+            });
+            ScreenKeyboardEvents.afterKeyRelease(screen).register((screen2, key) -> {
+               OneClickCraftingHandler handler = OneClickCraftingClient.getInstance().craftingHandler;
+               if (InputHelper.isKeyInputFor(key, OneClickCraftingClient.getInstance().repeatLastKey)
+                     && !InputHelper.isKeybindingPressed(OneClickCraftingClient.getInstance().repeatLastKey)) {
+                  handler.repeatInitialPressTime = -1;
+                  handler.repeatCraftCount = 0;
+               }
             });
             ScreenEvents.remove(screen).register(screen1 -> reset());
          }
@@ -71,8 +83,20 @@ public class OneClickCraftingHandler extends OneClickHandler {
       // We therefore only call onResultSlotUpdated manually for this case, detected by
       // checking that the player's main inventory alone (without grid items) cannot
       // satisfy the recipe's crafting requirements — meaning no extra ingredients exist.
-      if (client.currentScreen instanceof InventoryScreen gui) {
-         ItemStack slot0Stack = gui.getScreenHandler().getSlot(0).getStack();
+      //
+      // This applies to both the 2×2 inventory grid (InventoryScreen, slots 1–4) and
+      // the 3×3 crafting table grid (CraftingScreen, slots 1–9).
+      HandledScreen<?> currentGui = null;
+      int maxGridSlot = 0;
+      if (client.currentScreen instanceof InventoryScreen inventoryGui) {
+         currentGui = inventoryGui;
+         maxGridSlot = 4;
+      } else if (client.currentScreen instanceof CraftingScreen craftingGui) {
+         currentGui = craftingGui;
+         maxGridSlot = 9;
+      }
+      if (currentGui != null) {
+         ItemStack slot0Stack = currentGui.getScreenHandler().getSlot(0).getStack();
          if (!slot0Stack.isEmpty() && ItemStack.areItemsEqual(slot0Stack, result)) {
             RecipeDisplayEntry entry = recipes.get(recipe);
             if (entry.craftingRequirements().isPresent()) {
@@ -88,8 +112,8 @@ public class OneClickCraftingHandler extends OneClickHandler {
                player.getInventory().populateRecipeFinder(finder);
                boolean noExtraIngredients = !entry.isCraftable(finder);
                boolean anySlotAtMax = false;
-               for (int slotIdx = 1; slotIdx <= 4; slotIdx++) {
-                  ItemStack s = gui.getScreenHandler().getSlot(slotIdx).getStack();
+               for (int slotIdx = 1; slotIdx <= maxGridSlot; slotIdx++) {
+                  ItemStack s = currentGui.getScreenHandler().getSlot(slotIdx).getStack();
                   if (!s.isEmpty() && s.getCount() >= s.getMaxCount()) {
                      anySlotAtMax = true;
                      break;
@@ -101,6 +125,16 @@ public class OneClickCraftingHandler extends OneClickHandler {
             }
          }
       }
+   }
+
+   @Override
+   protected void fireRepeatCraft() {
+      MinecraftClient client = MinecraftClient.getInstance();
+      if (!(client.currentScreen instanceof RecipeBookScreen<?> screen)) return;
+      RecipeBookWidget<?> recipeBook = screen.recipeBook;
+      if (recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
+         recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe,
+            InputHelper.isShiftDown());
    }
 
    @Override
@@ -124,6 +158,6 @@ public class OneClickCraftingHandler extends OneClickHandler {
       } else {
          InventoryUtils.shiftClickSlot(gui, 0);
       }
-      reset();
+      onCraftComplete();
    }
 }

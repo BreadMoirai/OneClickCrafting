@@ -17,6 +17,8 @@
   "config.oneclickcrafting.ctrl_hold.tooltip": "Enables holding Ctrl to toggle the mod's functionality",
   "config.oneclickcrafting.drop_enable": "Enable Drop Key on Craft",
   "config.oneclickcrafting.drop_enable.tooltip": "Holding your drop key and clicking on a recipe will craft it and drop it instead of moving it to your inventory. Does not work with shift.",
+  "config.oneclickcrafting.repeat_delay": "Repeat Last Delay",
+  "config.oneclickcrafting.repeat_delay.tooltip": "How long to hold the Repeat Last key before rapid-fire begins. The first craft fires immediately; the second fires after this delay; all subsequent crafts fire immediately after each completes. Set to 0 to fire every craft immediately.",
   "category.oneclickcrafting.keybindings": "One Click Crafting",
   "key.oneclickcrafting.toggle_hold": "Toggle (Hold)",
   "key.oneclickcrafting.repeat_last": "Repeat Last Craft"

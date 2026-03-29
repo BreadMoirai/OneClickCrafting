@@ -36,6 +36,8 @@ dependencies {
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
     modImplementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+
+    testImplementation sourceSets.main.output
 }
 
 processResources {
@@ -64,6 +66,30 @@ jar {
     from "LICENSE"
 }
 
+sourceSets {
+    test {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+    }
+}
+
+def testTasks = ['runTestClient', 'compileTestJava']
+def runningTests = gradle.startParameter.taskNames.any { name -> testTasks.any { name.endsWith(it) } }
+
 loom {
-    accessWidenerPath = file("src/main/resources/oneclickcrafting.accesswidener")
+    accessWidenerPath = runningTests
+        ? file("src/test/resources/oneclickcraftingtestmod.accesswidener")
+        : file("src/main/resources/oneclickcrafting.accesswidener")
+
+    runs {
+        testClient {
+            client()
+            name "Test Client"
+            source sourceSets.test
+            vmArg '-Dfabric.client.gametest'
+            vmArg '-Dfabric.client.gametest.disableNetworkSynchronizer'
+        }
+    }
+
+    createRemapConfigurations(sourceSets.test)
 }

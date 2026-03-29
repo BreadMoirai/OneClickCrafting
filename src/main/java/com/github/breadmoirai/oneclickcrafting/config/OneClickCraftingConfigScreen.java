@@ -1,6 +1,7 @@
 package com.github.breadmoirai.oneclickcrafting.config;
 
 import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.IntegerSliderControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.fabricmc.api.EnvType;
@@ -63,6 +64,14 @@ public class OneClickCraftingConfigScreen extends YACLScreen {
                .description(OptionDescription.of(Text.translatable("config.oneclickcrafting.drop_enable.tooltip")))
                .binding(false, config::isDropEnable, config::setDropEnable)
                .controller(TickBoxControllerBuilder::create)
+               .build()
+            ).option(Option.<Integer>createBuilder().name(Text.translatable("config.oneclickcrafting.repeat_delay"))
+               .description(OptionDescription.of(Text.translatable("config.oneclickcrafting.repeat_delay.tooltip")))
+               .binding(6, config::getRepeatDelay, config::setRepeatDelay)
+               .controller(opt -> IntegerSliderControllerBuilder.create(opt)
+                  .range(0, 40)
+                  .step(1)
+                  .formatValue(v -> Text.literal(v == 1 ? "1 tick" : v + " ticks")))
                .build()
             ).build()
          ).build();

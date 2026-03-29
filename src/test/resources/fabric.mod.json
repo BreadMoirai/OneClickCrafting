@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "one-click-crafting-testmod",
+  "version": "1.0.0",
+  "name": "One Click Crafting Testmod",
+  "environment": "client",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "com.github.breadmoirai.oneclickcrafting.testmod.OneClickCraftingGameTests"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.15.7",
+    "one-click-crafting": "*"
+  },
+  "accessWidener": "oneclickcraftingtestmod.accesswidener"
+}

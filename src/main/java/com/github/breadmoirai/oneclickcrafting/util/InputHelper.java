@@ -39,4 +39,15 @@ public class InputHelper {
    public static boolean isDropKeyPressed() {
       return isKeybindingPressed(MinecraftClient.getInstance().options.dropKey);
    }
+
+   /**
+    * Returns {@code true} if the given {@link KeyInput} event matches the bound key of
+    * {@code binding}. Used to detect when the user presses the exact key of a binding
+    * (rather than checking whether that key is currently held via {@link #isKeybindingPressed}).
+    */
+   public static boolean isKeyInputFor(KeyInput keyInput, KeyBinding binding) {
+      int code = binding.boundKey.getCode();
+      if (code == InputUtil.UNKNOWN_KEY.getCode()) return false;
+      return keyInput.getKeycode() == code;
+   }
 }

@@ -35,16 +35,26 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
    public void onInitialize() {
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof StonecutterScreen) {
-            ScreenKeyboardEvents.afterKeyPress(screen).register((screen2, key) -> {
-               if (isPending) return;
-               if (InputHelper.isKeybindingPressed(
-                  OneClickCraftingClient.getInstance().repeatLastKey) && !InputHelper.isToggleKey(key)) {
-                  StonecutterScreen stonecutterScreen = (StonecutterScreen) screen2;
-                  stonecutterScreen.getScreenHandler().onButtonClick(client.player, lastSelected);
-                  client.interactionManager.clickButton(stonecutterScreen.getScreenHandler().syncId, lastSelected);
-                  recipeClicked(stonecutterScreen, new Click(0, 0,
-                        new MouseInput(OneClickCraftingClient.getInstance().config.isEnableLeftClick() ? 0 : 1, 0)),
-                     lastSelected);
+            ScreenEvents.afterTick(screen).register(screen2 ->
+               OneClickCraftingClient.getInstance().stonecuttingHandler.tick());
+            ScreenKeyboardEvents.beforeKeyPress(screen).register((screen2, key) -> {
+               if (isPending) return; // OS key-repeat guard while craft is in progress
+               if (!InputHelper.isKeyInputFor(key, OneClickCraftingClient.getInstance().repeatLastKey)) return;
+               if (repeatInitialPressTime != -1) return; // already in a hold sequence; tick handles repeats
+               repeatInitialPressTime = System.currentTimeMillis();
+               repeatCraftCount = 0;
+               StonecutterScreen stonecutterScreen = (StonecutterScreen) screen2;
+               stonecutterScreen.getScreenHandler().onButtonClick(client.player, lastSelected);
+               client.interactionManager.clickButton(stonecutterScreen.getScreenHandler().syncId, lastSelected);
+               recipeClicked(stonecutterScreen, new Click(0, 0,
+                     new MouseInput(OneClickCraftingClient.getInstance().config.isEnableLeftClick() ? 0 : 1, 0)),
+                  lastSelected);
+            });
+            ScreenKeyboardEvents.afterKeyRelease(screen).register((screen2, key) -> {
+               if (InputHelper.isKeyInputFor(key, OneClickCraftingClient.getInstance().repeatLastKey)
+                     && !InputHelper.isKeybindingPressed(OneClickCraftingClient.getInstance().repeatLastKey)) {
+                  repeatInitialPressTime = -1;
+                  repeatCraftCount = 0;
                }
             });
             ScreenEvents.remove(screen).register(screen1 -> reset());
@@ -76,6 +86,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
                   this.onNextUpdate = null;
                   InventoryUtils.dropStack(gui, 1);
                   refill(gui);
+                  onCraftComplete();
                };
                return;
             } else {
@@ -106,6 +117,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
                   this.onNextUpdate = null;
                   InventoryUtils.shiftClickSlot(gui, 1);
                   refill(gui);
+                  onCraftComplete();
                };
                return;
             } else {
@@ -126,6 +138,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
                   InventoryUtils.shiftClickSlot(gui, 1);
                   InventoryUtils.leftClickSlot(gui, 0);
                   isPending = false;
+                  onCraftComplete();
                };
                return;
             } else {
@@ -134,7 +147,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
             }
          }
       }
-      reset();
+      onCraftComplete();
    }
 
    private void refill(HandledScreen<?> gui) {
@@ -190,6 +203,17 @@ public class OneClickStonecuttingHandler extends OneClickHandler {
       OneClickCraftingClient client = OneClickCraftingClient.getInstance();
       if (!client.config.isEnableStonecutter()) return false;
       return super.isEnabled();
+   }
+
+   @Override
+   protected void fireRepeatCraft() {
+      MinecraftClient client = MinecraftClient.getInstance();
+      if (!(client.currentScreen instanceof StonecutterScreen screen)) return;
+      screen.getScreenHandler().onButtonClick(client.player, lastSelected);
+      client.interactionManager.clickButton(screen.getScreenHandler().syncId, lastSelected);
+      recipeClicked(screen, new Click(0, 0,
+            new MouseInput(OneClickCraftingClient.getInstance().config.isEnableLeftClick() ? 0 : 1, 0)),
+         lastSelected);
    }
 
    @Override

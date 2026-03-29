@@ -33,6 +33,7 @@ public class OneClickCraftingConfig {
    private boolean altHold = true;
    private boolean ctrlHold = true;
    private boolean dropEnable = true;
+   private int repeatDelay = 6;
 
    public static OneClickCraftingConfig getInstance() {
       return INSTANCE;
@@ -51,6 +52,7 @@ public class OneClickCraftingConfig {
             instance.altHold = config.altHold;
             instance.ctrlHold = config.ctrlHold;
             instance.dropEnable = config.dropEnable;
+            instance.repeatDelay = config.repeatDelay;
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -123,5 +125,13 @@ public class OneClickCraftingConfig {
 
    public void setDropEnable(boolean dropEnable) {
       this.dropEnable = dropEnable;
+   }
+
+   public int getRepeatDelay() {
+      return repeatDelay;
+   }
+
+   public void setRepeatDelay(int repeatDelay) {
+      this.repeatDelay = repeatDelay;
    }
 }
