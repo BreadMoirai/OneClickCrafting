@@ -10,7 +10,6 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.15.7",
     "one-click-crafting": "*"
   },
   "accessWidener": "oneclickcraftingtestmod.accesswidener"
