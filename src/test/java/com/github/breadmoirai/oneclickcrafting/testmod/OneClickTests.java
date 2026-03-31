@@ -133,14 +133,14 @@ public class OneClickTests {
     *
     * <p>The result item is captured dynamically during {@link CraftContext#prepare}.
     */
-   protected CraftContext stonecutterContext(String inputItemId, Item inputItem) {
+   protected CraftContext stonecutterContext(String inputItemId, Item inputItem, int outputCount) {
       return new CraftContext() {
          private Item capturedResult;
 
          @Override
          public void prepare(int wantedResults) {
             clearInventory();
-            giveItem(inputItemId, wantedResults);
+            giveItem(inputItemId, wantedResults / outputCount);
             OneClickTests.this.wait(2);
             open();
             putOneItemInInputSlot(inputItem);
@@ -157,7 +157,7 @@ public class OneClickTests {
          @Override
          public Item result() { return capturedResult; }
          @Override
-         public int outputPerCraft() { return 1; }
+         public int outputPerCraft() { return 2; }
          @Override
          public String featureToggleLabel() { return LABEL_STONECUTTER; }
          @Override

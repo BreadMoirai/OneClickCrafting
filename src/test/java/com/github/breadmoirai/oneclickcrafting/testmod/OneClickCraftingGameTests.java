@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 @SuppressWarnings("UnstableApiUsage")
 public class OneClickCraftingGameTests implements FabricClientGameTest {
 
+    @SuppressWarnings("ExtractMethodRecommender")
     @Override
     public void runTest(ClientGameTestContext context) {
         // Suite 1: Config persistence (no world needed)
@@ -40,8 +41,8 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
             // Suite 6: Repeat last (recipe-book and stonecutter)
             RepeatLastTests repeatLastTests = new RepeatLastTests(context, world);
             repeatLastTests.repeatLastReCrafts();
-            repeatLastTests.repeatLastFillsFullInventory();
-            repeatLastTests.repeatLastFillsSlot();
+            repeatLastTests.repeatLastSingleTwoStacks();
+            repeatLastTests.repeatLastStacksFullInventory();
             repeatLastTests.repeatLastDropKeyDropsManyItems();
 
             // Suites 7–8: Stack accumulation + click sequences (recipe-book and stonecutter)

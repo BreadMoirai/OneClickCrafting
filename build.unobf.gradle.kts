@@ -1,5 +1,5 @@
 plugins {
-    id("net.fabricmc.fabric-loom-remap")
+    id("net.fabricmc.fabric-loom")
     id("maven-publish")
 }
 
@@ -16,6 +16,7 @@ val requiredJava = when {
     else -> 8
 }
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(requiredJava))
+java.withSourcesJar()
 
 repositories {
     maven("https://maven.gegy.dev") {
@@ -31,13 +32,12 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${property("minecraft_version")}")
-    mappings("net.fabricmc:yarn:${property("yarn_mappings")}:v2")
 
-    modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
+    implementation("net.fabricmc:fabric-loader:${property("loader_version")}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
 
-    modImplementation("com.terraformersmc:modmenu:${property("modmenu_version")}")
-    modImplementation("dev.isxander:yet-another-config-lib:${property("yacl_version")}")
+    implementation("com.terraformersmc:modmenu:${property("modmenu_version")}")
+    implementation("dev.isxander:yet-another-config-lib:${property("yacl_version")}")
 
     testImplementation(sourceSets.main.get().output)
 }
@@ -67,10 +67,9 @@ tasks {
     // Builds the version into a shared folder in `build/libs/${mod version}/`
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
+        from(jar.map { it.archiveFile })
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
-        dependsOn("remapJar")
-        dependsOn("remapSourcesJar")
+        dependsOn("jar")
     }
 }
 
@@ -100,5 +99,4 @@ loom {
         }
     }
 
-    createRemapConfigurations(sourceSets.test.get())
 }

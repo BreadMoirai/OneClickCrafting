@@ -10,15 +10,14 @@ pluginManagement {
 }
 
 plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT" apply false
     id("dev.kikugie.stonecutter") version "0.9"
 }
 
 stonecutter {
     create(rootProject) {
-        // See https://stonecutter.kikugie.dev/wiki/start/#choosing-minecraft-versions
-        versions("1.21.11")
-        vcsVersion = "1.21.11"
+        versions("1.21.11", "1.21.10")
+        versions("26.1").buildscript("build.unobf.gradle.kts")
+        vcsVersion = "26.1"
     }
 }
 

@@ -25,12 +25,14 @@ public class RepeatLastTests extends OneClickTests {
    private final CraftContext recipeCtx;
    private final CraftContext craftingTableCtx;
    private final CraftContext stoneCtx;
+   private final List<CraftContext> contexts;
 
    public RepeatLastTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
       recipeCtx        = recipeBookContext("oak_planks", Items.OAK_PLANKS, 4);
       craftingTableCtx = craftingTableContext("oak_planks", Items.OAK_PLANKS, 4);
-      stoneCtx         = stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE);
+      stoneCtx         = stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE, 2);
+      contexts         = List.of(recipeCtx, craftingTableCtx, stoneCtx);
    }
 
    // -------------------------------------------------------------------------
@@ -69,7 +71,7 @@ public class RepeatLastTests extends OneClickTests {
    public void repeatLastReCrafts() {
       bindRepeatKey();
 
-      for (CraftContext ctx : List.of(recipeCtx, craftingTableCtx, stoneCtx)) {
+      for (CraftContext ctx : contexts) {
          ctx.prepare(ctx.outputPerCraft() * 2); // enough for 2 crafts
 
          ctx.click(1);
@@ -86,15 +88,16 @@ public class RepeatLastTests extends OneClickTests {
       unbindRepeatKey();
    }
 
+
    /**
-    * Holds the repeat-last key long enough to craft 576 batches
-    * (576 oak logs → 2304 planks), filling all 36 inventory slots.
+    * Holds the repeat-last key long enough to craft 64 batches
+    * (64 oak logs → 256 planks), filling 4 inventory slots.
     * Runs for recipe-book and crafting-table contexts.
     */
-   public void repeatLastFillsFullInventory() {
-      final int TOTAL_CRAFTS = 576; // 576 logs × 4 planks = 2304 = 36 slots × 64
+   public void repeatLastSingleTwoStacks() {
+      final int TOTAL_CRAFTS = 64;
 
-      for (CraftContext ctx : List.of(recipeCtx, craftingTableCtx)) {
+      for (CraftContext ctx : contexts) {
          bindRepeatKey();
          setRepeatDelay(0);
 
@@ -103,40 +106,46 @@ public class RepeatLastTests extends OneClickTests {
          wait(2);
 
          context.getInput().holdKey(REPEAT_KEY_CODE);
-         wait(582); // ceil(576 * 1.01)
+         wait(65);
          context.getInput().releaseKey(REPEAT_KEY_CODE);
 
          ctx.close();
-         assertInventoryExact(ctx.result(), 2304);
+         assertInventoryExact(ctx.result(), TOTAL_CRAFTS * ctx.outputPerCraft());
 
          unbindRepeatKey();
          setRepeatDelay(6);
       }
    }
 
+
    /**
-    * Stonecutter only: holds the repeat-last key long enough to craft 64 batches
-    * (64 cobblestones → 64 results), filling one full inventory slot.
+    * Holds the repeat-last key long enough to craft 576 batches
+    * (576 oak logs → 2304 planks), filling all 36 inventory slots.
+    * Runs for recipe-book and crafting-table contexts.
     */
-   public void repeatLastFillsSlot() {
-      final int TOTAL_CRAFTS = 64;
+   public void repeatLastStacksFullInventory() {
+      final int TOTAL_CRAFTS = 576; // 576 logs × 4 planks = 2304 = 36 slots × 64
 
-      bindRepeatKey();
-      setRepeatDelay(0);
+      for (CraftContext ctx : contexts) {
+         bindRepeatKey();
+         setRepeatDelay(0);
 
-      stoneCtx.prepare(TOTAL_CRAFTS);
-      stoneCtx.click(1);
-      wait(2);
+         ctx.prepare(TOTAL_CRAFTS * ctx.outputPerCraft());
+         ctx.click(1);
+         wait(2);
 
-      context.getInput().holdKey(REPEAT_KEY_CODE);
-      wait(65); // ceil(64 * 1.01)
-      context.getInput().releaseKey(REPEAT_KEY_CODE);
+         context.getInput().holdShift();
+         context.getInput().holdKey(REPEAT_KEY_CODE);
+         wait(37);
+         context.getInput().releaseShift();
+         context.getInput().releaseKey(REPEAT_KEY_CODE);
 
-      stoneCtx.close();
-      assertInventoryAtLeast(stoneCtx.result(), TOTAL_CRAFTS);
+         ctx.close();
+         assertInventoryExact(ctx.result(), TOTAL_CRAFTS * ctx.outputPerCraft());
 
-      unbindRepeatKey();
-      setRepeatDelay(6);
+         unbindRepeatKey();
+         setRepeatDelay(6);
+      }
    }
 
    /**

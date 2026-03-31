@@ -25,7 +25,7 @@ public class ActivationModeTests extends OneClickTests {
       contexts = List.of(
          recipeBookContext("oak_planks", Items.OAK_PLANKS, 4),
          craftingTableContext("oak_planks", Items.OAK_PLANKS, 4),
-         stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE)
+         stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE, 2)
       );
    }
 

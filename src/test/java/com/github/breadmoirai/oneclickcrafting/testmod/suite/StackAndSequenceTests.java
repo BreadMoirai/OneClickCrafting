@@ -28,7 +28,7 @@ public class StackAndSequenceTests extends OneClickTests {
       super(context, world);
       recipeCtx        = recipeBookContext("oak_planks", Items.OAK_PLANKS, 4);
       craftingTableCtx = craftingTableContext("oak_planks", Items.OAK_PLANKS, 4);
-      stoneCtx         = stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE);
+      stoneCtx         = stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE, 2);
       contexts         = List.of(recipeCtx, craftingTableCtx, stoneCtx);
    }
 
