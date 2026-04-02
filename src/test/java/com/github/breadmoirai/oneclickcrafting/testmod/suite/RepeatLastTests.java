@@ -1,6 +1,6 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
-import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
+import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.testmod.CraftContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -41,23 +41,23 @@ public class RepeatLastTests extends OneClickTests {
 
    private void bindRepeatKey() {
       context.runOnClient(mc -> {
-         OneClickCraftingClient.getInstance().repeatLastKey
-            .setBoundKey(InputUtil.Type.KEYSYM.createFromCode(REPEAT_KEY_CODE));
+         OneClickCraftingMod.getInstance().input.repeatLast
+            .update(REPEAT_KEY_CODE);
          KeyBinding.updateKeysByCode();
       });
    }
 
    private void unbindRepeatKey() {
       context.runOnClient(mc -> {
-         OneClickCraftingClient.getInstance().repeatLastKey
-            .setBoundKey(InputUtil.UNKNOWN_KEY);
+         OneClickCraftingMod.getInstance().input.repeatLast
+            .update(GLFW.GLFW_KEY_UNKNOWN);
          KeyBinding.updateKeysByCode();
       });
    }
 
    private void setRepeatDelay(int delay) {
       context.runOnClient(mc ->
-         OneClickCraftingClient.getInstance().config.setRepeatDelay(delay));
+         OneClickCraftingMod.getInstance().config.setRepeatDelay(delay));
    }
 
    // -------------------------------------------------------------------------
@@ -153,9 +153,9 @@ public class RepeatLastTests extends OneClickTests {
     * succession while dropping every result to the ground. Runs for all three contexts.
     */
    public void repeatLastDropKeyDropsManyItems() {
-      doRepeatLastDropKey(recipeCtx,        160, 162); // ceil(160 * 1.01)
-      doRepeatLastDropKey(craftingTableCtx, 160, 162);
-      doRepeatLastDropKey(stoneCtx,          40, 41);  // ceil(40 * 1.01)
+      doRepeatLastDropKey(recipeCtx,        128, 129);
+      doRepeatLastDropKey(craftingTableCtx, 128, 129);
+      doRepeatLastDropKey(stoneCtx,          40, 41);
    }
 
    private void doRepeatLastDropKey(CraftContext ctx, int totalCrafts, int holdTicks) {

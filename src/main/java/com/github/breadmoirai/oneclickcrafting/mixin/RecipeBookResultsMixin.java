@@ -1,7 +1,7 @@
 package com.github.breadmoirai.oneclickcrafting.mixin;
 
-import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
+import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
@@ -35,13 +35,14 @@ public abstract class RecipeBookResultsMixin {
    private void mouseClicked(Click click, int left, int top, int width, int height, boolean bl, CallbackInfoReturnable<Boolean> cir) {
       for (AnimatedResultButton animatedResultButton : this.resultButtons) {
          if (animatedResultButton.mouseClicked(click, bl)) {
-            OneClickCraftingClient.getInstance().craftingHandler.setLastButton(click.button());
             if (click.button() == 1 && OneClickCraftingConfig.getInstance()
                .isEnableRightClick() && animatedResultButton.hasSingleResult()) {
                this.lastClickedRecipe = animatedResultButton.getCurrentId();
                this.resultCollection = animatedResultButton.getResultCollection();
+               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(animatedResultButton.getCurrentId(), 1);
                return;
             }
+            OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(animatedResultButton.getCurrentId(), click.button());
             return;
          }
       }

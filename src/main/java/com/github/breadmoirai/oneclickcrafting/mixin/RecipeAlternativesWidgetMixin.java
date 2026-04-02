@@ -1,7 +1,7 @@
 package com.github.breadmoirai.oneclickcrafting.mixin;
 
-import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
+import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.recipebook.RecipeAlternativesWidget;
 import net.minecraft.client.input.MouseInput;
@@ -24,14 +24,13 @@ public abstract class RecipeAlternativesWidgetMixin {
    @Shadow
    private NetworkRecipeId lastClickedRecipe;
 
-
    @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z", at = @At(value = "RETURN", ordinal = 0), cancellable = true)
    private void mouseClickedRight(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
       if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
          for (var alternativeButtonWidget : this.alternativeButtons) {
             if (alternativeButtonWidget.mouseClicked(new Click(click.x(), click.y(), new MouseInput(0, click.modifiers())), doubled)) {
-               OneClickCraftingClient.getInstance().craftingHandler.setLastButton(1);
                this.lastClickedRecipe = alternativeButtonWidget.recipeId;
+               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(alternativeButtonWidget.recipeId, 1);
                cir.setReturnValue(true);
             }
          }
@@ -40,6 +39,6 @@ public abstract class RecipeAlternativesWidgetMixin {
 
    @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z", at = @At(value = "RETURN", ordinal = 1))
    private void mouseClickedLeft(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
-      OneClickCraftingClient.getInstance().craftingHandler.setLastButton(0);
+      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(this.lastClickedRecipe, 0);
    }
 }

@@ -17,7 +17,7 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient"
+      "com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod"
     ],
     "modmenu": [
       "com.github.breadmoirai.oneclickcrafting.config.modmenu.OneClickCraftingModMenuEntry"

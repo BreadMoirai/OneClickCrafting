@@ -1,16 +1,15 @@
 package com.github.breadmoirai.oneclickcrafting.testmod;
 
-import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingClient;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.MouseInput;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.ingame.StonecutterScreen;
-import net.minecraft.client.input.MouseInput;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
@@ -303,6 +302,21 @@ public class OneClickTests {
     * @param recipeIndex index into the available recipe list
     */
    protected void clickRecipeButton(int mouseButton, int recipeIndex) {
+      // Wait until the server has reset selectedRecipe away from recipeIndex.
+      // When onButtonClick sees selectedRecipe == recipeIndex it returns false and skips
+      // sending the ButtonClickC2SPacket, so no craft would happen on the server.
+      // The server resets selectedRecipe to -1 after each craft (via updateInput) and
+      // syncs it back to the client via sendContentUpdates on the next server tick.
+      try {
+         context.waitFor(mc -> {
+            if (!(mc.currentScreen instanceof StonecutterScreen screen)) return false;
+            return screen.getScreenHandler().getSelectedRecipe() != recipeIndex;
+         }, 20);
+      } catch (AssertionError timeout) {
+         throw new AssertionError(
+            "clickRecipeButton: selectedRecipe was not reset by server within 20 ticks"
+               + " (recipeIndex=" + recipeIndex + ")");
+      }
       context.runOnClient(mc -> {
          if (!(mc.currentScreen instanceof StonecutterScreen screen)) {
             throw new AssertionError("clickRecipeButton: not in a StonecutterScreen");
@@ -318,11 +332,13 @@ public class OneClickTests {
                "clickRecipeButton: recipeIndex " + recipeIndex
                   + " out of range, available=" + recipes.entries().size());
          }
-         OneClickCraftingClient.getInstance().stonecuttingHandler.recipeClicked(
-            screen,
-            new Click(0, 0, new MouseInput(mouseButton, 0)),
-            recipeIndex);
-         mc.interactionManager.clickButton(handler.syncId, recipeIndex);
+         // StonecutterScreen draws recipe buttons at (x+52, y+14), 16×18 px each, 4 columns.
+         // x = (screenWidth - 176) / 2,  y = (screenHeight - 166) / 2.
+         int guiLeft = (screen.width - 176) / 2;
+         int guiTop  = (screen.height - 166) / 2;
+         double cx = guiLeft + 52 + (recipeIndex % 4) * 16 + 8;
+         double cy = guiTop  + 14 + (recipeIndex / 4) * 18 + 9;
+         screen.mouseClicked(new Click(cx, cy, new MouseInput(mouseButton, 0)), false);
       });
    }
 

@@ -4,4 +4,4 @@ plugins {
     id("net.fabricmc.fabric-loom-remap") version "1.15-SNAPSHOT" apply false
 }
 
-stonecutter active "26.1"
+stonecutter active "1.21.11"

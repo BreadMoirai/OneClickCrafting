@@ -1,130 +1,50 @@
 package com.github.breadmoirai.oneclickcrafting.client;
 
-import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
-import com.github.breadmoirai.oneclickcrafting.util.InputHelper;
-import com.github.breadmoirai.oneclickcrafting.util.InventoryUtils;
+import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
+import com.github.breadmoirai.oneclickcrafting.operation.OneClickCraftingOperation;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.recipe.NetworkRecipeId;
-import net.minecraft.recipe.RecipeDisplayEntry;
-import net.minecraft.recipe.RecipeFinder;
-import net.minecraft.recipe.display.SlotDisplayContexts;
 
-import java.util.Map;
+public class OneClickCraftingHandler extends OneClickHandler implements OneClickEvents.RecipeClick, OneClickEvents.ResultSlotUpdate {
 
-public class OneClickCraftingHandler extends OneClickHandler {
+   public OneClickCraftingHandler(OneClickCraftingMod mod) {
+      super(mod);
+   }
 
    @Override
    public void onInitialize() {
+      OneClickEvents.RECIPE_CLICK.register(this);
+      OneClickEvents.RESULT_SLOT_UPDATE.register(this);
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
-            ScreenEvents.afterTick(screen).register(screen2 ->
-               OneClickCraftingClient.getInstance().craftingHandler.tick());
+            ScreenEvents.afterTick(screen).register(screen2 -> tick());
             ScreenKeyboardEvents.beforeKeyPress(screen).register((screen2, key) -> {
-               OneClickCraftingHandler handler = OneClickCraftingClient.getInstance().craftingHandler;
-               if (handler.isPending) return; // OS key-repeat guard while craft is in progress
-               if (!InputHelper.isKeyInputFor(key, OneClickCraftingClient.getInstance().repeatLastKey)) return;
-               if (handler.repeatInitialPressTime != -1) return; // already in a hold sequence; tick handles repeats
-               handler.repeatInitialPressTime = System.currentTimeMillis();
-               handler.repeatCraftCount = 0;
-               RecipeBookWidget<?> recipeBook = ((RecipeBookScreen<?>) screen).recipeBook;
-               if (recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
-                  recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe,
-                     InputHelper.isShiftDown());
+               if (hasOp()) return;
+               if (!mod.input.repeatLast.matches(key)) return;
+               if (isRepeating) return;
+               fireRepeatCraft();
             });
-            ScreenKeyboardEvents.afterKeyRelease(screen).register((screen2, key) -> {
-               OneClickCraftingHandler handler = OneClickCraftingClient.getInstance().craftingHandler;
-               if (InputHelper.isKeyInputFor(key, OneClickCraftingClient.getInstance().repeatLastKey)
-                     && !InputHelper.isKeybindingPressed(OneClickCraftingClient.getInstance().repeatLastKey)) {
-                  handler.repeatInitialPressTime = -1;
-                  handler.repeatCraftCount = 0;
-               }
-            });
-            ScreenEvents.remove(screen).register(screen1 -> reset());
+            ScreenEvents.remove(screen).register(screen2 -> clearOp());
          }
       });
    }
 
-   public void recipeClicked(NetworkRecipeId recipe) {
-      OneClickCraftingConfig config = OneClickCraftingClient.getInstance().config;
-      if (!isEnabled()) {
-         reset();
+   @Override
+   public void onRecipeClick(NetworkRecipeId recipe, int button) {
+      setOp(new OneClickCraftingOperation(mod, recipe.index(), button));
+      if (op.notValid()) {
+         clearOp();
          return;
       }
-      isDropping = config.isDropEnable() && InputHelper.isDropKeyPressed();
-      isShiftDropping = isDropping && InputHelper.isShiftDown();
-      MinecraftClient client = MinecraftClient.getInstance();
-      ClientWorld world = client.world;
-      if (world == null) return;
-      ClientPlayerEntity player = client.player;
-      if (player == null) return;
-      Map<NetworkRecipeId, RecipeDisplayEntry> recipes = player.getRecipeBook().recipes;
-      ItemStack result = recipes.get(recipe).display().result().getStacks(SlotDisplayContexts.createParameters(world))
-         .getFirst();
-      setLastCraft(result);
-
-      // https://github.com/BreadMoirai/OneClickCrafting/issues/25
-      // Edge case handling for when
-      // the server's InputSlotFiller.fill() returns early (no inventory changes,
-      // no onContentChanged, no ScreenHandlerSlotUpdateS2CPacket for slot 0) only when:
-      //     – the grid already matches the clicked recipe AND the player's inventory
-      //       has no additional matching ingredients (countCrafts == 1, limited to
-      //       whatever is already in the grid).
-      // We therefore only call onResultSlotUpdated manually for this case, detected by
-      // checking that the player's main inventory alone (without grid items) cannot
-      // satisfy the recipe's crafting requirements — meaning no extra ingredients exist.
-      //
-      // This applies to both the 2×2 inventory grid (InventoryScreen, slots 1–4) and
-      // the 3×3 crafting table grid (CraftingScreen, slots 1–9).
-      HandledScreen<?> currentGui = null;
-      int maxGridSlot = 0;
-      if (client.currentScreen instanceof InventoryScreen inventoryGui) {
-         currentGui = inventoryGui;
-         maxGridSlot = 4;
-      } else if (client.currentScreen instanceof CraftingScreen craftingGui) {
-         currentGui = craftingGui;
-         maxGridSlot = 9;
-      }
-      if (currentGui != null) {
-         ItemStack slot0Stack = currentGui.getScreenHandler().getSlot(0).getStack();
-         if (!slot0Stack.isEmpty() && ItemStack.areItemsEqual(slot0Stack, result)) {
-            RecipeDisplayEntry entry = recipes.get(recipe);
-            if (entry.craftingRequirements().isPresent()) {
-               // Replicate InputSlotFiller.fill()'s early-return condition:
-               //   Math.min(countCrafts, slot.getMaxCount()) < slot.getCount() + 1
-               // No packets are sent when this holds for any non-empty input slot,
-               // which covers two distinct cases:
-               //   (a) countCrafts <= slotCount — inventory has no extra ingredients;
-               //       detected by checking the inventory alone can't satisfy the recipe.
-               //   (b) slotCount >= maxCount — the slot is already at max stack size,
-               //       so nothing more can be added regardless of inventory contents.
-               RecipeFinder finder = new RecipeFinder();
-               player.getInventory().populateRecipeFinder(finder);
-               boolean noExtraIngredients = !entry.isCraftable(finder);
-               boolean anySlotAtMax = false;
-               for (int slotIdx = 1; slotIdx <= maxGridSlot; slotIdx++) {
-                  ItemStack s = currentGui.getScreenHandler().getSlot(slotIdx).getStack();
-                  if (!s.isEmpty() && s.getCount() >= s.getMaxCount()) {
-                     anySlotAtMax = true;
-                     break;
-                  }
-               }
-               if (noExtraIngredients || anySlotAtMax) {
-                  onResultSlotUpdated(slot0Stack);
-               }
-            }
-         }
-      }
+      if (op.shouldWaitForResultSlotUpdate()) return;
+      op.craft();
    }
 
    @Override
@@ -132,32 +52,16 @@ public class OneClickCraftingHandler extends OneClickHandler {
       MinecraftClient client = MinecraftClient.getInstance();
       if (!(client.currentScreen instanceof RecipeBookScreen<?> screen)) return;
       RecipeBookWidget<?> recipeBook = screen.recipeBook;
-      if (recipeBook.selectedRecipeResults != null && recipeBook.selectedRecipe != null)
-         recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe,
-            InputHelper.isShiftDown());
+      if (recipeBook.selectedRecipeResults == null || recipeBook.selectedRecipe == null) return;
+      recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe, mod.input.isShiftDown());
+      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(recipeBook.selectedRecipe, mod.config.isEnableLeftClick() ? 0 : 1 );
    }
 
    @Override
-   public void onResultSlotUpdated(ItemStack itemStack) {
-      if (lastCraft == null) return;
-      if (itemStack.getItem() == Items.AIR) {
-         return;
-      }
-      if (!ItemStack.areItemsEqual(itemStack, lastCraft)) {
-         return;
-      }
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (client.interactionManager == null) return;
-      if (!(client.currentScreen instanceof HandledScreen<?> gui)) return;
-      if (isDropping) {
-         if (isShiftDropping) {
-            InventoryUtils.dropStack(gui, 0);
-         } else {
-            InventoryUtils.dropItem(gui, 0);
-         }
-      } else {
-         InventoryUtils.shiftClickSlot(gui, 0);
-      }
+   public void onResultSlotUpdate(ItemStack itemStack) {
+      if (op == null) return;
+      if (!op.checkOutput(itemStack)) return;
+      op.craft();
       onCraftComplete();
    }
 }
