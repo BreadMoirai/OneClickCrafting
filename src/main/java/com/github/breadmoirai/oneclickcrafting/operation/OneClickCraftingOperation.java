@@ -1,34 +1,22 @@
 package com.github.breadmoirai.oneclickcrafting.operation;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
-import com.github.breadmoirai.oneclickcrafting.util.InventoryUtils;
+import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.NetworkRecipeId;
 import net.minecraft.recipe.RecipeDisplayEntry;
 import net.minecraft.recipe.RecipeFinder;
-import net.minecraft.recipe.display.SlotDisplayContexts;
 
 import java.util.Map;
 
 public class OneClickCraftingOperation extends OneClickOperation {
-   private static ItemStack fetchResult(int recipeId) {
-      MinecraftClient minecraft = MinecraftClient.getInstance();
-      ClientWorld world = minecraft.world;
-      if (world == null) return null;
-      ClientPlayerEntity player = minecraft.player;
-      if (player == null) return null;
-      Map<NetworkRecipeId, RecipeDisplayEntry> recipes = player.getRecipeBook().recipes;
-      return recipes.get(new NetworkRecipeId(recipeId)).display().result().getStacks(SlotDisplayContexts.createParameters(world))
-         .getFirst();
-   }
 
    public OneClickCraftingOperation(OneClickCraftingMod mod, int recipeId, int button) {
-      super(mod, recipeId, button, fetchResult(recipeId));
+      super(mod, recipeId, button, mod.recipeBook.recipeResult(recipeId));
    }
 
    @Override
@@ -86,12 +74,15 @@ public class OneClickCraftingOperation extends OneClickOperation {
       if (!(client.currentScreen instanceof HandledScreen<?> gui)) return false;
       if (isDrop()) {
          if (isShift()) {
-            InventoryUtils.dropStack(gui, 0);
+            debug("craft: drop stack (slot 0)");
+            getMod().inventory.dropStack(0);
          } else {
-            InventoryUtils.dropItem(gui, 0);
+            debug("craft: drop item (slot 0)");
+            getMod().inventory.dropItem(0);
          }
       } else {
-         InventoryUtils.shiftClickSlot(gui, 0);
+         debug("craft: shift-click (slot 0)");
+         getMod().inventory.shiftClickSlot(0);
       }
       return true;
    }

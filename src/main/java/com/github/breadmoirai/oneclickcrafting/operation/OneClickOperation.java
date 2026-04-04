@@ -1,8 +1,17 @@
 package com.github.breadmoirai.oneclickcrafting.operation;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
+import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
+//? 26.1 {
+/*import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+*///?} >=1.21.10 <=1.21.11 {
+import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+//?}
+
 
 public abstract class OneClickOperation {
    private final OneClickCraftingMod mod;
@@ -10,10 +19,10 @@ public abstract class OneClickOperation {
    private final int button;
    private final boolean isDrop;
    private final boolean isShift;
-   private final ItemStack result;
+   private final OneClickItemStack result;
    private final boolean isValid;
 
-   public OneClickOperation(OneClickCraftingMod mod, int recipeId, int button, ItemStack result) {
+   public OneClickOperation(OneClickCraftingMod mod, int recipeId, int button, OneClickItemStack result) {
       this.mod = mod;
       this.recipeId = recipeId;
       this.button = button;
@@ -21,10 +30,13 @@ public abstract class OneClickOperation {
       this.isDrop = mod.config.isDropEnable() && mod.input.drop.isDown();
       this.isShift = mod.input.isShiftDown();
       this.isValid = checkEnabled();
+      debug("Operation created: type=" + getClass().getSimpleName() + " recipeId=" + recipeId
+            + " button=" + button + " result=" + result + " drop=" + isDrop + " shift=" + isShift
+            + " valid=" + isValid);
    }
 
    protected boolean checkEnabled() {
-      if (result.getItem() == Items.AIR) return false;
+      if (result.isAir()) return false;
       if (button == 0 && !mod.config.isEnableLeftClick()) {
          return false;
       } else if (button == 1 && !mod.config.isEnableRightClick()) {
@@ -39,8 +51,8 @@ public abstract class OneClickOperation {
       return alwaysOn;
    }
 
-   public boolean checkOutput(ItemStack output) {
-      return ItemStack.areItemsEqual(result, output);
+   public boolean checkOutput(OneClickItemStack output) {
+      return result.matches(output);
    }
 
    public boolean shouldWaitForResultSlotUpdate() {
@@ -71,7 +83,7 @@ public abstract class OneClickOperation {
       return isShift;
    }
 
-   public ItemStack getResult() {
+   public OneClickItemStack getResult() {
       return result;
    }
 

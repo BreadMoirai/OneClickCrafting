@@ -34,6 +34,7 @@ public class OneClickCraftingConfig {
    private boolean ctrlHold = true;
    private boolean dropEnable = true;
    private int repeatDelay = 6;
+   private boolean debugLogging = false;
 
    public static OneClickCraftingConfig getInstance() {
       return INSTANCE;
@@ -53,6 +54,7 @@ public class OneClickCraftingConfig {
             instance.ctrlHold = config.ctrlHold;
             instance.dropEnable = config.dropEnable;
             instance.repeatDelay = config.repeatDelay;
+            instance.debugLogging = config.debugLogging;
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -133,5 +135,13 @@ public class OneClickCraftingConfig {
 
    public void setRepeatDelay(int repeatDelay) {
       this.repeatDelay = repeatDelay;
+   }
+
+   public boolean isDebugLogging() {
+      return debugLogging;
+   }
+
+   public void setDebugLogging(boolean debugLogging) {
+      this.debugLogging = debugLogging;
    }
 }

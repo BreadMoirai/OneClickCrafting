@@ -2,7 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.input;
 
 //? 26.1 {
 
-//?} 1.21.11 {
+//?} >=1.21.10 <=1.21.11 {
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
@@ -34,8 +34,8 @@ public class OneClickCraftingInput {
    public void registerBindings() {
       List<InputBinding> bindings = Arrays.asList(toggleHold, repeatLast);
       //? 26.1 {
-      /*
-       *///?} 1.21.11 {
+      
+       //?} >=1.21.10 <=1.21.11 {
          KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("category.oneclickcrafting.keybindings"));
          for (InputBinding binding : bindings) {
             KeyBinding bind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -59,7 +59,7 @@ public class OneClickCraftingInput {
       if (keycode == GLFW.GLFW_KEY_UNKNOWN) return false;
       //? 26.1 {
       /*return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keycode);
-       *///?} 1.21.11 {
+       *///?} >=1.21.10 <=1.21.11  {
       return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), keycode);
       //?}
    }

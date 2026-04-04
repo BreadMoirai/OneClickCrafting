@@ -1,4 +1,5 @@
-package com.github.breadmoirai.oneclickcrafting.mixin;
+//? >=1.21.10 <=1.21.11 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -30,7 +31,7 @@ public abstract class RecipeAlternativesWidgetMixin {
          for (var alternativeButtonWidget : this.alternativeButtons) {
             if (alternativeButtonWidget.mouseClicked(new Click(click.x(), click.y(), new MouseInput(0, click.modifiers())), doubled)) {
                this.lastClickedRecipe = alternativeButtonWidget.recipeId;
-               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(alternativeButtonWidget.recipeId, 1);
+               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(alternativeButtonWidget.recipeId.index(), 1);
                cir.setReturnValue(true);
             }
          }
@@ -39,6 +40,8 @@ public abstract class RecipeAlternativesWidgetMixin {
 
    @Inject(method = "mouseClicked(Lnet/minecraft/client/gui/Click;Z)Z", at = @At(value = "RETURN", ordinal = 1))
    private void mouseClickedLeft(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
-      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(this.lastClickedRecipe, 0);
+      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(this.lastClickedRecipe.index(), 0);
    }
 }
+
+//?}

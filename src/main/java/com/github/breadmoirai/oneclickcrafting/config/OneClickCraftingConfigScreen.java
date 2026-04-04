@@ -73,6 +73,11 @@ public class OneClickCraftingConfigScreen extends YACLScreen {
                   .step(1)
                   .formatValue(v -> Text.literal(v == 1 ? "1 tick" : v + " ticks")))
                .build()
+            ).option(Option.<Boolean>createBuilder().name(Text.translatable("config.oneclickcrafting.debug_logging"))
+               .description(OptionDescription.of(Text.translatable("config.oneclickcrafting.debug_logging.tooltip")))
+               .binding(false, config::isDebugLogging, config::setDebugLogging)
+               .controller(TickBoxControllerBuilder::create)
+               .build()
             ).build()
          ).build();
    }

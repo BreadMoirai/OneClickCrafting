@@ -1,4 +1,5 @@
-package com.github.breadmoirai.oneclickcrafting.mixin;
+//? >=1.21.10 <=1.21.11 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -39,12 +40,14 @@ public abstract class RecipeBookResultsMixin {
                .isEnableRightClick() && animatedResultButton.hasSingleResult()) {
                this.lastClickedRecipe = animatedResultButton.getCurrentId();
                this.resultCollection = animatedResultButton.getResultCollection();
-               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(animatedResultButton.getCurrentId(), 1);
+               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(animatedResultButton.getCurrentId().index(), 1);
                return;
             }
-            OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(animatedResultButton.getCurrentId(), click.button());
+            OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(animatedResultButton.getCurrentId().index(), click.button());
             return;
          }
       }
    }
 }
+
+//?}

@@ -1,5 +1,7 @@
 package com.github.breadmoirai.oneclickcrafting.testmod;
 
+import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
+import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.block.Block;
@@ -56,6 +58,7 @@ public class OneClickTests {
       this.world = world;
       this.recipeBook = new RecipeBookHelper(context);
       this.config = new ConfigHelper(context);
+      context.runOnClient(mc -> OneClickCraftingConfig.getInstance().setDebugLogging(true));
    }
 
    // -------------------------------------------------------------------------
@@ -447,20 +450,32 @@ public class OneClickTests {
 
    /**
     * Asserts the player's inventory contains at least {@code minCount} of
-    * {@code item}, ignoring all other items.
+    * {@code item}, ignoring all other items. Retries for up to 20 ticks to
+    * allow for server round-trip latency.
     */
    protected void assertInventoryAtLeast(Item item, int minCount) {
-      int actual = context.computeOnClient(mc -> {
-         if (mc.player == null) return 0;
-         var inv = mc.player.getInventory();
-         int total = 0;
-         for (int i = 0; i < inv.size(); i++) {
-            ItemStack stack = inv.getStack(i);
-            if (stack.isOf(item)) total += stack.getCount();
-         }
-         return total;
-      });
-      if (actual < minCount) {
+      try {
+         context.waitFor(mc -> {
+            if (mc.player == null) return false;
+            var inv = mc.player.getInventory();
+            int total = 0;
+            for (int i = 0; i < inv.size(); i++) {
+               ItemStack stack = inv.getStack(i);
+               if (stack.isOf(item)) total += stack.getCount();
+            }
+            return total >= minCount;
+         }, 20);
+      } catch (AssertionError timeout) {
+         int actual = context.computeOnClient(mc -> {
+            if (mc.player == null) return 0;
+            var inv = mc.player.getInventory();
+            int total = 0;
+            for (int i = 0; i < inv.size(); i++) {
+               ItemStack stack = inv.getStack(i);
+               if (stack.isOf(item)) total += stack.getCount();
+            }
+            return total;
+         });
          throw new AssertionError(
             "Expected >= %d of %s in inventory, found %d"
                .formatted(minCount, Registries.ITEM.getId(item), actual));

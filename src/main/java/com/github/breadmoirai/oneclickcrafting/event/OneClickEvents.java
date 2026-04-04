@@ -1,9 +1,8 @@
 package com.github.breadmoirai.oneclickcrafting.event;
 
+import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.NetworkRecipeId;
 
 public interface OneClickEvents {
    Event<RecipeClick> RECIPE_CLICK = EventFactory.createArrayBacked(RecipeClick.class,
@@ -26,11 +25,11 @@ public interface OneClickEvents {
       });
 
    interface RecipeClick {
-      void onRecipeClick(NetworkRecipeId recipeId, int button);
+      void onRecipeClick(int recipeId, int button);
    }
 
    interface ResultSlotUpdate {
-      void onResultSlotUpdate(ItemStack stack);
+      void onResultSlotUpdate(OneClickItemStack stack);
    }
 
    interface StonecutterClick {

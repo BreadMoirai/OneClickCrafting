@@ -1,6 +1,8 @@
 package com.github.breadmoirai.oneclickcrafting.client;
 
+import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickOperation;
+import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 
 public abstract class OneClickHandler {
    protected OneClickCraftingMod mod;
@@ -27,6 +29,7 @@ public abstract class OneClickHandler {
       if (isRepeating) return;
       repeatTicks += 1;
       if (repeatTicks < mod.config.getRepeatDelay()) return;
+      debug("tick: repeat delay elapsed (ticks=" + repeatTicks + "), firing repeat craft");
       isRepeating = true;
       fireRepeatCraft();
    }
@@ -37,6 +40,7 @@ public abstract class OneClickHandler {
     * Otherwise resets state so {@link #tick()} can fire it once the delay elapses.
     */
    protected void onCraftComplete() {
+      debug("onCraftComplete: clearing op, isRepeating=" + isRepeating);
       clearOp();
       if (!isRepeating) return;
       fireRepeatCraft();

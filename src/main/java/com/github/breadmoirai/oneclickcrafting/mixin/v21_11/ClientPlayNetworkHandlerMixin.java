@@ -1,6 +1,8 @@
-package com.github.breadmoirai.oneclickcrafting.mixin;
+//? >=1.21.10 <=1.21.11 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
+import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
@@ -21,10 +23,11 @@ public class ClientPlayNetworkHandlerMixin {
       Screen screen = MinecraftClient.getInstance().currentScreen;
       if (screen instanceof CraftingScreen || screen instanceof InventoryScreen) {
          if (packet.getSlot() == 0 && packet.getStack() != null)
-            OneClickEvents.RESULT_SLOT_UPDATE.invoker().onResultSlotUpdate(packet.getStack());
+            OneClickEvents.RESULT_SLOT_UPDATE.invoker().onResultSlotUpdate(new OneClickItemStack(packet.getStack()));
       } else if (screen instanceof StonecutterScreen) {
          if (packet.getSlot() == 1 && packet.getStack() != null)
-            OneClickEvents.RESULT_SLOT_UPDATE.invoker().onResultSlotUpdate(packet.getStack());
+            OneClickEvents.RESULT_SLOT_UPDATE.invoker().onResultSlotUpdate(new OneClickItemStack(packet.getStack()));
       }
    }
 }
+//?}

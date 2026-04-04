@@ -21,5 +21,7 @@
   "config.oneclickcrafting.repeat_delay.tooltip": "How long to hold the Repeat Last key before rapid-fire begins. The first craft fires immediately; the second fires after this delay; all subsequent crafts fire immediately after each completes. Set to 0 to fire every craft immediately.",
   "category.oneclickcrafting.keybindings": "One Click Crafting",
   "key.oneclickcrafting.toggle_hold": "Toggle (Hold)",
-  "key.oneclickcrafting.repeat_last": "Repeat Last Craft"
+  "key.oneclickcrafting.repeat_last": "Repeat Last Craft",
+  "config.oneclickcrafting.debug_logging": "Debug Logging",
+  "config.oneclickcrafting.debug_logging.tooltip": "Logs crafting lifecycle events (click, validate, craft, repeat, complete) to the game log at INFO level."
 }

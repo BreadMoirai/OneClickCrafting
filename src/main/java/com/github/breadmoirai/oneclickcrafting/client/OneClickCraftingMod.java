@@ -2,19 +2,32 @@ package com.github.breadmoirai.oneclickcrafting.client;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.input.OneClickCraftingInput;
+import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
+import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Environment(EnvType.CLIENT)
 public class OneClickCraftingMod implements ClientModInitializer {
 
+   private static final Logger LOGGER = LoggerFactory.getLogger("one-click-crafting");
    private static OneClickCraftingMod INSTANCE;
+
+   public static void debug(String message) {
+      if (INSTANCE != null && INSTANCE.config.isDebugLogging()) {
+         LOGGER.info("[OCC] {}", message);
+      }
+   }
 
    public OneClickCraftingConfig config;
    public OneClickCraftingInput input;
    public OneClickCraftingHandler craftingHandler;
    public OneClickStonecuttingHandler stonecuttingHandler;
+   public OneClickInventory inventory;
+   public OneClickRecipeBook recipeBook;
 
    public static OneClickCraftingMod getInstance() {
       return INSTANCE;
@@ -25,6 +38,8 @@ public class OneClickCraftingMod implements ClientModInitializer {
       INSTANCE = this;
       OneClickCraftingConfig.loadModConfig();
       config = OneClickCraftingConfig.getInstance();
+      inventory = OneClickInventory.getInstance();
+      recipeBook = new OneClickRecipeBook();
       input = new OneClickCraftingInput();
       input.registerBindings();
       craftingHandler = new OneClickCraftingHandler(this);

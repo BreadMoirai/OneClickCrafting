@@ -1,18 +1,21 @@
 package com.github.breadmoirai.oneclickcrafting.client;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
+import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickCraftingOperation;
+import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-import net.minecraft.client.MinecraftClient;
+//? 26.1 {
+/*import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+*///?} >=1.21.10 <=1.21.11 {
 import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
-import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.NetworkRecipeId;
+//?}
 
 public class OneClickCraftingHandler extends OneClickHandler implements OneClickEvents.RecipeClick, OneClickEvents.ResultSlotUpdate {
+
 
    public OneClickCraftingHandler(OneClickCraftingMod mod) {
       super(mod);
@@ -37,30 +40,41 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    }
 
    @Override
-   public void onRecipeClick(NetworkRecipeId recipe, int button) {
-      setOp(new OneClickCraftingOperation(mod, recipe.index(), button));
+   public void onRecipeClick(int recipe, int button) {
+      debug("onRecipeClick: recipe=" + recipe + " button=" + button);
+      setOp(new OneClickCraftingOperation(mod, recipe, button));
       if (op.notValid()) {
+         debug("onRecipeClick: operation invalid, discarding");
          clearOp();
          return;
       }
-      if (op.shouldWaitForResultSlotUpdate()) return;
+      if (op.shouldWaitForResultSlotUpdate()) {
+         debug("onRecipeClick: waiting for result slot update");
+         return;
+      }
+      debug("onRecipeClick: crafting immediately (no slot update needed)");
       op.craft();
    }
 
    @Override
    protected void fireRepeatCraft() {
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (!(client.currentScreen instanceof RecipeBookScreen<?> screen)) return;
-      RecipeBookWidget<?> recipeBook = screen.recipeBook;
-      if (recipeBook.selectedRecipeResults == null || recipeBook.selectedRecipe == null) return;
-      recipeBook.select(recipeBook.selectedRecipeResults, recipeBook.selectedRecipe, mod.input.isShiftDown());
-      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(recipeBook.selectedRecipe, mod.config.isEnableLeftClick() ? 0 : 1 );
+      int recipe = mod.recipeBook.selectLast(mod.input.isShiftDown());
+      debug("fireRepeatCraft: recipe=" + recipe);
+      if (recipe == -1) return;
+      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(recipe, mod.config.isEnableLeftClick() ? 0 : 1);
    }
 
    @Override
-   public void onResultSlotUpdate(ItemStack itemStack) {
-      if (op == null) return;
-      if (!op.checkOutput(itemStack)) return;
+   public void onResultSlotUpdate(OneClickItemStack stack) {
+      if (op == null) {
+         debug("onResultSlotUpdate: no active operation, ignoring");
+         return;
+      }
+      if (!op.checkOutput(stack)) {
+         debug("onResultSlotUpdate: output mismatch (expected=" + op.getResult() + " got=" + stack + "), ignoring");
+         return;
+      }
+      debug("onResultSlotUpdate: output matched " + stack + ", executing craft");
       op.craft();
       onCraftComplete();
    }
