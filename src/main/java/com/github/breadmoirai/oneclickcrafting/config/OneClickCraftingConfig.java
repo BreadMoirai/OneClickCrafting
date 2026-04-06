@@ -35,6 +35,8 @@ public class OneClickCraftingConfig {
    private boolean dropEnable = true;
    private int repeatDelay = 6;
    private boolean debugLogging = false;
+   private int toggleHoldKeycode = -1;
+   private int repeatLastKeycode = -1;
 
    public static OneClickCraftingConfig getInstance() {
       return INSTANCE;
@@ -55,6 +57,8 @@ public class OneClickCraftingConfig {
             instance.dropEnable = config.dropEnable;
             instance.repeatDelay = config.repeatDelay;
             instance.debugLogging = config.debugLogging;
+            instance.toggleHoldKeycode = config.toggleHoldKeycode;
+            instance.repeatLastKeycode = config.repeatLastKeycode;
          } catch (IOException e) {
             e.printStackTrace();
          }
@@ -143,5 +147,21 @@ public class OneClickCraftingConfig {
 
    public void setDebugLogging(boolean debugLogging) {
       this.debugLogging = debugLogging;
+   }
+
+   public int getToggleHoldKeycode() {
+      return toggleHoldKeycode;
+   }
+
+   public void setToggleHoldKeycode(int toggleHoldKeycode) {
+      this.toggleHoldKeycode = toggleHoldKeycode;
+   }
+
+   public int getRepeatLastKeycode() {
+      return repeatLastKeycode;
+   }
+
+   public void setRepeatLastKeycode(int repeatLastKeycode) {
+      this.repeatLastKeycode = repeatLastKeycode;
    }
 }

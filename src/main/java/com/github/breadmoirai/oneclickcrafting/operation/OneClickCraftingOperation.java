@@ -2,6 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.operation;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.ClientRecipeBookAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
@@ -60,7 +61,7 @@ public class OneClickCraftingOperation extends OneClickOperation {
       MinecraftClient minecraft = MinecraftClient.getInstance();
       ClientPlayerEntity player = minecraft.player;
       if (player == null) return false;
-      Map<NetworkRecipeId, RecipeDisplayEntry> recipes = player.getRecipeBook().recipes;
+      Map<NetworkRecipeId, RecipeDisplayEntry> recipes = ((ClientRecipeBookAccessor) player.getRecipeBook()).getRecipes();
       RecipeDisplayEntry entry = recipes.get(new NetworkRecipeId(getRecipeId()));
       RecipeFinder finder = new RecipeFinder();
       player.getInventory().populateRecipeFinder(finder);

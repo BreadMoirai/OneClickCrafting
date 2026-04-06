@@ -8,8 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 *///?} >=1.21.10 <=1.21.11 {
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 //?}
 
 
@@ -36,7 +34,7 @@ public abstract class OneClickOperation {
    }
 
    protected boolean checkEnabled() {
-      if (result.isAir()) return false;
+      if (result.isEmpty()) return false;
       if (button == 0 && !mod.config.isEnableLeftClick()) {
          return false;
       } else if (button == 1 && !mod.config.isEnableRightClick()) {

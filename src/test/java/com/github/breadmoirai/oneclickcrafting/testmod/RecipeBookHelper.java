@@ -1,11 +1,14 @@
 package com.github.breadmoirai.oneclickcrafting.testmod;
 
+import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.ClientRecipeBookAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.RecipeBookScreenAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.RecipeBookWidgetAccessor;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.gui.screen.ingame.RecipeBookScreen;
 import net.minecraft.client.gui.screen.recipebook.AnimatedResultButton;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookResults;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 
@@ -29,7 +32,7 @@ public class RecipeBookHelper {
          if (!(mc.currentScreen instanceof RecipeBookScreen<?> screen)) {
             throw new AssertionError("openRecipeBook: not in a RecipeBookScreen");
          }
-         RecipeBookWidget<?> recipeBook = screen.recipeBook;
+         RecipeBookWidget<?> recipeBook = ((RecipeBookScreenAccessor) screen).getRecipeBook();
          if (!recipeBook.isOpen()) {
             recipeBook.toggleOpen();
             return true;
@@ -40,29 +43,30 @@ public class RecipeBookHelper {
       }
    }
 
-   public void leftClick(Item targetItem) {
-      clickRecipeButton(targetItem, 0);
+   public void leftClick(String targetItemId) {
+      clickRecipeButton(targetItemId, 0);
    }
 
-   public void rightClick(Item targetItem) {
-      clickRecipeButton(targetItem, 1);
+   public void rightClick(String targetItemId) {
+      clickRecipeButton(targetItemId, 1);
    }
 
    /**
-    * Finds the recipe button displaying {@code targetItem} in the currently open
+    * Finds the recipe button displaying {@code targetItemId} in the currently open
     * recipe book, positions the cursor over it, and simulates a mouse click.
     *
     * <p>The recipe book must already be open. The button must be visible on the
     * current page (i.e. already unlocked and on page 0 for simple recipes).
     *
-    * @param mouseButton {@code 0} for left-click, {@code 1} for right-click
+    * @param targetItemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
+    * @param mouseButton  {@code 0} for left-click, {@code 1} for right-click
     */
-   public void clickRecipeButton(Item targetItem, int mouseButton) {
+   public void clickRecipeButton(String targetItemId, int mouseButton) {
       double[] windowCoords = context.computeOnClient(mc -> {
          if (!(mc.currentScreen instanceof RecipeBookScreen<?> screen)) {
             throw new AssertionError("clickRecipeButton: not in a RecipeBookScreen");
          }
-         RecipeBookWidget<?> recipeBook = screen.recipeBook;
+         RecipeBookWidget<?> recipeBook = ((RecipeBookScreenAccessor) screen).getRecipeBook();
          RecipeBookResults recipesArea = getRecipesArea(recipeBook);
          List<AnimatedResultButton> buttons = getResultButtons(recipesArea);
 
@@ -75,7 +79,8 @@ public class RecipeBookHelper {
             } catch (ArithmeticException e) {
                continue; // results list is empty — button not yet initialized
             }
-            if (!displayStack.isEmpty() && displayStack.isOf(targetItem)) {
+            if (!displayStack.isEmpty() &&
+                  Registries.ITEM.getId(displayStack.getItem()).toString().equals(targetItemId)) {
                double guiCx = button.getX() + button.getWidth() / 2.0;
                double guiCy = button.getY() + button.getHeight() / 2.0;
                double scale = mc.getWindow().getScaleFactor();
@@ -84,11 +89,11 @@ public class RecipeBookHelper {
          }
          // Diagnostic: report what IS visible in the result buttons
          StringBuilder dbg = new StringBuilder(
-            "Recipe button not found for item: " + Registries.ITEM.getId(targetItem));
+            "Recipe button not found for item: " + targetItemId);
          dbg.append("; resultButtons.size=").append(buttons.size());
          dbg.append("; recipeBook.isOpen=").append(recipeBook.isOpen());
          dbg.append("; knownRecipes=").append(
-            mc.player != null ? mc.player.getRecipeBook().recipes.size() : -1);
+            mc.player != null ? ((ClientRecipeBookAccessor) mc.player.getRecipeBook()).getRecipes().size() : -1);
          dbg.append("; visible=[");
          for (AnimatedResultButton btn : buttons) {
             if (btn.getResultCollection() == null) {
@@ -107,6 +112,43 @@ public class RecipeBookHelper {
 
       context.getInput().setCursorPos(windowCoords[0], windowCoords[1]);
       context.getInput().pressMouse(mouseButton);
+   }
+
+   /**
+    * Finds the recipe button displaying {@code targetItemId} and directly invokes
+    * {@code RecipeBookWidget.select()} with {@code craftAll=true}, then fires the
+    * {@link OneClickEvents#RECIPE_CLICK} event.
+    *
+    * <p>This bypasses the synthetic mouse event path (which always delivers
+    * {@code mods=0}, making {@code click.hasShift()} false) and directly requests
+    * a full-stack fill from the server.
+    *
+    * @param targetItemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
+    */
+   public void clickRecipeButtonCraftAll(String targetItemId) {
+      context.runOnClient(mc -> {
+         if (!(mc.currentScreen instanceof RecipeBookScreen<?> screen)) {
+            throw new AssertionError("clickRecipeButtonCraftAll: not in a RecipeBookScreen");
+         }
+         RecipeBookWidget<?> recipeBook = ((RecipeBookScreenAccessor) screen).getRecipeBook();
+         RecipeBookResults recipesArea = getRecipesArea(recipeBook);
+         List<AnimatedResultButton> buttons = getResultButtons(recipesArea);
+         for (AnimatedResultButton button : buttons) {
+            if (button.getResultCollection() == null) continue;
+            ItemStack displayStack;
+            try { displayStack = button.getDisplayStack(); }
+            catch (ArithmeticException e) { continue; }
+            if (!displayStack.isEmpty() &&
+                  Registries.ITEM.getId(displayStack.getItem()).toString().equals(targetItemId)) {
+               ((RecipeBookWidgetAccessor) recipeBook).callSelect(
+                  button.getResultCollection(), button.getCurrentId(), true);
+               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(
+                  button.getCurrentId().index(), 0);
+               return;
+            }
+         }
+         throw new AssertionError("Recipe button not found for item: " + targetItemId);
+      });
    }
 
    // -------------------------------------------------------------------------

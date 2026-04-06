@@ -5,10 +5,16 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
+    "v21_11.AlternativeButtonWidgetAccessor",
     "v21_11.ClientPlayNetworkHandlerMixin",
+    "v21_11.ClientRecipeBookAccessor",
+    "v21_11.HandledScreenAccessor",
+    "v21_11.KeyBindingAccessor",
     "v21_11.RecipeAlternativesWidgetMixin",
     "v21_11.RecipeBookResultsMixin",
-    "v21_11.StonecutterScreenMixin",
+    "v21_11.RecipeBookScreenAccessor",
+    "v21_11.RecipeBookWidgetAccessor",
+    "v21_11.StonecutterScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

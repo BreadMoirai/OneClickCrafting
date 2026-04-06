@@ -1,9 +1,11 @@
 package com.github.breadmoirai.oneclickcrafting.testmod;
 
+import com.github.breadmoirai.oneclickcrafting.testmod.suite.TestSuite;
 import com.github.breadmoirai.oneclickcrafting.testmod.suite.*;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Entry point for all OneClickCrafting client gametests.
@@ -14,12 +16,12 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
 
     @SuppressWarnings("ExtractMethodRecommender")
     @Override
-    public void runTest(ClientGameTestContext context) {
+    public void runTest(@NonNull ClientGameTestContext context) {
         // Suite 1: Config persistence (no world needed)
         ConfigSuite.testConfigDefaultsShownInUi(context);
         ConfigSuite.testConfigPersistenceViaUi(context);
 
-        try (TestSingleplayerContext world = GameplayTestHelper.createTestWorld(context)) {
+        try (TestSingleplayerContext world = TestSuite.createTestWorld(context)) {
 
             // Suite 2–4: Basic crafting + drop-key (recipe-book and stonecutter)
             BasicCraftTests basicCraft = new BasicCraftTests(context, world);
@@ -49,17 +51,12 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
             StackAndSequenceTests stackAndSequenceTests = new StackAndSequenceTests(context, world);
             stackAndSequenceTests.rightClickPartialStack();
             stackAndSequenceTests.rightClickManyTimes();
-            stackAndSequenceTests.stackAccumulationShiftLeftRight();
-            stackAndSequenceTests.shiftLeftClickCraftsOnce();
-            stackAndSequenceTests.shiftLeftClickMovesToInventory();
+            stackAndSequenceTests.stackAccumulation();
+            stackAndSequenceTests.stackAccumulated();
+            stackAndSequenceTests.stackAccumulationPartial();
+            stackAndSequenceTests.stackAccumulatedPartial();
             stackAndSequenceTests.leftThenRightSequence();
             stackAndSequenceTests.leftLeftLeftRightSequence();
-            stackAndSequenceTests.shiftLeftThenRightSequenceRecipeBook();
-            stackAndSequenceTests.shiftLeftThenRightSequenceStonecutter();
-            stackAndSequenceTests.leftClicksAccumulateThenRight();
-            stackAndSequenceTests.shiftLeftStagedIngredientsThenRight();
-            stackAndSequenceTests.shiftLeftStages64LogsThenRight();
-            stackAndSequenceTests.leftClicksAccumulateThenShiftRight();
         }
     }
 }

@@ -4,13 +4,14 @@ package com.github.breadmoirai.oneclickcrafting.item;
 import net.minecraft.world.item.Items;
 
 public record OneClickItemStack(ItemStack stack) {
+   public static OneClickItemStack EMPTY = new OneClickItemStack(ItemStack.EMPTY);
 
    public boolean matches(OneClickItemStack other) {
       return ItemStack.isSameItem(stack, other.stack);
    }
 
-   public boolean isAir() {
-      return stack.is(Items.AIR);
+   public boolean isEmpty() {
+      return stack.isEmpty();
    }
 
    public int getCount() {
@@ -19,19 +20,20 @@ public record OneClickItemStack(ItemStack stack) {
 }
 *///?} >=1.21.10 <=1.21.11 {
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
 public record OneClickItemStack(ItemStack stack) {
+
+   public static OneClickItemStack EMPTY = new OneClickItemStack(ItemStack.EMPTY);
 
    public boolean matches(OneClickItemStack other) {
       return ItemStack.areItemsEqual(stack, other.stack);
    }
 
-   public boolean isAir() {
-      return stack.isOf(Items.AIR);
+   public boolean isEmpty() {
+      return stack.isEmpty();
    }
 
-   public int getCount() {
+   public int count() {
       return stack.getCount();
    }
 }

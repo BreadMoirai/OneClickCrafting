@@ -1,10 +1,10 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
-import com.github.breadmoirai.oneclickcrafting.testmod.CraftContext;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.KeyBindingAccessor;
+import com.github.breadmoirai.oneclickcrafting.testmod.context.CraftContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.minecraft.item.Items;
 
 import java.util.List;
 
@@ -20,17 +20,8 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public class BasicCraftTests extends OneClickTests {
 
-   private final CraftContext recipeCtx;
-   private final CraftContext craftingTableCtx;
-   private final CraftContext stoneCtx;
-   private final List<CraftContext> contexts;
-
    public BasicCraftTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
-      recipeCtx        = recipeBookContext("oak_planks", Items.OAK_PLANKS, 4);
-      craftingTableCtx = craftingTableContext("oak_planks", Items.OAK_PLANKS, 4);
-      stoneCtx         = stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE, 2);
-      contexts         = List.of(recipeCtx, craftingTableCtx, stoneCtx);
    }
 
    // =========================================================================
@@ -43,16 +34,14 @@ public class BasicCraftTests extends OneClickTests {
     * crafting grid (vanilla behaviour) but no result is produced.
     */
    public void leftClickDisabledNoAction() {
-      clearInventory();
-      recipe("oak_planks").give(4); // gives 1 oak log
-      openInventory();
-      recipeBook.open();
-      recipeBook.leftClick(Items.OAK_PLANKS);
-      wait(2);
-      assertInventoryCount(Items.OAK_PLANKS, 0);
-      closeScreen();
-      openInventory();
-      assertInventoryExact(Items.OAK_LOG, 1);
+      for (CraftContext ctx : contexts) {
+         ctx.prepare();
+         ctx.click(0); // left-click
+         wait(2);
+         assertInventoryEmpty();
+         ctx.close();
+         assertInventoryExact(ctx.inputItem, ctx.inputCount);
+      }
    }
 
    /**
@@ -69,7 +58,7 @@ public class BasicCraftTests extends OneClickTests {
          ctx.prepare();
          ctx.click(0); // left-click
          wait(2);
-         assertInventoryAtLeast(ctx.result(), ctx.outputPerCraft());
+         assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
          ctx.close();
       }
 
@@ -92,7 +81,7 @@ public class BasicCraftTests extends OneClickTests {
          ctx.prepare();
          ctx.click(1); // right-click
          wait(2);
-         assertInventoryAtLeast(ctx.result(), ctx.outputPerCraft());
+         assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
          ctx.close();
       }
    }
@@ -113,7 +102,7 @@ public class BasicCraftTests extends OneClickTests {
          ctx.prepare();
          ctx.click(1);
          wait(2);
-         assertInventoryCount(ctx.result(), 0);
+         assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
 
          config.openConfigViaModMenu();
@@ -135,13 +124,13 @@ public class BasicCraftTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          clearGroundItems();
          ctx.prepare();
-         int dropKeyCode = context.computeOnClient(mc -> mc.options.dropKey.boundKey.getCode());
+         int dropKeyCode = context.computeOnClient(mc -> ((KeyBindingAccessor) mc.options.dropKey).getBoundKey().getCode());
          context.getInput().holdKey(dropKeyCode);
          ctx.click(1);
          wait(2);
          context.getInput().releaseKey(dropKeyCode);
-         assertItemOnGround(ctx.result());
-         assertInventoryCount(ctx.result(), 0);
+         assertItemOnGround(ctx.outputItem);
+         assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
       }
    }
@@ -159,13 +148,13 @@ public class BasicCraftTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          clearGroundItems();
          ctx.prepare();
-         int dropKeyCode = context.computeOnClient(mc -> mc.options.dropKey.boundKey.getCode());
+         int dropKeyCode = context.computeOnClient(mc -> ((KeyBindingAccessor) mc.options.dropKey).getBoundKey().getCode());
          context.getInput().holdKey(dropKeyCode);
          ctx.click(1);
          wait(2);
          context.getInput().releaseKey(dropKeyCode);
-         assertInventoryAtLeast(ctx.result(), ctx.outputPerCraft());
-         assertNoItemOnGround(ctx.result());
+         assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
+         assertNoItemOnGround(ctx.outputItem);
          ctx.close();
       }
 
@@ -183,15 +172,16 @@ public class BasicCraftTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          clearGroundItems();
          ctx.prepare();
-         int dropKeyCode = context.computeOnClient(mc -> mc.options.dropKey.boundKey.getCode());
+         int dropKeyCode = context.computeOnClient(mc -> ((KeyBindingAccessor) mc.options.dropKey).getBoundKey().getCode());
+         System.out.println("dropKeyCode = " + dropKeyCode);
          context.getInput().holdShift();
          context.getInput().holdKey(dropKeyCode);
          ctx.click(1);
          wait(2);
          context.getInput().releaseKey(dropKeyCode);
          context.getInput().releaseShift();
-         assertItemOnGround(ctx.result());
-         assertInventoryCount(ctx.result(), 0);
+         assertItemOnGround(ctx.outputItem);
+         assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
       }
    }

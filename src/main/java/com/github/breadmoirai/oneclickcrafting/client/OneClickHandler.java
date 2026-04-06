@@ -1,6 +1,5 @@
 package com.github.breadmoirai.oneclickcrafting.client;
 
-import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickOperation;
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 

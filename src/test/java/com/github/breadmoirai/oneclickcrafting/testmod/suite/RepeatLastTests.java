@@ -1,13 +1,13 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
-import com.github.breadmoirai.oneclickcrafting.testmod.CraftContext;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.KeyBindingAccessor;
+import com.github.breadmoirai.oneclickcrafting.testmod.context.CraftContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
+import com.github.breadmoirai.oneclickcrafting.testmod.context.StonecutterContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.item.Items;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
@@ -22,17 +22,8 @@ public class RepeatLastTests extends OneClickTests {
 
    private static final int REPEAT_KEY_CODE = GLFW.GLFW_KEY_R;
 
-   private final CraftContext recipeCtx;
-   private final CraftContext craftingTableCtx;
-   private final CraftContext stoneCtx;
-   private final List<CraftContext> contexts;
-
    public RepeatLastTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
-      recipeCtx        = recipeBookContext("oak_planks", Items.OAK_PLANKS, 4);
-      craftingTableCtx = craftingTableContext("oak_planks", Items.OAK_PLANKS, 4);
-      stoneCtx         = stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE, 2);
-      contexts         = List.of(recipeCtx, craftingTableCtx, stoneCtx);
    }
 
    // -------------------------------------------------------------------------
@@ -42,7 +33,7 @@ public class RepeatLastTests extends OneClickTests {
    private void bindRepeatKey() {
       context.runOnClient(mc -> {
          OneClickCraftingMod.getInstance().input.repeatLast
-            .update(REPEAT_KEY_CODE);
+            .setKey(REPEAT_KEY_CODE);
          KeyBinding.updateKeysByCode();
       });
    }
@@ -50,7 +41,7 @@ public class RepeatLastTests extends OneClickTests {
    private void unbindRepeatKey() {
       context.runOnClient(mc -> {
          OneClickCraftingMod.getInstance().input.repeatLast
-            .update(GLFW.GLFW_KEY_UNKNOWN);
+            .setKey(GLFW.GLFW_KEY_UNKNOWN);
          KeyBinding.updateKeysByCode();
       });
    }
@@ -72,17 +63,25 @@ public class RepeatLastTests extends OneClickTests {
       bindRepeatKey();
 
       for (CraftContext ctx : contexts) {
-         ctx.prepare(ctx.outputPerCraft() * 2); // enough for 2 crafts
+         ctx.prepare(3);
 
          ctx.click(1);
          wait(2);
-         assertInventoryAtLeast(ctx.result(), ctx.outputPerCraft());
+         if (ctx instanceof StonecutterContext) {
+            assertInventoryExact(ctx.outputItem, ctx.outputCount, ctx.inputItem, ctx.inputCount);
+         } else {
+            assertInventoryExact(ctx.outputItem, ctx.outputCount, ctx.inputItem, ctx.inputCount * 2);
+         }
 
          context.getInput().pressKey(REPEAT_KEY_CODE);
          wait(2);
 
-         assertInventoryAtLeast(ctx.result(), ctx.outputPerCraft() * 2);
-         ctx.close();
+         if (ctx instanceof StonecutterContext) {
+            assertInventoryExact(ctx.outputItem, ctx.outputCount * 2);
+            ctx.close();
+            wait(2);
+         }
+         assertInventoryExact(ctx.outputItem, ctx.outputCount * 2, ctx.inputItem, ctx.inputCount);
       }
 
       unbindRepeatKey();
@@ -95,13 +94,11 @@ public class RepeatLastTests extends OneClickTests {
     * Runs for recipe-book and crafting-table contexts.
     */
    public void repeatLastSingleTwoStacks() {
-      final int TOTAL_CRAFTS = 64;
-
       for (CraftContext ctx : contexts) {
          bindRepeatKey();
          setRepeatDelay(0);
 
-         ctx.prepare(TOTAL_CRAFTS * ctx.outputPerCraft());
+         ctx.prepare(64);
          ctx.click(1);
          wait(2);
 
@@ -110,7 +107,7 @@ public class RepeatLastTests extends OneClickTests {
          context.getInput().releaseKey(REPEAT_KEY_CODE);
 
          ctx.close();
-         assertInventoryExact(ctx.result(), TOTAL_CRAFTS * ctx.outputPerCraft());
+         assertInventoryExact(ctx.outputItem, ctx.outputCount * 64);
 
          unbindRepeatKey();
          setRepeatDelay(6);
@@ -119,18 +116,16 @@ public class RepeatLastTests extends OneClickTests {
 
 
    /**
-    * Holds the repeat-last key long enough to craft 576 batches
-    * (576 oak logs → 2304 planks), filling all 36 inventory slots.
+    * Holds the repeat-last key long enough to craft 9 batches
+    * (9 * 64 oak logs → 2304 planks), filling all 36 inventory slots.
     * Runs for recipe-book and crafting-table contexts.
     */
    public void repeatLastStacksFullInventory() {
-      final int TOTAL_CRAFTS = 576; // 576 logs × 4 planks = 2304 = 36 slots × 64
-
       for (CraftContext ctx : contexts) {
          bindRepeatKey();
          setRepeatDelay(0);
 
-         ctx.prepare(TOTAL_CRAFTS * ctx.outputPerCraft());
+         ctx.prepare(9 * 64);
          ctx.click(1);
          wait(2);
 
@@ -141,7 +136,7 @@ public class RepeatLastTests extends OneClickTests {
          context.getInput().releaseKey(REPEAT_KEY_CODE);
 
          ctx.close();
-         assertInventoryExact(ctx.result(), TOTAL_CRAFTS * ctx.outputPerCraft());
+         assertInventoryExact(ctx.outputItem, ctx.outputCount * 9 * 64);
 
          unbindRepeatKey();
          setRepeatDelay(6);
@@ -153,34 +148,31 @@ public class RepeatLastTests extends OneClickTests {
     * succession while dropping every result to the ground. Runs for all three contexts.
     */
    public void repeatLastDropKeyDropsManyItems() {
-      doRepeatLastDropKey(recipeCtx,        128, 129);
-      doRepeatLastDropKey(craftingTableCtx, 128, 129);
-      doRepeatLastDropKey(stoneCtx,          40, 41);
-   }
+      for (CraftContext ctx : contexts) {
+         bindRepeatKey();
+         setRepeatDelay(0);
 
-   private void doRepeatLastDropKey(CraftContext ctx, int totalCrafts, int holdTicks) {
-      bindRepeatKey();
-      setRepeatDelay(0);
+         clearGroundItems();
+         ctx.prepare(96);
 
-      clearGroundItems();
-      ctx.prepare(totalCrafts * ctx.outputPerCraft());
+         int dropKeyCode = context.computeOnClient(
+            mc -> ((KeyBindingAccessor) mc.options.dropKey).getBoundKey().getCode());
 
-      int dropKeyCode = context.computeOnClient(mc -> mc.options.dropKey.boundKey.getCode());
+         context.getInput().holdKey(dropKeyCode);
+         ctx.click(1);
+         wait(2);
 
-      context.getInput().holdKey(dropKeyCode);
-      ctx.click(1);
-      wait(2);
+         context.getInput().holdKey(REPEAT_KEY_CODE);
+         wait(99);
+         context.getInput().releaseKey(REPEAT_KEY_CODE);
+         context.getInput().releaseKey(dropKeyCode);
 
-      context.getInput().holdKey(REPEAT_KEY_CODE);
-      wait(holdTicks);
-      context.getInput().releaseKey(REPEAT_KEY_CODE);
-      context.getInput().releaseKey(dropKeyCode);
+         ctx.close();
+         assertInventoryEmpty();
+         assertItemOnGround(ctx.outputItem);
 
-      ctx.close();
-      assertInventoryCount(ctx.result(), 0);
-      assertItemOnGround(ctx.result());
-
-      unbindRepeatKey();
-      setRepeatDelay(6);
+         unbindRepeatKey();
+         setRepeatDelay(6);
+      }
    }
 }

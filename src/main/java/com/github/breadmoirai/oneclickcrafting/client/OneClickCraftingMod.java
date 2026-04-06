@@ -4,6 +4,7 @@ import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.input.OneClickCraftingInput;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
+import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutter;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -28,6 +29,7 @@ public class OneClickCraftingMod implements ClientModInitializer {
    public OneClickStonecuttingHandler stonecuttingHandler;
    public OneClickInventory inventory;
    public OneClickRecipeBook recipeBook;
+   public OneClickStonecutter stonecutter;
 
    public static OneClickCraftingMod getInstance() {
       return INSTANCE;
@@ -39,7 +41,8 @@ public class OneClickCraftingMod implements ClientModInitializer {
       OneClickCraftingConfig.loadModConfig();
       config = OneClickCraftingConfig.getInstance();
       inventory = OneClickInventory.getInstance();
-      recipeBook = new OneClickRecipeBook();
+      recipeBook = OneClickRecipeBook.getInstance();
+      stonecutter = OneClickStonecutter.getInstance();
       input = new OneClickCraftingInput();
       input.registerBindings();
       craftingHandler = new OneClickCraftingHandler(this);

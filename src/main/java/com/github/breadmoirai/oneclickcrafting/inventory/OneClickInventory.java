@@ -1,10 +1,12 @@
 package com.github.breadmoirai.oneclickcrafting.inventory;
 
+import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 //? 26.1 {
 /*import com.github.breadmoirai.oneclickcrafting.inventory.v26_1.OneClickInventoryImpl;
 *///?} >=1.21.10 <=1.21.11 {
 import com.github.breadmoirai.oneclickcrafting.inventory.v21_11.OneClickInventoryImpl;
-import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
+
+import java.util.function.Predicate;
 //?}
 
 public abstract class OneClickInventory {
@@ -56,7 +58,7 @@ public abstract class OneClickInventory {
 
    public abstract OneClickItemStack getSlot(int slotNum);
 
-   public abstract int findMatchingSlot(Object ingredient);
+   public abstract int findMatchingSlot(Predicate<OneClickItemStack> predicate);
 
    public abstract int findEmptySlot();
 }

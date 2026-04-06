@@ -30,8 +30,9 @@ public abstract class RecipeAlternativesWidgetMixin {
       if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
          for (var alternativeButtonWidget : this.alternativeButtons) {
             if (alternativeButtonWidget.mouseClicked(new Click(click.x(), click.y(), new MouseInput(0, click.modifiers())), doubled)) {
-               this.lastClickedRecipe = alternativeButtonWidget.recipeId;
-               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(alternativeButtonWidget.recipeId.index(), 1);
+               NetworkRecipeId recipeId = ((AlternativeButtonWidgetAccessor) alternativeButtonWidget).getRecipeId();
+               this.lastClickedRecipe = recipeId;
+               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(recipeId.index(), 1);
                cir.setReturnValue(true);
             }
          }

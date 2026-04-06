@@ -1,10 +1,9 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
-import com.github.breadmoirai.oneclickcrafting.testmod.CraftContext;
+import com.github.breadmoirai.oneclickcrafting.testmod.context.*;
 import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.minecraft.item.Items;
 
 import java.util.List;
 
@@ -18,20 +17,13 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public class ActivationModeTests extends OneClickTests {
 
-   private final List<CraftContext> contexts;
-
    public ActivationModeTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
-      contexts = List.of(
-         recipeBookContext("oak_planks", Items.OAK_PLANKS, 4),
-         craftingTableContext("oak_planks", Items.OAK_PLANKS, 4),
-         stonecutterContext("minecraft:cobblestone", Items.COBBLESTONE, 2)
-      );
    }
 
    /**
     * With {@code alwaysOn=false} and no modifier held, right-clicking should NOT
-    * trigger auto-craft. Runs for both contexts.
+    * trigger auto-craft.
     */
    public void alwaysOffNoModifierNoAction() {
       config.openConfigViaModMenu();
@@ -43,7 +35,7 @@ public class ActivationModeTests extends OneClickTests {
          ctx.prepare();
          ctx.click(1);
          wait(2);
-         assertInventoryCount(ctx.result(), 0);
+         assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
       }
 
@@ -69,7 +61,7 @@ public class ActivationModeTests extends OneClickTests {
          ctx.click(1);
          wait(2);
          context.getInput().releaseControl();
-         assertInventoryAtLeast(ctx.result(), ctx.outputPerCraft());
+         assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
          ctx.close();
       }
 
@@ -90,7 +82,7 @@ public class ActivationModeTests extends OneClickTests {
          ctx.click(1);
          wait(2);
          context.getInput().releaseControl();
-         assertInventoryCount(ctx.result(), 0);
+         assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
       }
    }
@@ -106,7 +98,7 @@ public class ActivationModeTests extends OneClickTests {
          ctx.click(1);
          wait(2);
          context.getInput().releaseAlt();
-         assertInventoryCount(ctx.result(), 0);
+         assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
       }
    }

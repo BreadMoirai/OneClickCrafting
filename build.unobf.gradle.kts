@@ -74,6 +74,25 @@ tasks {
 }
 
 
+// When building 26.1 while shared src/ contains unusedN (switched from older version),
+// restore them to JDK 22+ unnamed _ in generated sources before compilation.
+val restoreForBuild = tasks.register("restoreUnnamedVarsForBuild") {
+    group = "stonecutter"
+    description = "Restores unusedN identifiers back to JDK 22+ unnamed variable (_) in generated sources"
+    notCompatibleWithConfigurationCache("transforms generated source files in place")
+    dependsOn(sc.tasks.generate.values)
+    doLast {
+        val renamedPattern = Regex("""\bunused\d+\b""")
+        val genDir = sc.tasks.generatedSourcesDir.get().asFile
+        genDir.walkTopDown().filter { it.isFile && it.extension == "java" }.forEach { file ->
+            val original = file.readText()
+            val transformed = renamedPattern.replace(original, "_")
+            if (transformed != original) file.writeText(transformed)
+        }
+    }
+}
+tasks.withType<JavaCompile>().configureEach { dependsOn(restoreForBuild) }
+
 sourceSets {
     named("test") {
         compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.test.get().compileClasspath

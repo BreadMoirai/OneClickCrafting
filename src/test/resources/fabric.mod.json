@@ -12,5 +12,8 @@
   "depends": {
     "one-click-crafting": "*"
   },
+  "mixins": [
+    "oneclickcraftingtestmod.mixins.json"
+  ],
   "accessWidener": "oneclickcraftingtestmod.accesswidener"
 }

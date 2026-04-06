@@ -16,7 +16,6 @@ import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 
 public class OneClickCraftingHandler extends OneClickHandler implements OneClickEvents.RecipeClick, OneClickEvents.ResultSlotUpdate {
 
-
    public OneClickCraftingHandler(OneClickCraftingMod mod) {
       super(mod);
    }
@@ -25,16 +24,20 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    public void onInitialize() {
       OneClickEvents.RECIPE_CLICK.register(this);
       OneClickEvents.RESULT_SLOT_UPDATE.register(this);
-      ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+      ScreenEvents.BEFORE_INIT.register((unused1, screen, unused2, unused3) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
-            ScreenEvents.afterTick(screen).register(screen2 -> tick());
-            ScreenKeyboardEvents.beforeKeyPress(screen).register((screen2, key) -> {
+            ScreenEvents.afterTick(screen).register(unused4 -> tick());
+            ScreenKeyboardEvents.beforeKeyPress(screen).register((unused5, key) -> {
+               debug("hasOp() = " + hasOp());
                if (hasOp()) return;
-               if (!mod.input.repeatLast.matches(key)) return;
+               debug("mod.input.repeatLast.guard(key) = " + mod.input.repeatLast.guard(key));
+               debug("key.getKeycode() = " + key.getKeycode());
+               if (mod.input.repeatLast.guard(key)) return;
+               debug("isRepeating = " + isRepeating);
                if (isRepeating) return;
                fireRepeatCraft();
             });
-            ScreenEvents.remove(screen).register(screen2 -> clearOp());
+            ScreenEvents.remove(screen).register(unused6 -> clearOp());
          }
       });
    }
@@ -67,14 +70,14 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    @Override
    public void onResultSlotUpdate(OneClickItemStack stack) {
       if (op == null) {
-         debug("onResultSlotUpdate: no active operation, ignoring");
+         debug("onResultSlotUpdate(crafting): no active operation, ignoring");
          return;
       }
       if (!op.checkOutput(stack)) {
-         debug("onResultSlotUpdate: output mismatch (expected=" + op.getResult() + " got=" + stack + "), ignoring");
+         debug("onResultSlotUpdate(crafting): output mismatch (expected=" + op.getResult() + " got=" + stack + "), ignoring");
          return;
       }
-      debug("onResultSlotUpdate: output matched " + stack + ", executing craft");
+      debug("onResultSlotUpdate(crafting): output matched " + stack + ", executing craft");
       op.craft();
       onCraftComplete();
    }

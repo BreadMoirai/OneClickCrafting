@@ -6,9 +6,9 @@
   "mixins": [],
   "client": [
     "v26_1.AbstractCraftingMenuMixin",
-    "v26_1.AbstractRecipeBookScreenMixin",
+    "v26_1.AbstractRecipeBookScreenAccessor",
     "v26_1.OverlayRecipeComponentMixin",
-    "v26_1.RecipeBookComponentMixin",
+    "v26_1.RecipeBookComponentAccessor",
     "v26_1.RecipeBookPageMixin"
   ],
   "injectors": {

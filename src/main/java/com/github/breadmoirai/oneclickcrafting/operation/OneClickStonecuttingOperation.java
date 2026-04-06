@@ -1,22 +1,17 @@
 package com.github.breadmoirai.oneclickcrafting.operation;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
-import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.screen.slot.Slot;
-
-import java.util.Optional;
+import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutterRecipe;
+import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 
 public class OneClickStonecuttingOperation extends OneClickOperation {
-   private final Ingredient ingredient;
-   private Runnable onNextUpdate;
+   OneClickStonecutterRecipe recipe;
+   private DeferredOperation onNextUpdate;
 
-   public OneClickStonecuttingOperation(OneClickCraftingMod mod, int recipeId, OneClickItemStack result, Ingredient ingredient, int button) {
-      super(mod, recipeId, button, result);
-      this.ingredient = ingredient;
+   public OneClickStonecuttingOperation(OneClickCraftingMod mod, int selectedRecipe, OneClickStonecutterRecipe recipe, int button) {
+      super(mod, selectedRecipe, button, recipe.result());
+      this.recipe = recipe;
    }
 
    @Override
@@ -27,31 +22,26 @@ public class OneClickStonecuttingOperation extends OneClickOperation {
 
    @Override
    public boolean craft() {
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (client.interactionManager == null) return false;
-      if (!(client.currentScreen instanceof HandledScreen<?> gui)) return false;
-
       if (onNextUpdate != null) {
          debug("craft(stonecutter): running deferred action");
-         Runnable next = onNextUpdate;
-         onNextUpdate = null;
-         next.run();
-         return true;
+         DeferredOperation next = onNextUpdate;
+         onNextUpdate = next.onNextUpdate();
+         return onNextUpdate == null;
       }
 
       OneClickItemStack input = getMod().inventory.getSlot(0);
-      debug("craft(stonecutter): drop=" + isDrop() + " shift=" + isShift() + " input.count=" + input.getCount());
+      debug("craft(stonecutter): drop=" + isDrop() + " shift=" + isShift() + " input.count=" + input.count());
 
       if (isDrop()) {
          if (isShift()) {
-            if (input.getCount() != 64) {
+            if (input.count() == 1) {
                debug("craft(stonecutter): stacking to 64, deferring drop+refill");
                getMod().inventory.moveMatchingIntoSlot(0);
-               gui.getScreenHandler().onButtonClick(client.player, getRecipeId());
-               client.interactionManager.clickButton(gui.getScreenHandler().syncId, getRecipeId());
+               getMod().stonecutter.selectRecipe(getRecipeId());
                onNextUpdate = () -> {
                   getMod().inventory.dropStack(1);
                   refill();
+                  return null;
                };
                return false;
             } else {
@@ -61,26 +51,25 @@ public class OneClickStonecuttingOperation extends OneClickOperation {
                return true;
             }
          } else {
-            boolean shouldRefill = input.getCount() == 1;
-            debug("craft(stonecutter): drop item (slot 1), shouldRefill=" + shouldRefill);
+            boolean reinsert = input.count() > 1;
+            debug("craft(stonecutter): drop item (slot 1), reinsert=" + reinsert);
             getMod().inventory.dropItem(1);
-            getMod().inventory.leftClickSlot(0);
-            getMod().inventory.leftClickSlot(0);
-            if (shouldRefill) {
-               refill();
-               return true;
+            if (reinsert) {
+               getMod().inventory.shiftClickSlot(0);
             }
+            refill();
+            return true;
          }
       } else {
          if (isShift()) {
-            if (input.getCount() != 64) {
+            if (input.count() == 1) {
                debug("craft(stonecutter): stacking to 64, deferring shift-click+refill");
                getMod().inventory.moveMatchingIntoSlot(0);
-               gui.getScreenHandler().onButtonClick(client.player, getRecipeId());
-               client.interactionManager.clickButton(gui.getScreenHandler().syncId, getRecipeId());
+               getMod().stonecutter.selectRecipe(getRecipeId());
                onNextUpdate = () -> {
                   getMod().inventory.shiftClickSlot(1);
                   refill();
+                  return null;
                };
                return false;
             } else {
@@ -90,15 +79,14 @@ public class OneClickStonecuttingOperation extends OneClickOperation {
                return true;
             }
          } else {
-            if (input.getCount() != 1) {
+            if (input.count() != 1) {
                debug("craft(stonecutter): isolating single input, deferring shift-click");
-               getMod().inventory.leftClickSlot(0);
-               getMod().inventory.rightClickSlot(0);
-               gui.getScreenHandler().onButtonClick(client.player, getRecipeId());
-               client.interactionManager.clickButton(gui.getScreenHandler().syncId, getRecipeId());
+               getMod().inventory.shiftClickSlot(0);
+               refill();
+               getMod().stonecutter.selectRecipe(getRecipeId());
                onNextUpdate = () -> {
                   getMod().inventory.shiftClickSlot(1);
-                  getMod().inventory.leftClickSlot(0);
+                  return null;
                };
                return false;
             } else {
@@ -109,17 +97,22 @@ public class OneClickStonecuttingOperation extends OneClickOperation {
             }
          }
       }
-      return false;
    }
 
    private void refill() {
-      int slot = getMod().inventory.findMatchingSlot(ingredient);
+      debug("refill(stonecutter): searching for ingredient");
+      int slot = getMod().inventory.findMatchingSlot(recipe.ingredient());
+      debug("refill(stonecutter): search returned " + slot);
       if (slot == -1) return;
-      boolean multi = getMod().inventory.getSlot(slot).getCount() > 1;
-      getMod().inventory.leftClickSlot(slot);
-      getMod().inventory.rightClickSlot(0);
+      int count = getMod().inventory.getSlot(slot).count();
+      boolean multi = count > 1;
+      debug("refill(stonecutter): slot has " + count + " items");
       if (multi) {
          getMod().inventory.leftClickSlot(slot);
+         getMod().inventory.rightClickSlot(0);
+         getMod().inventory.leftClickSlot(slot);
+      } else {
+         getMod().inventory.shiftClickSlot(slot);
       }
    }
 }

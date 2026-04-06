@@ -4,16 +4,19 @@ package com.github.breadmoirai.oneclickcrafting.inventory.v21_11;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.HandledScreenAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class OneClickInventoryImpl extends OneClickInventory {
 
@@ -31,7 +34,7 @@ public class OneClickInventoryImpl extends OneClickInventory {
       if (slotNum >= 0 && slotNum < gui.getScreenHandler().slots.size())
       {
          Slot slot = gui.getScreenHandler().getSlot(slotNum);
-         gui.onMouseClick(slot, slotNum, mouseButton, action.mapping());
+         ((HandledScreenAccessor) gui).callOnMouseClick(slot, slotNum, mouseButton, action.mapping());
       }
       else
       {
@@ -51,15 +54,17 @@ public class OneClickInventoryImpl extends OneClickInventory {
    }
 
    @Override
-   public int findMatchingSlot(Object ingredient)
+   public int findMatchingSlot(Predicate<OneClickItemStack> ingredient)
    {
       HandledScreen<?> gui = getScreenHandler();
       if (gui == null) return -1;
-      DefaultedList<Slot> slots = gui.getScreenHandler().slots;
-      for (Slot slot : slots) {
+      ScreenHandler handler = gui.getScreenHandler();
+      DefaultedList<Slot> slots = handler.slots;
+      for (int i = 0; i < slots.size(); i++) {
+         Slot slot = handler.getSlot(i);
          if (!(slot.inventory instanceof PlayerInventory)) continue;
-         if (!Ingredient.matches(Optional.of(((Ingredient) ingredient)), slot.getStack())) continue;
-         return slot.getIndex();
+         if (!ingredient.test(new OneClickItemStack(slot.getStack()))) continue;
+         return slot.id;
       }
       return -1;
    }
@@ -70,10 +75,11 @@ public class OneClickInventoryImpl extends OneClickInventory {
       HandledScreen<?> gui = getScreenHandler();
       if (gui == null) return -1;
       DefaultedList<Slot> slots = gui.getScreenHandler().slots;
-      for (Slot slot : slots) {
+      for (int i = 0; i < slots.size(); i++) {
+         Slot slot = slots.get(i);
          if (!(slot.inventory instanceof PlayerInventory)) continue;
          if (!slot.getStack().isOf(Items.AIR)) continue;
-         return slot.getIndex();
+         return i;
       }
       return -1;
    }

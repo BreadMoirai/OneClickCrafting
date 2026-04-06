@@ -1,14 +1,18 @@
 package com.github.breadmoirai.oneclickcrafting.input;
 
 //? 26.1 {
+/*import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
+*///?} >=1.21.10 <=1.21.11 {
 
-//?} >=1.21.10 <=1.21.11 {
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
 //?}
+
+import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
+import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
@@ -24,39 +28,33 @@ public class OneClickCraftingInput {
    public OneClickCraftingInput() {
       drop = new DropBinding();
       toggleHold = new InputBinding(
-         "key.oneclickcrafting.toggle_hold",
-         GLFW_KEY_UNKNOWN);
+         "key.oneclickcrafting.toggle_hold"
+      );
       repeatLast = new InputBinding(
-         "key.oneclickcrafting.repeat_last",
-         GLFW_KEY_UNKNOWN);
+         "key.oneclickcrafting.repeat_last"
+      );
    }
 
    public void registerBindings() {
       List<InputBinding> bindings = Arrays.asList(toggleHold, repeatLast);
       //? 26.1 {
-      
-       //?} >=1.21.10 <=1.21.11 {
-         KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("category.oneclickcrafting.keybindings"));
-         for (InputBinding binding : bindings) {
-            KeyBinding bind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-               binding.getId(),
-               binding.getKeycode(),
-               category
-            ));
-            binding.setUpdateAction((keycode) -> bind.setBoundKey(InputUtil.Type.KEYSYM.createFromCode(keycode)));
-         }
+
+      //?} >=1.21.10 <=1.21.11 {
+      KeyBinding.Category category = KeyBinding.Category.create(Identifier.of("category.oneclickcrafting.keybindings"));
+      for (InputBinding binding : bindings) {
+         KeyBinding bind = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+            binding.getId(),
+            InputUtil.Type.KEYSYM,
+            GLFW_KEY_UNKNOWN,
+            category
+         ));
+         binding.setBind(bind);
+      }
       //?}
    }
 
-   public static boolean isToggleKey(InputBinding key) {
-      int keycode = key.getKeycode();
-      return keycode == GLFW.GLFW_KEY_CAPS_LOCK ||
-         keycode == GLFW.GLFW_KEY_NUM_LOCK ||
-         keycode == GLFW.GLFW_KEY_SCROLL_LOCK;
-   }
-
    public static boolean isKeyDown(int keycode) {
-      if (keycode == GLFW.GLFW_KEY_UNKNOWN) return false;
+      if (keycode == GLFW_KEY_UNKNOWN) return false;
       //? 26.1 {
       /*return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keycode);
        *///?} >=1.21.10 <=1.21.11  {
