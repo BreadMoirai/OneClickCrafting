@@ -1,12 +1,9 @@
-name: Publish Mod    #The name of your GitHub Action on github.com
+name: Publish Mod
 
-on: [ pull_request, workflow_dispatch ]           #When your GitHub Action will be executed ('pull_request' -> on every Merge(/Pull) Request; 'workflow_dispatch' -> allows manual execution through github.com
+on: [ pull_request, workflow_dispatch ]
 
-env:                                              #Environment variables that can later be referenced using ${{ env.MINECRAFT_VERSION }}. These are useful for repeating information and allow for quick changes for new mod updates
-  MINECRAFT_VERSION: 1.21.11
-  JAVA_VERSION: 21
+env:
   MOD_VERSION: 2.1.0
-
 
 permissions:
   contents: write
@@ -17,39 +14,73 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Check Environment Variables
-        run: env
-
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
-          java-version: ${{env.JAVA_VERSION}}
+          distribution: temurin
+          java-version: |
+            21
+            25
 
-      - name: Build
-        run: gradle clean remapJar
+      - name: Build All Versions
+        run: ./gradlew buildAndCollect
 
-      - name: Publish
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.G_TOKEN }}
+          tag_name: ${{ env.MOD_VERSION }}
+          name: ${{ env.MOD_VERSION }}
+          files: build/libs/${{ env.MOD_VERSION }}/*.jar
+
+      - name: Publish 1.21.11
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
-
-          github-token: ${{ secrets.G_TOKEN }}
-          github-tag: "${{env.MOD_VERSION}}+${{env.MINECRAFT_VERSION}}"
-
-          name: "${{env.MOD_VERSION}}+${{env.MINECRAFT_VERSION}}"
-          version: "${{env.MOD_VERSION}}+${{env.MINECRAFT_VERSION}}"
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.11*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.11"
+          version: "${{ env.MOD_VERSION }}+1.21.11"
           version-type: release
-
           loaders: fabric
-          game-versions: "${{env.MINECRAFT_VERSION}}"
-          java: "${{env.JAVA_VERSION}}"
+          game-versions: "1.21.11"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
 
+      - name: Publish 1.21.10
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.10*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.10"
+          version: "${{ env.MOD_VERSION }}+1.21.10"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.10"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+
+      - name: Publish 26.1
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+26.1*.jar
+          name: "${{ env.MOD_VERSION }}+26.1"
+          version: "${{ env.MOD_VERSION }}+26.1"
+          version-type: release
+          loaders: fabric
+          game-versions: "26.1"
+          java: 25
           dependencies: |
             fabric-api
             modmenu
