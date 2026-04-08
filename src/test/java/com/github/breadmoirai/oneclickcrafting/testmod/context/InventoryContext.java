@@ -26,6 +26,7 @@ public class InventoryContext extends CraftContext {
    public void prepare(int operations) {
       clearInventory();
       giveItem(inputItem, inputCount * operations );
+      wait(1);
       assertInventoryExact(Map.of(inputItem, inputCount * operations));
       open();
    }

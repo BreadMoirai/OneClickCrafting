@@ -39,6 +39,7 @@ dependencies {
     implementation("com.terraformersmc:modmenu:${property("modmenu_version")}")
     implementation("dev.isxander:yet-another-config-lib:${property("yacl_version")}")
 
+    testImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
     testImplementation(sourceSets.main.get().output)
 }
 
@@ -53,10 +54,11 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand(
                 mapOf(
-                "version" to project.property("mod.version"),
-                "minecraft" to project.property("minecraft_version_range"),
-                "yacl" to project.property("yacl_version").apply { this.toString().substringBefore('-') },
-                "modmenu" to project.property("modmenu_version").apply { this.toString().substringBefore('-') }))
+                    "version" to project.property("mod.version"),
+                    "minecraft" to project.property("minecraft_version_range"),
+                    "yacl" to project.property("yacl_version").apply { this.toString().substringBefore('-') },
+                    "modmenu" to project.property("modmenu_version").apply { this.toString().substringBefore('-') })
+            )
         }
     }
 
@@ -117,5 +119,4 @@ loom {
             vmArgs("-Dfabric.client.gametest", "-Dfabric.client.gametest.disableNetworkSynchronizer")
         }
     }
-
 }

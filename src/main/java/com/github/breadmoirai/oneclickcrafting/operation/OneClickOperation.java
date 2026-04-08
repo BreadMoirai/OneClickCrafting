@@ -3,12 +3,12 @@ package com.github.breadmoirai.oneclickcrafting.operation;
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 //? 26.1 {
-/*import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
+import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-*///?} >=1.21.10 <=1.21.11 {
-import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-//?}
+//?} >=1.21.10 <=1.21.11 {
+/*import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
+*///?}
 
 
 public abstract class OneClickOperation {

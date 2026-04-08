@@ -6,13 +6,11 @@ import com.github.breadmoirai.oneclickcrafting.operation.OneClickStonecuttingOpe
 import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutterRecipe;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-//? >=1.21.10 <=1.21.11 {
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.StonecutterScreen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.screen.StonecutterScreenHandler;
-import net.minecraft.sound.SoundEvents;
-//?}
+//? 26.1 {
+import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
+//?} >=1.21.10 <=1.21.11 {
+/*import net.minecraft.client.gui.screen.ingame.StonecutterScreen;
+*///?}
 
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 

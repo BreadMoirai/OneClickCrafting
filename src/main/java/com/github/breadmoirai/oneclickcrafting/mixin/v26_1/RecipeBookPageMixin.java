@@ -1,5 +1,5 @@
 //? 26.1 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
+package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -25,11 +25,13 @@ public abstract class RecipeBookPageMixin {
    @Shadow @Nullable private RecipeDisplayId lastClickedRecipe;
    @Shadow @Nullable private RecipeCollection lastClickedRecipeCollection;
 
-   // Ordinal 4: a RecipeButton was clicked (returns true). The 6 returns are:
-   //   0/1 — overlay handled or dismissed, 2/3 — arrow buttons, 4 — button hit, 5 — miss.
+   // Ordinal 3: a RecipeButton was clicked (returns true). The 5 returns are:
+   //   0 — overlay handled or dismissed, 1/2 — arrow buttons, 3 — button hit, 4 — miss.
    // lastClickedRecipe is set by normal code for left-click only; find the button
    // by mouse position to handle both left-click (fire) and right-click (single-option only).
-   @Inject(method = "mouseClicked(Lnet/minecraft/client/input/MouseButtonEvent;IIIIZ)Z", at = @At(value = "RETURN", ordinal = 4))
+   // For right-click on single-option: set lastClickedRecipe/lastClickedRecipeCollection so
+   // that RecipeBookComponent.mouseClicked calls tryPlaceRecipe after we return.
+   @Inject(method = "mouseClicked(Lnet/minecraft/client/input/MouseButtonEvent;IIIIZ)Z", at = @At(value = "RETURN", ordinal = 3))
    private void onButtonClicked(MouseButtonEvent click, int left, int top, int width, int height, boolean filtering, CallbackInfoReturnable<Boolean> cir) {
       for (RecipeButton button : this.buttons) {
          if (!button.isMouseOver(click.x(), click.y())) continue;
@@ -44,4 +46,4 @@ public abstract class RecipeBookPageMixin {
       }
    }
 }
-*///?}
+//?}

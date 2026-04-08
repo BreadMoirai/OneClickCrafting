@@ -5,7 +5,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.suite.*;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import org.jspecify.annotations.NonNull;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * Entry point for all OneClickCrafting client gametests.
@@ -14,10 +14,9 @@ import org.jspecify.annotations.NonNull;
 @SuppressWarnings("UnstableApiUsage")
 public class OneClickCraftingGameTests implements FabricClientGameTest {
 
-    @SuppressWarnings("ExtractMethodRecommender")
     @Override
-    public void runTest(@NonNull ClientGameTestContext context) {
-        // Suite 1: Config persistence (no world needed)
+    public void runTest(ClientGameTestContext context) {
+//         Suite 1: Config persistence (no world needed)
         ConfigSuite.testConfigDefaultsShownInUi(context);
         ConfigSuite.testConfigPersistenceViaUi(context);
 
@@ -43,7 +42,14 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
             // Suite 6: Repeat last (recipe-book and stonecutter)
             RepeatLastTests repeatLastTests = new RepeatLastTests(context, world);
             repeatLastTests.repeatLastReCrafts();
-            repeatLastTests.repeatLastSingleTwoStacks();
+            repeatLastTests.repeatLastStack();
+            repeatLastTests.repeatLastStacksFullInventory();
+            repeatLastTests.repeatLastDropKeyDropsManyItems();
+
+            // Suite 6 (alt): Repeat last (bound to space)
+            RepeatLastTests.REPEAT_KEY_CODE = GLFW.GLFW_KEY_SPACE;
+            repeatLastTests.repeatLastReCrafts();
+            repeatLastTests.repeatLastStack();
             repeatLastTests.repeatLastStacksFullInventory();
             repeatLastTests.repeatLastDropKeyDropsManyItems();
 

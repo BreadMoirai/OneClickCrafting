@@ -7,12 +7,12 @@ import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 //? 26.1 {
-/*import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-*///?} >=1.21.10 <=1.21.11 {
-import net.minecraft.client.gui.screen.ingame.CraftingScreen;
+//?} >=1.21.10 <=1.21.11 {
+/*import net.minecraft.client.gui.screen.ingame.CraftingScreen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-//?}
+*///?}
 
 public class OneClickCraftingHandler extends OneClickHandler implements OneClickEvents.RecipeClick, OneClickEvents.ResultSlotUpdate {
 
@@ -24,20 +24,18 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    public void onInitialize() {
       OneClickEvents.RECIPE_CLICK.register(this);
       OneClickEvents.RESULT_SLOT_UPDATE.register(this);
-      ScreenEvents.BEFORE_INIT.register((unused1, screen, unused2, unused3) -> {
+      ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
-            ScreenEvents.afterTick(screen).register(unused4 -> tick());
-            ScreenKeyboardEvents.beforeKeyPress(screen).register((unused5, key) -> {
+            ScreenEvents.afterTick(screen).register(_ -> tick());
+            ScreenKeyboardEvents.beforeKeyPress(screen).register((_, key) -> {
                debug("hasOp() = " + hasOp());
                if (hasOp()) return;
-               debug("mod.input.repeatLast.guard(key) = " + mod.input.repeatLast.guard(key));
-               debug("key.getKeycode() = " + key.getKeycode());
                if (mod.input.repeatLast.guard(key)) return;
                debug("isRepeating = " + isRepeating);
                if (isRepeating) return;
                fireRepeatCraft();
             });
-            ScreenEvents.remove(screen).register(unused6 -> clearOp());
+            ScreenEvents.remove(screen).register(_ -> clearOp());
          }
       });
    }
@@ -45,7 +43,7 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    @Override
    public void onRecipeClick(int recipe, int button) {
       debug("onRecipeClick: recipe=" + recipe + " button=" + button);
-      setOp(new OneClickCraftingOperation(mod, recipe, button));
+      setOp(OneClickCraftingOperation.create(mod, recipe, button));
       if (op.notValid()) {
          debug("onRecipeClick: operation invalid, discarding");
          clearOp();

@@ -6,10 +6,15 @@
   "mixins": [],
   "client": [
     "v26_1.AbstractCraftingMenuMixin",
+    "v26_1.RecipeBookComponentMixin",
     "v26_1.AbstractRecipeBookScreenAccessor",
+    "v26_1.ClientRecipeBookAccessor",
+    "v26_1.KeyMappingAccessor",
     "v26_1.OverlayRecipeComponentMixin",
     "v26_1.RecipeBookComponentAccessor",
-    "v26_1.RecipeBookPageMixin"
+    "v26_1.RecipeBookPageMixin",
+    "v26_1.StonecutterMenuMixin",
+    "v26_1.StonecutterScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

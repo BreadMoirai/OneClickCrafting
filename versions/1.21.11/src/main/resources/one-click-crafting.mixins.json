@@ -6,6 +6,7 @@
   "mixins": [],
   "client": [
     "v21_11.AlternativeButtonWidgetAccessor",
+    "v21_11.RecipeBookWidgetMixin",
     "v21_11.ClientPlayNetworkHandlerMixin",
     "v21_11.ClientRecipeBookAccessor",
     "v21_11.HandledScreenAccessor",

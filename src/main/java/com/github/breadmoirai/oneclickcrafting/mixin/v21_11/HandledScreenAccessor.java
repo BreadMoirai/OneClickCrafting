@@ -1,5 +1,5 @@
 //? >=1.21.10 <=1.21.11 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
 
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
@@ -12,4 +12,4 @@ public interface HandledScreenAccessor {
    @Invoker
    void callOnMouseClick(Slot slot, int slotNum, int mouseButton, SlotActionType action);
 }
-//?}
+*///?}

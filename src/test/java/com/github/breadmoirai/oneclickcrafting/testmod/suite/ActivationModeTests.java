@@ -5,8 +5,6 @@ import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
-import java.util.List;
-
 /**
  * Activation-mode tests ({@code alwaysOn}, {@code ctrlHold}, {@code altHold}).
  *

@@ -1,5 +1,5 @@
 //? >=1.21.10 <=1.21.11 {
-package com.github.breadmoirai.oneclickcrafting.inventory.v21_11;
+/*package com.github.breadmoirai.oneclickcrafting.inventory.v21_11;
 
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;
@@ -69,21 +69,6 @@ public class OneClickInventoryImpl extends OneClickInventory {
       return -1;
    }
 
-   @Override
-   public int findEmptySlot()
-   {
-      HandledScreen<?> gui = getScreenHandler();
-      if (gui == null) return -1;
-      DefaultedList<Slot> slots = gui.getScreenHandler().slots;
-      for (int i = 0; i < slots.size(); i++) {
-         Slot slot = slots.get(i);
-         if (!(slot.inventory instanceof PlayerInventory)) continue;
-         if (!slot.getStack().isOf(Items.AIR)) continue;
-         return i;
-      }
-      return -1;
-   }
-
 }
 
-//?}
+*///?}

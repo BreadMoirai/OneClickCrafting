@@ -1,6 +1,6 @@
 package com.github.breadmoirai.oneclickcrafting.item;
 //? 26.1 {
-/*import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public record OneClickItemStack(ItemStack stack) {
@@ -14,12 +14,14 @@ public record OneClickItemStack(ItemStack stack) {
       return stack.isEmpty();
    }
 
-   public int getCount() {
+   public int count() {
       return stack.getCount();
    }
+
+   public int getMaxCount() { return stack.getMaxStackSize(); }
 }
-*///?} >=1.21.10 <=1.21.11 {
-import net.minecraft.item.ItemStack;
+//?} >=1.21.10 <=1.21.11 {
+/*import net.minecraft.item.ItemStack;
 
 public record OneClickItemStack(ItemStack stack) {
 
@@ -36,6 +38,8 @@ public record OneClickItemStack(ItemStack stack) {
    public int count() {
       return stack.getCount();
    }
+
+   public int getMaxCount() { return stack.getMaxCount(); }
 }
-//?}
+*///?}
 

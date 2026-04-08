@@ -2,7 +2,12 @@ package com.github.breadmoirai.oneclickcrafting.testmod.context;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.minecraft.client.gui.screen.ingame.CraftingScreen;
+
+//? 26.1 {
+import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+//?} >=1.21.10 <=1.21.11 {
+/*import net.minecraft.client.gui.screen.ingame.CraftingScreen;
+*///?}
 
 /**
  * {@link CraftContext} implementation that uses the recipe-book in a crafting

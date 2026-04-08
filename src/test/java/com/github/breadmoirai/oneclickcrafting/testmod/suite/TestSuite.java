@@ -1,9 +1,28 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.ConfigHelper;
-import com.github.breadmoirai.oneclickcrafting.testmod.RecipeBookHelper;
+import com.github.breadmoirai.oneclickcrafting.testmod.VirtualKeyState;
+import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import org.lwjgl.glfw.GLFW;
+
+//? 26.1 {
+import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.KeyMappingAccessor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+//?} >=1.21.10 <=1.21.11 {
+/*import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.KeyBindingAccessor;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.entity.ItemEntity;
@@ -15,7 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.glfw.GLFW;
+*///?}
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +51,7 @@ public abstract class TestSuite {
    public TestSuite(ClientGameTestContext context, TestSingleplayerContext world) {
       this.context = context;
       this.world = world;
-      this.recipeBook = new RecipeBookHelper(context);
+      this.recipeBook = RecipeBookHelper.create(context);
       this.config = new ConfigHelper(context);
    }
 
@@ -40,7 +59,11 @@ public abstract class TestSuite {
       TestSingleplayerContext world = context.worldBuilder()
          .setUseConsistentSettings(true)
          .create();
-      world.getClientWorld().waitForChunksDownload();
+      //? 26.1 {
+      world.getClientLevel().waitForChunksDownload();
+      //?} >=1.21.10 <=1.21.11 {
+      /*world.getClientWorld().waitForChunksDownload();
+      *///?}
       // @a required — runCommand runs as the server console (@s = server, not player)
       world.getServer().runCommand("time set day");
       // Suppress hunger drain so survival mechanics don't interfere with tests
@@ -55,50 +78,46 @@ public abstract class TestSuite {
     */
    protected void closeScreen() {
       context.getInput().pressKey(GLFW.GLFW_KEY_ESCAPE);
-      context.waitFor(mc -> mc.currentScreen == null);
+      //? 26.1 {
+      context.waitFor(mc -> mc.screen == null);
+      //?} >=1.21.10 <=1.21.11 {
+      /*context.waitFor(mc -> mc.currentScreen == null);
+      *///?}
    }
 
    // -------------------------------------------------------------------------
    // Server command helpers
    // -------------------------------------------------------------------------
 
-   /** Clears the player's entire inventory. */
    protected void clearInventory() {
       world.getServer().runCommand("clear @a");
    }
 
-   /**
-    * Kills all item entities in the world.
-    * Call before tests that assert items on (or not on) the ground.
-    */
    protected void clearGroundItems() {
       world.getServer().runCommand("kill @e[type=minecraft:item]");
    }
 
-   /**
-    * Gives the specified item to the player.
-    *
-    * @param itemId namespaced item id, e.g. {@code "minecraft:oak_log"}
-    * @param count  stack count
-    */
    protected void giveItem(String itemId, int count) {
       world.getServer().runCommand("give @a " + itemId + " " + count);
    }
 
-   /**
-    * Opens the player's inventory by pressing the inventory key binding and waits
-    * until {@link InventoryScreen} is active.
-    */
    protected void openInventory() {
-      context.getInput().pressKey(options -> options.inventoryKey);
+      //? 26.1 {
+      context.getInput().pressKey(options -> options.keyInventory);
+      //?} >=1.21.10 <=1.21.11 {
+      /*context.getInput().pressKey(options -> options.inventoryKey);
+      *///?}
       context.waitForScreen(InventoryScreen.class);
    }
 
    protected void openBlock(String block, Class<? extends Screen> screen) {
-      BlockPos playerPos = context.computeOnClient(mc ->
-      {
+      BlockPos playerPos = context.computeOnClient(mc -> {
          assert mc.player != null;
-         return mc.player.getBlockPos();
+         //? 26.1 {
+         return mc.player.blockPosition();
+         //?} >=1.21.10 <=1.21.11 {
+         /*return mc.player.getBlockPos();
+         *///?}
       });
 
       int sx = playerPos.getX() + 1;
@@ -110,13 +129,46 @@ public abstract class TestSuite {
       context.waitTick();
 
       BlockPos stonePos = new BlockPos(sx, sy, sz);
+      //? 26.1 {
       context.runOnClient(mc -> {
+         BlockHitResult hitResult = new BlockHitResult(
+            Vec3.atCenterOf(stonePos), Direction.WEST, stonePos, false);
+         assert mc.gameMode != null;
+         mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hitResult);
+      });
+      //?} >=1.21.10 <=1.21.11 {
+      /*context.runOnClient(mc -> {
          BlockHitResult hitResult = new BlockHitResult(
             Vec3d.ofCenter(stonePos), Direction.WEST, stonePos, false);
          assert mc.interactionManager != null;
          mc.interactionManager.interactBlock(mc.player, Hand.MAIN_HAND, hitResult);
       });
+      *///?}
       context.waitForScreen(screen);
+   }
+
+   // -------------------------------------------------------------------------
+   // Drop-key helpers
+   // -------------------------------------------------------------------------
+
+   protected void holdDrop() {
+      //? 26.1 {
+      int code = context.computeOnClient(mc -> ((KeyMappingAccessor) mc.options.keyDrop).getKey().getValue());
+      //?} >=1.21.10 <=1.21.11 {
+      /*int code = context.computeOnClient(mc -> ((KeyBindingAccessor) mc.options.dropKey).getBoundKey().getCode());
+      *///?}
+      VirtualKeyState.hold(code);
+      context.getInput().holdKey(code);
+   }
+
+   protected void releaseDrop() {
+      //? 26.1 {
+      int code = context.computeOnClient(mc -> ((KeyMappingAccessor) mc.options.keyDrop).getKey().getValue());
+      //?} >=1.21.10 <=1.21.11 {
+      /*int code = context.computeOnClient(mc -> ((KeyBindingAccessor) mc.options.dropKey).getBoundKey().getCode());
+      *///?}
+      VirtualKeyState.release(code);
+      context.getInput().releaseKey(code);
    }
 
 
@@ -124,12 +176,10 @@ public abstract class TestSuite {
    // Wait helpers
    // -------------------------------------------------------------------------
 
-   /** Waits exactly one game tick. */
    protected void waitTick() {
       context.waitTick();
    }
 
-   /** Waits {@code ticks} game ticks. */
    protected void wait(int ticks) {
       context.waitTicks(ticks);
    }
@@ -153,24 +203,25 @@ public abstract class TestSuite {
       assertInventoryExact(expected);
    }
 
-   /**
-    * Asserts that the player's inventory contains exactly the items in {@code items}
-    * and nothing else. Waits up to 20 ticks for the state to match, then throws
-    * {@link AssertionError} with a descriptive message if it does not.
-    *
-    * @param items map of namespaced item ID → expected count
-    */
    protected void assertInventoryExact(Map<String, Integer> items) {
       try {
          context.waitFor(mc -> {
             assert mc.player != null;
             Map<String, Integer> counter = new HashMap<>(items);
             var inv = mc.player.getInventory();
-            for (int i = 0; i < inv.size(); i++) {
+            //? 26.1 {
+            for (int i = 0; i < inv.getContainerSize(); i++) {
+               ItemStack stack = inv.getItem(i);
+               String id = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+               counter.compute(id, (k, c) -> (c == null ? 0 : c) - stack.getCount());
+            }
+            //?} >=1.21.10 <=1.21.11 {
+            /*for (int i = 0; i < inv.size(); i++) {
                ItemStack stack = inv.getStack(i);
                String id = Registries.ITEM.getId(stack.getItem()).toString();
                counter.compute(id, (k, c) -> (c == null ? 0 : c) - stack.getCount());
             }
+            *///?}
             return counter.values().stream().mapToInt(x -> x).allMatch(x -> x == 0);
          }, 20);
       } catch (AssertionError timeout) {
@@ -181,21 +232,22 @@ public abstract class TestSuite {
       }
    }
 
-   /**
-    * Asserts the player's inventory contains exactly {@code expectedCount} of
-    * {@code itemId}, ignoring all other items.
-    *
-    * @param itemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
-    */
    protected void assertInventoryCount(String itemId, int expectedCount) {
       int actual = context.computeOnClient(mc -> {
          if (mc.player == null) return 0;
          var inv = mc.player.getInventory();
          int total = 0;
-         for (int i = 0; i < inv.size(); i++) {
+         //? 26.1 {
+         for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack stack = inv.getItem(i);
+            if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
+         }
+         //?} >=1.21.10 <=1.21.11 {
+         /*for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getStack(i);
             if (Registries.ITEM.getId(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
          }
+         *///?}
          return total;
       });
       if (actual != expectedCount) {
@@ -205,23 +257,23 @@ public abstract class TestSuite {
       }
    }
 
-   /**
-    * Asserts the player's inventory contains at least {@code minCount} of
-    * {@code itemId}, ignoring all other items. Retries for up to 20 ticks to
-    * allow for server round-trip latency.
-    *
-    * @param itemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
-    */
    protected void assertInventoryAtLeast(String itemId, int minCount) {
       try {
          context.waitFor(mc -> {
             if (mc.player == null) return false;
             var inv = mc.player.getInventory();
             int total = 0;
-            for (int i = 0; i < inv.size(); i++) {
+            //? 26.1 {
+            for (int i = 0; i < inv.getContainerSize(); i++) {
+               ItemStack stack = inv.getItem(i);
+               if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
+            }
+            //?} >=1.21.10 <=1.21.11 {
+            /*for (int i = 0; i < inv.size(); i++) {
                ItemStack stack = inv.getStack(i);
                if (Registries.ITEM.getId(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
             }
+            *///?}
             return total >= minCount;
          }, 20);
       } catch (AssertionError timeout) {
@@ -229,10 +281,17 @@ public abstract class TestSuite {
             if (mc.player == null) return 0;
             var inv = mc.player.getInventory();
             int total = 0;
-            for (int i = 0; i < inv.size(); i++) {
+            //? 26.1 {
+            for (int i = 0; i < inv.getContainerSize(); i++) {
+               ItemStack stack = inv.getItem(i);
+               if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
+            }
+            //?} >=1.21.10 <=1.21.11 {
+            /*for (int i = 0; i < inv.size(); i++) {
                ItemStack stack = inv.getStack(i);
                if (Registries.ITEM.getId(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
             }
+            *///?}
             return total;
          });
          throw new AssertionError(
@@ -245,20 +304,23 @@ public abstract class TestSuite {
    // Ground item assertions
    // -------------------------------------------------------------------------
 
-   /**
-    * Asserts there is at least one {@link ItemEntity} carrying {@code itemId} near the player.
-    *
-    * @param itemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
-    */
    protected void assertItemOnGround(String itemId) {
       try {
          context.waitFor(mc -> {
-            if (mc.player == null || mc.world == null) return false;
-            Box box = mc.player.getBoundingBox().expand(16.0);
-            return !mc.world
-               .getEntitiesByClass(ItemEntity.class, box,
-                  e -> Registries.ITEM.getId(e.getStack().getItem()).toString().equals(itemId))
+            if (mc.player == null) return false;
+            //? 26.1 {
+            if (mc.level == null) return false;
+            AABB box = mc.player.getBoundingBox().inflate(16.0);
+            return !mc.level.getEntitiesOfClass(ItemEntity.class, box,
+               e -> BuiltInRegistries.ITEM.getKey(e.getItem().getItem()).toString().equals(itemId))
                .isEmpty();
+            //?} >=1.21.10 <=1.21.11 {
+            /*if (mc.world == null) return false;
+            Box box = mc.player.getBoundingBox().expand(16.0);
+            return !mc.world.getEntitiesByClass(ItemEntity.class, box,
+               e -> Registries.ITEM.getId(e.getStack().getItem()).toString().equals(itemId))
+               .isEmpty();
+            *///?}
          }, 20);
       } catch (AssertionError timeout) {
          throw new AssertionError(
@@ -266,27 +328,27 @@ public abstract class TestSuite {
       }
    }
 
-   /**
-    * Asserts there are NO {@link ItemEntity}s carrying {@code itemId} near the player.
-    *
-    * @param itemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
-    */
    protected void assertNoItemOnGround(String itemId) {
       boolean found = context.computeOnClient(mc -> {
-         if (mc.player == null || mc.world == null) return false;
-         Box box = mc.player.getBoundingBox().expand(16.0);
-         return !mc.world
-            .getEntitiesByClass(ItemEntity.class, box,
-               e -> Registries.ITEM.getId(e.getStack().getItem()).toString().equals(itemId))
+         //? 26.1 {
+         if (mc.player == null || mc.level == null) return false;
+         AABB box = mc.player.getBoundingBox().inflate(16.0);
+         return !mc.level.getEntitiesOfClass(ItemEntity.class, box,
+            e -> BuiltInRegistries.ITEM.getKey(e.getItem().getItem()).toString().equals(itemId))
             .isEmpty();
+         //?} >=1.21.10 <=1.21.11 {
+         /*if (mc.player == null || mc.world == null) return false;
+         Box box = mc.player.getBoundingBox().expand(16.0);
+         return !mc.world.getEntitiesByClass(ItemEntity.class, box,
+            e -> Registries.ITEM.getId(e.getStack().getItem()).toString().equals(itemId))
+            .isEmpty();
+         *///?}
       });
       if (found) {
          throw new AssertionError(
             "Expected no ItemEntity with " + itemId + " near player, but found one");
       }
    }
-
-
 
    // -------------------------------------------------------------------------
    // Misc helpers
@@ -295,7 +357,6 @@ public abstract class TestSuite {
    protected int stacks(int stacks) {
       return stacks * 64;
    }
-
 
    // -------------------------------------------------------------------------
    // Private helpers
@@ -306,12 +367,21 @@ public abstract class TestSuite {
          Map<String, Integer> counts = new LinkedHashMap<>();
          if (mc.player == null) return counts;
          var inv = mc.player.getInventory();
-         for (int i = 0; i < inv.size(); i++) {
+         //? 26.1 {
+         for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack stack = inv.getItem(i);
+            if (!stack.isEmpty()) counts.merge(
+               BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(),
+               stack.getCount(), Integer::sum);
+         }
+         //?} >=1.21.10 <=1.21.11 {
+         /*for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getStack(i);
             if (!stack.isEmpty()) counts.merge(
                Registries.ITEM.getId(stack.getItem()).toString(),
                stack.getCount(), Integer::sum);
          }
+         *///?}
          return counts;
       });
    }

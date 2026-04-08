@@ -1,4 +1,5 @@
-package com.github.breadmoirai.oneclickcrafting.recipebook.v21_11;
+//? >=1.21.10 <=1.21.11 {
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v21_11;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
@@ -27,8 +28,7 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       if (!(client.currentScreen instanceof RecipeBookScreen<?> screen)) return -1;
       RecipeBookWidgetAccessor recipeBook = (RecipeBookWidgetAccessor) ((RecipeBookScreenAccessor) screen).getRecipeBook();
       if (recipeBook.getSelectedRecipeResults() == null || recipeBook.getSelectedRecipe() == null) return -1;
-      if (OneClickCraftingMod.getInstance().input.repeatLast.guard(GLFW.GLFW_KEY_SPACE))
-         recipeBook.callSelect(recipeBook.getSelectedRecipeResults(), recipeBook.getSelectedRecipe(), isShift);
+      recipeBook.callSelect(recipeBook.getSelectedRecipeResults(), recipeBook.getSelectedRecipe(), isShift);
       ClickableWidget.playClickSound(MinecraftClient.getInstance().getSoundManager());
       return recipeBook.getSelectedRecipe().index();
    }
@@ -46,3 +46,5 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
          .getFirst());
    }
 }
+
+*///?}

@@ -1,5 +1,5 @@
 //? >=1.21.10 <=1.21.11 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_11;
 
 import net.minecraft.client.gui.screen.recipebook.RecipeAlternativesWidget;
 import net.minecraft.recipe.NetworkRecipeId;
@@ -11,4 +11,4 @@ public interface AlternativeButtonWidgetAccessor {
    @Accessor
    NetworkRecipeId getRecipeId();
 }
-//?}
+*///?}
