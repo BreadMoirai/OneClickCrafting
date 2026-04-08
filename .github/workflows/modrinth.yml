@@ -3,7 +3,7 @@ name: Publish Mod
 on: [ pull_request, workflow_dispatch ]
 
 env:
-  MOD_VERSION: 2.1.0
+  MOD_VERSION: 2.2.0
 
 permissions:
   contents: write
@@ -28,7 +28,7 @@ jobs:
             25
 
       - name: Build All Versions
-        run: ./gradlew buildAndCollect
+        run: bash ./gradlew buildAndCollect
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
