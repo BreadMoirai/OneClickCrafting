@@ -136,6 +136,16 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    }
 
    @Override
+   public String clickMultiOptionButton(int mouseButton, String... possibleItems) {
+      throw new UnsupportedOperationException("clickMultiOptionButton not implemented for 1.21.x");
+   }
+
+   @Override
+   public void clickOverlayButton(String targetItemId, int mouseButton) {
+      throw new UnsupportedOperationException("clickOverlayButton not implemented for 1.21.x");
+   }
+
+   @Override
    public void placeLastRecipe() {
       context.runOnClient(mc -> {
          if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return;

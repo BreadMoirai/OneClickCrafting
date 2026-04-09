@@ -63,6 +63,17 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
             stackAndSequenceTests.stackAccumulatedPartial();
             stackAndSequenceTests.leftThenRightSequence();
             stackAndSequenceTests.leftLeftLeftRightSequence();
+
+            //? 26.1 {
+            // Suite 9: Multi-option (cycling) recipe buttons and overlay submenu
+            RecipeAlternativesTests recipeAlternativesTests = new RecipeAlternativesTests(context, world);
+            recipeAlternativesTests.multiOptionLeftClickDisabledPlacesRecipe();
+            recipeAlternativesTests.multiOptionLeftClickEnabledCrafts();
+            recipeAlternativesTests.multiOptionOverlayRightClickOakPlanks();
+            recipeAlternativesTests.multiOptionOverlayRightClickBirchPlanks();
+            recipeAlternativesTests.multiOptionOverlayLeftClickEnabledCrafts();
+            recipeAlternativesTests.multiOptionOverlayRightClickDisabledNoAction();
+            //?}
         }
     }
 }

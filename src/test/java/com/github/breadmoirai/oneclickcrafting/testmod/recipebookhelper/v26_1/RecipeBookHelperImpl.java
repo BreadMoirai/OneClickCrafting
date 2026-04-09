@@ -6,9 +6,14 @@ import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAcc
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
 import com.github.breadmoirai.oneclickcrafting.mixin.RecipeBookComponentAccessor;
 import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
+import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.OverlayRecipeButtonRecipeAccessor;
+import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.OverlayRecipeComponentButtonsAccessor;
 import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.RecipeBookPageButtonsAccessor;
+import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.RecipeBookPageOverlayAccessor;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
+import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
@@ -21,8 +26,11 @@ import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RecipeBookHelperImpl extends RecipeBookHelper {
 
@@ -148,6 +156,83 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
       });
    }
 
+   @Override
+   public String clickMultiOptionButton(int mouseButton, String... possibleItems) {
+      Set<String> possible = new HashSet<>(Arrays.asList(possibleItems));
+      String[] data = context.computeOnClient(mc -> {
+         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+            throw new AssertionError("clickMultiOptionButton: not in an AbstractRecipeBookScreen");
+         }
+         RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
+         RecipeBookPage page = getRecipeBookPage(component);
+         List<RecipeButton> buttons = ((RecipeBookPageButtonsAccessor) page).getButtons();
+         Map<RecipeDisplayId, RecipeDisplayEntry> known =
+            ((ClientRecipeBookAccessor) mc.player.getRecipeBook()).getKnown();
+         ContextMap ctx = SlotDisplayContext.fromLevel(mc.level);
+
+         for (RecipeButton button : buttons) {
+            if (button.isOnlyOption()) continue;
+            RecipeDisplayId id = button.getCurrentRecipe();
+            if (id == null) continue;
+            RecipeDisplayEntry entry = known.get(id);
+            if (entry == null) continue;
+            ItemStack stack = entry.display().result().resolveForFirstStack(ctx);
+            String itemId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+            if (possible.contains(itemId)) {
+               double guiCx = button.getX() + button.getWidth() / 2.0;
+               double guiCy = button.getY() + button.getHeight() / 2.0;
+               double scale = mc.getWindow().getGuiScale();
+               return new String[]{itemId, Double.toString(guiCx * scale), Double.toString(guiCy * scale)};
+            }
+         }
+         throw new AssertionError("Multi-option recipe button not found for items: " + possible);
+      });
+      String displayedItem = data[0];
+      double x = Double.parseDouble(data[1]);
+      double y = Double.parseDouble(data[2]);
+      context.getInput().setCursorPos(x, y);
+      context.getInput().pressMouse(mouseButton);
+      return displayedItem;
+   }
+
+   @Override
+   public void clickOverlayButton(String targetItemId, int mouseButton) {
+      double[] windowCoords = context.computeOnClient(mc -> {
+         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+            throw new AssertionError("clickOverlayButton: not in an AbstractRecipeBookScreen");
+         }
+         RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
+         RecipeBookPage page = getRecipeBookPage(component);
+         OverlayRecipeComponent overlay = ((RecipeBookPageOverlayAccessor) page).getOverlay();
+         if (!overlay.isVisible()) {
+            throw new AssertionError("clickOverlayButton: overlay is not visible");
+         }
+         List<AbstractWidget> overlayButtons = ((OverlayRecipeComponentButtonsAccessor) overlay).getRecipeButtons();
+         Map<RecipeDisplayId, RecipeDisplayEntry> known =
+            ((ClientRecipeBookAccessor) mc.player.getRecipeBook()).getKnown();
+         ContextMap ctx = SlotDisplayContext.fromLevel(mc.level);
+
+         for (AbstractWidget btn : overlayButtons) {
+            RecipeDisplayId recipeId = ((OverlayRecipeButtonRecipeAccessor) btn).getRecipe();
+            RecipeDisplayEntry entry = known.get(recipeId);
+            if (entry == null) continue;
+            ItemStack stack = entry.display().result().resolveForFirstStack(ctx);
+            String itemId = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString();
+            if (itemId.equals(targetItemId)) {
+               double guiCx = btn.getX() + btn.getWidth() / 2.0;
+               double guiCy = btn.getY() + btn.getHeight() / 2.0;
+               double scale = mc.getWindow().getGuiScale();
+               return new double[]{guiCx * scale, guiCy * scale};
+            }
+         }
+         throw new AssertionError("Overlay button not found for item: " + targetItemId
+            + "; overlay.isVisible=" + overlay.isVisible()
+            + "; overlayButtons.size=" + overlayButtons.size());
+      });
+      context.getInput().setCursorPos(windowCoords[0], windowCoords[1]);
+      context.getInput().pressMouse(mouseButton);
+   }
+
    // -------------------------------------------------------------------------
    // Reflection helpers
    // -------------------------------------------------------------------------
@@ -169,5 +254,6 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
          throw new RuntimeException("Cannot access RecipeBookComponent.recipeBookPage", e);
       }
    }
+
 }
 //?}

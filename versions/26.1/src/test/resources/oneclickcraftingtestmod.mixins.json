@@ -6,6 +6,9 @@
   "mixins": [],
   "client": [
     "RecipeBookPageButtonsAccessor",
+    "RecipeBookPageOverlayAccessor",
+    "OverlayRecipeComponentButtonsAccessor",
+    "OverlayRecipeButtonRecipeAccessor",
     "InputConstantsMixin"
   ],
   "injectors": {

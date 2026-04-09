@@ -59,4 +59,26 @@ public abstract class RecipeBookHelper {
     * <p>No-op when the current screen is not a recipe-book screen (e.g. stonecutter).
     */
    public abstract void placeLastRecipe();
+
+   /**
+    * Finds the multi-option recipe button (one that cycles among the given item IDs
+    * because its collection contains multiple craftable alternatives), clicks it with
+    * the given mouse button, and returns the item ID that was currently displayed on
+    * the button at the moment of the click.
+    *
+    * @param mouseButton  {@code 0} for left-click, {@code 1} for right-click
+    * @param possibleItems namespaced item IDs that may appear on the cycling button,
+    *                      e.g. {@code "minecraft:oak_planks", "minecraft:birch_planks"}
+    * @return the item ID currently displayed on the button when clicked
+    */
+   public abstract String clickMultiOptionButton(int mouseButton, String... possibleItems);
+
+   /**
+    * After a multi-option button has been right-clicked to open its overlay submenu,
+    * finds the overlay button displaying {@code targetItemId} and clicks it.
+    *
+    * @param targetItemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
+    * @param mouseButton  {@code 0} for left-click, {@code 1} for right-click
+    */
+   public abstract void clickOverlayButton(String targetItemId, int mouseButton);
 }

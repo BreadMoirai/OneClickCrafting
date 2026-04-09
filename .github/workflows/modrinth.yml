@@ -3,7 +3,7 @@ name: Publish Mod
 on: [ pull_request, workflow_dispatch ]
 
 env:
-  MOD_VERSION: 2.2.0
+  MOD_VERSION: 2.2.1
 
 permissions:
   contents: write
