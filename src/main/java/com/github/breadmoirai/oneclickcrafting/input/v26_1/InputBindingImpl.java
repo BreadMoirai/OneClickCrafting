@@ -3,7 +3,7 @@ package com.github.breadmoirai.oneclickcrafting.input.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.input.InputBinding;
 import com.github.breadmoirai.oneclickcrafting.input.OneClickCraftingInput;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.KeyMappingAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.input.KeyEvent;

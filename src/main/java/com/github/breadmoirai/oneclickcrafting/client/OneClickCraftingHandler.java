@@ -6,13 +6,8 @@ import com.github.breadmoirai.oneclickcrafting.operation.OneClickCraftingOperati
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
-//? 26.1 {
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-//?} >=1.21.10 <=1.21.11 {
-/*import net.minecraft.client.gui.screen.ingame.CraftingScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-*///?}
 
 public class OneClickCraftingHandler extends OneClickHandler implements OneClickEvents.RecipeClick, OneClickEvents.ResultSlotUpdate {
 

@@ -3,7 +3,7 @@ package com.github.breadmoirai.oneclickcrafting.operation.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.ClientRecipeBookAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickCraftingOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
@@ -11,7 +11,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.RecipeBookMenu;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 

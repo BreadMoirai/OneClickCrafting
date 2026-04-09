@@ -120,3 +120,18 @@ loom {
         }
     }
 }
+
+apply(from = "../../stonecutter-swaps.gradle.kts")
+@Suppress("UNCHECKED_CAST")
+val swapMap = extra["swaps"] as Map<String, Map<String, String>>
+stonecutter {
+    replacements {
+        for ((version, swaps) in swapMap) {
+            string(sc.current.parsed >= version) {
+                for ((from, to) in swaps) {
+                    replace(from, to)
+                }
+            }
+        }
+    }
+}

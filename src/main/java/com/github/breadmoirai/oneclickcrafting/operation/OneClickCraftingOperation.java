@@ -2,11 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.operation;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-//? 26.1 {
 import com.github.breadmoirai.oneclickcrafting.operation.v26_1.OneClickCraftingOperationImpl;
-//?} >=1.21.10 <=1.21.11 {
-/*import com.github.breadmoirai.oneclickcrafting.operation.v21_11.OneClickCraftingOperationImpl;
-*///?}
 
 public abstract class OneClickCraftingOperation extends OneClickOperation{
    public static OneClickCraftingOperation create(OneClickCraftingMod mod, int recipeId, int button) {

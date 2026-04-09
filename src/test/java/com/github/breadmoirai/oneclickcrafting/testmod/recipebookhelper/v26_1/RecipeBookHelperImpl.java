@@ -2,9 +2,9 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.AbstractRecipeBookScreenAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.ClientRecipeBookAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.RecipeBookComponentAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.RecipeBookComponentAccessor;
 import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
 import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.RecipeBookPageButtonsAccessor;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;

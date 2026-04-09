@@ -7,19 +7,11 @@ import dev.isxander.yacl3.gui.YACLScreen;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import org.lwjgl.glfw.GLFW;
 
-//? 26.1 {
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
-//?} >=1.21.10 <=1.21.11 {
-/*import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.input.MouseInput;
-*///?}
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -55,11 +47,7 @@ public class ConfigHelper {
       context.waitForScreen(ModsScreen.class);
 
       int[] entryCenter = context.computeOnClient(mc -> {
-         //? 26.1 {
          ModsScreen screen = (ModsScreen) mc.screen;
-          //?} >=1.21.10 <=1.21.11 {
-         /*ModsScreen screen = (ModsScreen) mc.currentScreen;
-         *///?}
          try {
             Field modListField = ModsScreen.class.getDeclaredField("modList");
             modListField.setAccessible(true);
@@ -81,11 +69,7 @@ public class ConfigHelper {
                      .getMethod("getX").invoke(modList);
                   int listWidth = (int) modList.getClass()
                      .getMethod("getWidth").invoke(modList);
-                  //? 26.1 {
                   double scale = mc.getWindow().getGuiScale();
-                   //?} >=1.21.10 <=1.21.11 {
-                  /*double scale = mc.getWindow().getScaleFactor();
-                  *///?}
                   int guiX = listX + listWidth / 2;
                   int guiY = rowTop + rowHeight / 2;
                   return new int[]{(int) (guiX * scale), (int) (guiY * scale)};
@@ -102,30 +86,18 @@ public class ConfigHelper {
       context.waitTick();
 
       context.runOnClient(mc -> {
-         //? 26.1 {
          ModsScreen screen = (ModsScreen) mc.screen;
-          //?} >=1.21.10 <=1.21.11 {
-         /*ModsScreen screen = (ModsScreen) mc.currentScreen;
-         *///?}
          try {
             Field configField = ModsScreen.class.getDeclaredField("configureButton");
             configField.setAccessible(true);
-            //? 26.1 {
             AbstractWidget btn = (AbstractWidget) configField.get(screen);
-             //?} >=1.21.10 <=1.21.11 {
-            /*ClickableWidget btn = (ClickableWidget) configField.get(screen);
-            *///?}
             if (btn == null || !btn.active) {
                throw new AssertionError(
                   "Configure button is null or inactive for one-click-crafting");
             }
             double cx = btn.getX() + btn.getWidth() / 2.0;
             double cy = btn.getY() + btn.getHeight() / 2.0;
-            //? 26.1 {
             btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-             //?} >=1.21.10 <=1.21.11 {
-            /*btn.mouseClicked(new Click(cx, cy, new MouseInput(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-            *///?}
          } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
          }
@@ -142,11 +114,7 @@ public class ConfigHelper {
    public void saveAndCloseYacl() {
       context.tryClickScreenButton("yacl.gui.save");
       context.clickScreenButton("gui.done");
-      //? 26.1 {
       context.waitFor(mc -> !YACLScreen.class.isInstance(mc.screen));
-       //?} >=1.21.10 <=1.21.11 {
-      /*context.waitFor(mc -> !YACLScreen.class.isInstance(mc.currentScreen));
-      *///?}
    }
 
    /**
@@ -154,11 +122,7 @@ public class ConfigHelper {
     */
    public void closeModsScreen() {
       context.getInput().pressKey(GLFW.GLFW_KEY_ESCAPE);
-      //? 26.1 {
       context.waitFor(mc -> mc.screen == null || mc.screen instanceof TitleScreen);
-       //?} >=1.21.10 <=1.21.11 {
-      /*context.waitFor(mc -> mc.currentScreen == null || mc.currentScreen instanceof TitleScreen);
-      *///?}
    }
 
    // -------------------------------------------------------------------------
@@ -167,11 +131,7 @@ public class ConfigHelper {
 
    public boolean getYaclToggleState(String label) {
       return context.computeOnClient(mc -> {
-         YACLScreen screen = (YACLScreen) //? 26.1 {
-            mc.screen;
-             //?} >=1.21.10 <=1.21.11 {
-            /*mc.currentScreen;
-         *///?}
+         YACLScreen screen = (YACLScreen) mc.screen;
          OptionListWidget list = findOptionListWidget(screen);
          OptionListWidget.OptionEntry entry = findOptionEntry(list, label);
          @SuppressWarnings("unchecked")
@@ -182,21 +142,11 @@ public class ConfigHelper {
 
    public void clickYaclToggle(String label) {
       context.runOnClient(mc -> {
-         YACLScreen screen = (YACLScreen) //? 26.1 {
-            mc.screen;
-             //?} >=1.21.10 <=1.21.11 {
-            /*mc.currentScreen;
-         *///?}
+         YACLScreen screen = (YACLScreen) mc.screen;
          OptionListWidget list = findOptionListWidget(screen);
          OptionListWidget.OptionEntry entry = findOptionEntry(list, label);
          var dim = entry.widget.getDimension();
-         //? 26.1 {
          entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-          //?} >=1.21.10 <=1.21.11 {
-         /*entry.widget.mouseClicked(
-            new Click(dim.centerX(), dim.centerY(), new MouseInput(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)),
-            false);
-         *///?}
       });
       context.waitTick();
    }
@@ -212,11 +162,7 @@ public class ConfigHelper {
    // -------------------------------------------------------------------------
 
    private static OptionListWidget findOptionListWidget(YACLScreen screen) {
-      //? 26.1 {
       for (GuiEventListener child : screen.children()) {
-       //?} >=1.21.10 <=1.21.11 {
-      /*for (Element child : screen.children()) {
-         *///?}
          if (child instanceof OptionListWidget optList) {
             return optList;
          }

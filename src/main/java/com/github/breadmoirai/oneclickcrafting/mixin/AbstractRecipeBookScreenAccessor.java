@@ -1,5 +1,4 @@
-//? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
+package com.github.breadmoirai.oneclickcrafting.mixin;
 
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -11,4 +10,3 @@ public interface AbstractRecipeBookScreenAccessor {
    @Accessor
    RecipeBookComponent<?> getRecipeBookComponent();
 }
-//?}

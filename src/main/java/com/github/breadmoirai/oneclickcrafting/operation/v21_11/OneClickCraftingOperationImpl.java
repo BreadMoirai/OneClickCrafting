@@ -1,19 +1,18 @@
 //? >=1.21.10 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.operation.v21_11;
+/*package com.github.breadmoirai.oneclickcrafting.operation.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
-import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.ClientRecipeBookAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickCraftingOperation;
-import com.github.breadmoirai.oneclickcrafting.operation.OneClickOperation;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.NetworkRecipeId;
-import net.minecraft.recipe.RecipeDisplayEntry;
-import net.minecraft.recipe.RecipeFinder;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.StackedItemContents;
+import net.minecraft.world.inventory.RecipeBookMenu;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 
 import java.util.Map;
 
@@ -24,14 +23,14 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
    }
 
    @Override public boolean anySlotMax() {
-      MinecraftClient minecraft = MinecraftClient.getInstance();
-      if (!(minecraft.currentScreen instanceof HandledScreen<?> screen)) {
+      Minecraft minecraft = Minecraft.getInstance();
+      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
          return false;
       }
       int maxGridSlot = screen instanceof InventoryScreen ? 4 : 9;
       for (int slotIdx = 1; slotIdx <= maxGridSlot; slotIdx++) {
-         ItemStack s = screen.getScreenHandler().getSlot(slotIdx).getStack();
-         if (!s.isEmpty() && s.getCount() >= s.getMaxCount()) {
+         var s = getMod().inventory.getSlot(slotIdx);
+         if (!s.isEmpty() && s.count() >= s.stack().getMaxStackSize()) {
             return true;
          }
       }
@@ -39,20 +38,19 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
    }
 
    @Override public boolean canCraftMore() {
-      MinecraftClient minecraft = MinecraftClient.getInstance();
-      ClientPlayerEntity player = minecraft.player;
+      Minecraft minecraft = Minecraft.getInstance();
+      LocalPlayer player = minecraft.player;
       if (player == null) return false;
-      Map<NetworkRecipeId, RecipeDisplayEntry> recipes = ((ClientRecipeBookAccessor) player.getRecipeBook()).getRecipes();
-      RecipeDisplayEntry entry = recipes.get(new NetworkRecipeId(getRecipeId()));
-      RecipeFinder finder = new RecipeFinder();
-      player.getInventory().populateRecipeFinder(finder);
-      return !entry.isCraftable(finder);
+      Map<RecipeDisplayId, RecipeDisplayEntry> recipes = ((ClientRecipeBookAccessor) player.getRecipeBook()).getKnown();
+      RecipeDisplayEntry entry = recipes.get(new RecipeDisplayId(getRecipeId()));
+      StackedItemContents contents = new StackedItemContents();
+      player.getInventory().fillStackedContents(contents);
+      return !entry.canCraft(contents);
    }
 
    @Override public boolean craft() {
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (client.interactionManager == null) return false;
-      if (!(client.currentScreen instanceof HandledScreen<?> gui)) return false;
+      Minecraft client = Minecraft.getInstance();
+      if (!(client.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu>)) return false;
       if (isDrop()) {
          if (isShift()) {
             debug("craft: drop stack (slot 0)");
@@ -68,5 +66,4 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
       return true;
    }
 }
-
 *///?}

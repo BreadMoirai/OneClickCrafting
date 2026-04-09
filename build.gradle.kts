@@ -31,7 +31,7 @@ repositories {
 
 dependencies {
     minecraft("com.mojang:minecraft:${property("minecraft_version")}")
-    mappings("net.fabricmc:yarn:${property("yarn_mappings")}:v2")
+    mappings(loom.officialMojangMappings())
 
     modImplementation("net.fabricmc:fabric-loader:${property("loader_version")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_version")}")
@@ -82,6 +82,7 @@ if (sc.current.parsed < "26") {
         group = "stonecutter"
         description = "Replaces standalone _ with unused1, unused2, ... in Stonecutter generated sources"
         notCompatibleWithConfigurationCache("transforms generated source files in place")
+        @Suppress("OPT_IN_USAGE")
         dependsOn(sc.tasks.generate.values)
         doLast {
             val unnamedPattern = Regex("""\b_\b""")
@@ -123,4 +124,19 @@ loom {
     }
 
     createRemapConfigurations(sourceSets.test.get())
+}
+
+apply(from = "../../stonecutter-swaps.gradle.kts")
+@Suppress("UNCHECKED_CAST")
+val swapMap = extra["swaps"] as Map<String, Map<String, String>>
+stonecutter {
+    replacements {
+        for ((version, swaps) in swapMap) {
+            string(sc.current.parsed >= version) {
+                for ((from, to) in swaps) {
+                    replace(from, to)
+                }
+            }
+        }
+    }
 }

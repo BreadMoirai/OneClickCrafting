@@ -1,74 +1,56 @@
 //? >=1.21.10 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.inventory.v21_11;
+/*package com.github.breadmoirai.oneclickcrafting.inventory.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.HandledScreenAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public class OneClickInventoryImpl extends OneClickInventory {
 
-   private static HandledScreen<?> getScreenHandler() {
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (client.interactionManager == null) return null;
-      if (!(client.currentScreen instanceof HandledScreen<?> gui)) return null;
-      return gui;
+   private static AbstractContainerMenu getMenu() {
+      Minecraft minecraft = Minecraft.getInstance();
+      if (!(minecraft.screen instanceof AbstractContainerScreen<? extends AbstractContainerMenu> containerScreen))
+         return null;
+      return containerScreen.getMenu();
    }
 
    @Override
    public void clickSlot(int slotNum, int mouseButton, OneClickInventoryAction action) {
-      HandledScreen<?> gui = getScreenHandler();
-      if (gui == null) return;
-      if (slotNum >= 0 && slotNum < gui.getScreenHandler().slots.size())
-      {
-         Slot slot = gui.getScreenHandler().getSlot(slotNum);
-         ((HandledScreenAccessor) gui).callOnMouseClick(slot, slotNum, mouseButton, action.mapping());
-      }
-      else
-      {
-         MinecraftClient mc = MinecraftClient.getInstance();
-         ClientPlayerInteractionManager interactionManager = mc.interactionManager;
-         if (interactionManager != null) {
-            interactionManager.clickSlot(gui.getScreenHandler().syncId, slotNum, mouseButton, action.mapping(), mc.player);
-         }
-      }
+      Minecraft minecraft = Minecraft.getInstance();
+      if (minecraft.gameMode == null) return;
+      AbstractContainerMenu menu = getMenu();
+      if (menu == null) return;
+      minecraft.gameMode.handleInventoryMouseClick(menu.containerId, slotNum, mouseButton, action.mapping(), minecraft.player);
    }
 
    @Override
    public OneClickItemStack getSlot(int slotNum) {
-      HandledScreen<?> gui = getScreenHandler();
-      if (gui == null) return null;
-      return new OneClickItemStack(gui.getScreenHandler().getSlot(slotNum).getStack());
+      AbstractContainerMenu menu = getMenu();
+      if (menu == null) return null;
+      return new OneClickItemStack(menu.getSlot(slotNum).getItem());
    }
 
    @Override
-   public int findMatchingSlot(Predicate<OneClickItemStack> ingredient)
-   {
-      HandledScreen<?> gui = getScreenHandler();
-      if (gui == null) return -1;
-      ScreenHandler handler = gui.getScreenHandler();
-      DefaultedList<Slot> slots = handler.slots;
+   public int findMatchingSlot(Predicate<OneClickItemStack> predicate) {
+      AbstractContainerMenu menu = getMenu();
+      if (menu == null) return -1;
+      NonNullList<Slot> slots = menu.slots;
       for (int i = 0; i < slots.size(); i++) {
-         Slot slot = handler.getSlot(i);
-         if (!(slot.inventory instanceof PlayerInventory)) continue;
-         if (!ingredient.test(new OneClickItemStack(slot.getStack()))) continue;
-         return slot.id;
+         Slot slot = menu.getSlot(i);
+         if (!(slot.container instanceof Inventory)) continue;
+         if (!predicate.test(new OneClickItemStack(slot.getItem()))) continue;
+         return slot.index;
       }
       return -1;
    }
 
 }
-
 *///?}

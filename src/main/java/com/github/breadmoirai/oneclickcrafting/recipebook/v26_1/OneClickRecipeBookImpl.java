@@ -1,12 +1,10 @@
 //? 26.1 {
 package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
 
-
-import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.AbstractRecipeBookScreenAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.ClientRecipeBookAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.v26_1.RecipeBookComponentAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.RecipeBookComponentAccessor;
 import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -19,7 +17,6 @@ import net.minecraft.world.inventory.RecipeBookMenu;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.Map;
 

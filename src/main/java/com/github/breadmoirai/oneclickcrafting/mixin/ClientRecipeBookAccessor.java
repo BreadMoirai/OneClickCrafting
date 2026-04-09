@@ -1,5 +1,5 @@
-//? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
+
+package com.github.breadmoirai.oneclickcrafting.mixin;
 
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
@@ -15,4 +15,3 @@ public interface ClientRecipeBookAccessor {
    Map<RecipeDisplayId, RecipeDisplayEntry> getKnown();
 }
 
-//?}

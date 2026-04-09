@@ -1,19 +1,17 @@
 //? >=1.21.10 <=1.21.11 {
 /*package com.github.breadmoirai.oneclickcrafting.testmod.context.v21_11;
 
-import com.github.breadmoirai.oneclickcrafting.mixin.v21_11.HandledScreenAccessor;
 import com.github.breadmoirai.oneclickcrafting.testmod.context.StonecutterContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.screen.ingame.StonecutterScreen;
-import net.minecraft.client.input.MouseInput;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.recipe.display.CuttingRecipeDisplay;
-import net.minecraft.registry.Registries;
-import net.minecraft.screen.StonecutterScreenHandler;
-import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.StonecutterMenu;
 
 public class StonecutterContextImpl extends StonecutterContext {
 
@@ -33,35 +31,20 @@ public class StonecutterContextImpl extends StonecutterContext {
 
    @Override
    public void clickRecipeButton(int mouseButton, int recipeIndex) {
-      // Wait until the server has reset selectedRecipe away from recipeIndex.
-      // When onButtonClick sees selectedRecipe == recipeIndex it returns false and skips
-      // sending the ButtonClickC2SPacket, so no craft would happen on the server.
-      // The server resets selectedRecipe to -1 after each craft (via updateInput) and
-      // syncs it back to the client via sendContentUpdates on the next server tick.
-      try {
-         context.waitFor(mc -> {
-            if (!(mc.currentScreen instanceof StonecutterScreen screen)) return false;
-            return screen.getScreenHandler().getSelectedRecipe() != recipeIndex;
-         }, 20);
-      } catch (AssertionError timeout) {
-         throw new AssertionError(
-            "clickRecipeButton: selectedRecipe was not reset by server within 20 ticks"
-               + " (recipeIndex=" + recipeIndex + ")");
-      }
+      // Wait for the server to process any previous craft before clicking again.
+      wait(3);
       context.runOnClient(mc -> {
-         if (!(mc.currentScreen instanceof StonecutterScreen screen)) {
+         if (!(mc.screen instanceof StonecutterScreen screen)) {
             throw new AssertionError("clickRecipeButton: not in a StonecutterScreen");
          }
-         StonecutterScreenHandler handler = screen.getScreenHandler();
-         CuttingRecipeDisplay.Grouping<?> recipes = handler.getAvailableRecipes();
-         if (recipes.isEmpty()) {
-            throw new AssertionError(
-               "clickRecipeButton: no available recipes (input slot empty?)");
+         StonecutterMenu menu = screen.getMenu();
+         if (menu.getNumberOfVisibleRecipes() == 0) {
+            throw new AssertionError("clickRecipeButton: no available recipes (input slot empty?)");
          }
-         if (recipeIndex >= recipes.entries().size()) {
+         if (recipeIndex >= menu.getNumberOfVisibleRecipes()) {
             throw new AssertionError(
                "clickRecipeButton: recipeIndex " + recipeIndex
-                  + " out of range, available=" + recipes.entries().size());
+                  + " out of range, available=" + menu.getNumberOfVisibleRecipes());
          }
          // StonecutterScreen draws recipe buttons at (x+52, y+14), 16×18 px each, 4 columns.
          // x = (screenWidth - 176) / 2,  y = (screenHeight - 166) / 2.
@@ -69,21 +52,21 @@ public class StonecutterContextImpl extends StonecutterContext {
          int guiTop  = (screen.height - 166) / 2;
          double cx = guiLeft + 52 + (recipeIndex % 4) * 16 + 8;
          double cy = guiTop  + 14 + (recipeIndex / 4) * 18 + 9;
-         screen.mouseClicked(new Click(cx, cy, new MouseInput(mouseButton, 0)), false);
+         screen.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(mouseButton, 0)), false);
       });
    }
 
    @Override
    protected void putOneItemInInputSlot(String itemId) {
       context.runOnClient(mc -> {
-         if (!(mc.currentScreen instanceof StonecutterScreen screen)) {
+         if (!(mc.screen instanceof StonecutterScreen screen)) {
             throw new AssertionError("putOneItemInInputSlot: not in a StonecutterScreen");
          }
-         StonecutterScreenHandler handler = screen.getScreenHandler();
+         StonecutterMenu menu = screen.getMenu();
          Slot sourceSlot = null;
-         for (var slot : handler.slots) {
-            if (!(slot.inventory instanceof PlayerInventory)) continue;
-            if (Registries.ITEM.getId(slot.getStack().getItem()).toString().equals(itemId)) {
+         for (var slot : menu.slots) {
+            if (!(slot.container instanceof Inventory)) continue;
+            if (BuiltInRegistries.ITEM.getKey(slot.getItem().getItem()).toString().equals(itemId)) {
                sourceSlot = slot;
                break;
             }
@@ -92,9 +75,12 @@ public class StonecutterContextImpl extends StonecutterContext {
             throw new AssertionError(
                "putOneItemInInputSlot: item not found in player inventory: " + itemId);
          }
-         ((HandledScreenAccessor) screen).callOnMouseClick(sourceSlot, sourceSlot.getIndex(), 0, SlotActionType.PICKUP);
-         ((HandledScreenAccessor) screen).callOnMouseClick(handler.getSlot(0), 0, 1, SlotActionType.PICKUP);
-         ((HandledScreenAccessor) screen).callOnMouseClick(sourceSlot, sourceSlot.getIndex(), 0, SlotActionType.PICKUP);
+         // Pick up the full stack from inventory
+         mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot.index, 0, ContainerInput.PICKUP, mc.player);
+         // Place one item in stonecutter input slot (slot 0) using right-click
+         mc.gameMode.handleInventoryMouseClick(menu.containerId, 0, 1, ContainerInput.PICKUP, mc.player);
+         // Return cursor stack to inventory slot
+         mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot.index, 0, ContainerInput.PICKUP, mc.player);
       });
       wait(2);
    }

@@ -9,11 +9,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import org.lwjgl.glfw.GLFW;
 
-//? 26.1 {
 import net.minecraft.client.KeyMapping;
-//?} >=1.21.10 <=1.21.11 {
-/*import net.minecraft.client.option.KeyBinding;
-*///?}
 
 
 /**
@@ -59,22 +55,14 @@ public class RepeatLastTests extends OneClickTests {
    private void bindRepeatKey() {
       context.runOnClient(mc -> {
          OneClickCraftingMod.getInstance().input.repeatLast.setKey(REPEAT_KEY_CODE);
-         //? 26.1 {
          KeyMapping.resetMapping();
-         //?} >=1.21.10 <=1.21.11 {
-         /*KeyBinding.updateKeysByCode();
-         *///?}
       });
    }
 
    private void unbindRepeatKey() {
       context.runOnClient(mc -> {
          OneClickCraftingMod.getInstance().input.repeatLast.setKey(GLFW.GLFW_KEY_UNKNOWN);
-         //? 26.1 {
          KeyMapping.resetMapping();
-         //?} >=1.21.10 <=1.21.11 {
-         /*KeyBinding.updateKeysByCode();
-         *///?}
       });
    }
 

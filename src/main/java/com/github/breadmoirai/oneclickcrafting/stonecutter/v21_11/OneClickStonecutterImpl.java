@@ -1,21 +1,21 @@
 //? >=1.21.10 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.stonecutter.v21_11;
+/*package com.github.breadmoirai.oneclickcrafting.stonecutter.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutter;
 import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutterRecipe;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ingame.StonecutterScreen;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.StonecuttingRecipe;
-import net.minecraft.recipe.display.CuttingRecipeDisplay;
-import net.minecraft.recipe.display.SlotDisplay;
-import net.minecraft.screen.StonecutterScreenHandler;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
+import net.minecraft.client.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.inventory.StonecutterMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.SelectableRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 
@@ -23,31 +23,31 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
 
    @Override
    public void selectRecipe(int recipeId) {
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (!(client.currentScreen instanceof StonecutterScreen screen)) return;
-      screen.getScreenHandler().onButtonClick(client.player, recipeId);
-      MinecraftClient.getInstance().getSoundManager().play(
-         PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
-      if (client.interactionManager == null) return;
-      client.interactionManager.clickButton(screen.getScreenHandler().syncId, recipeId);
+      Minecraft minecraft = Minecraft.getInstance();
+      if (minecraft.gameMode == null) return;
+      if (!(minecraft.screen instanceof StonecutterScreen screen)) return;
+      StonecutterMenu menu = screen.getMenu();
+      menu.clickMenuButton(minecraft.player, recipeId);
+      minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
+      minecraft.gameMode.handleInventoryButtonClick(menu.containerId, recipeId);
       OneClickEvents.STONECUTTER_CLICK.invoker().onStonecutterClick(recipeId, OneClickCraftingMod.getInstance().config.isEnableRightClick() ? 1 : 0);
    }
 
    @Override
    public OneClickStonecutterRecipe getRecipe(int recipeId) {
-      MinecraftClient client = MinecraftClient.getInstance();
-      if (!(client.currentScreen instanceof StonecutterScreen screen)) return OneClickStonecutterRecipe.EMPTY;
-      screen.getScreenHandler().onButtonClick(client.player, recipeId);
-      StonecutterScreenHandler screenHandler = screen.getScreenHandler();
-      CuttingRecipeDisplay.Grouping<StonecuttingRecipe> recipes = screenHandler.getAvailableRecipes();
-      if (recipes.isEmpty()) {
+      Minecraft minecraft = Minecraft.getInstance();
+      if (minecraft.level == null) return OneClickStonecutterRecipe.EMPTY;
+      if (!(minecraft.screen instanceof StonecutterScreen screen)) return OneClickStonecutterRecipe.EMPTY;
+      StonecutterMenu menu = screen.getMenu();
+      if (menu.getNumberOfVisibleRecipes() == 0) {
          debug("onStonecutterClick: getAvailableRecipes() is empty, ignoring");
          return OneClickStonecutterRecipe.EMPTY;
       }
-      CuttingRecipeDisplay.GroupEntry<StonecuttingRecipe> group = recipes.entries().get(recipeId);
-      ItemStack result = ((SlotDisplay.StackSlotDisplay) group.recipe().optionDisplay()).stack();
-      Ingredient input = group.input();
-      return new OneClickStonecutterRecipe(new OneClickItemStack(result), ingredient -> input.test(ingredient.stack()));
+      SelectableRecipe.SingleInputEntry<StonecutterRecipe> entry = menu.getVisibleRecipes().entries().get(recipeId);
+      ContextMap context = SlotDisplayContext.fromLevel(minecraft.level);
+      ItemStack result = entry.recipe().optionDisplay().resolveForFirstStack(context);
+      if (result.isEmpty()) return OneClickStonecutterRecipe.EMPTY;
+      return new OneClickStonecutterRecipe(new OneClickItemStack(result), ingredient -> entry.input().test(ingredient.stack()));
    }
 
 }

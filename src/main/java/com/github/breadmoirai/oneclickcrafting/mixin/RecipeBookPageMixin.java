@@ -1,5 +1,4 @@
-//? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
+package com.github.breadmoirai.oneclickcrafting.mixin;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -46,4 +45,3 @@ public abstract class RecipeBookPageMixin {
       }
    }
 }
-//?}

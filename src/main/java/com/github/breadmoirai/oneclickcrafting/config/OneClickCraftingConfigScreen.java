@@ -7,13 +7,8 @@ import dev.isxander.yacl3.gui.YACLScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-//? 26.1 {
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-//?} >=1.21.10 <=1.21.11 {
-/*import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
-*///?}
 
 @Environment(EnvType.CLIENT)
 public class OneClickCraftingConfigScreen extends YACLScreen {
@@ -21,7 +16,6 @@ public class OneClickCraftingConfigScreen extends YACLScreen {
    public OneClickCraftingConfigScreen(Screen parent) {
       super(createConfig(), parent);
    }
-//? 26.1 {
    private static Component text(String key) {
       return Component.translatable(key);
    }
@@ -29,15 +23,6 @@ public class OneClickCraftingConfigScreen extends YACLScreen {
    private static Component literal(String text) {
       return Component.literal(text);
    }
-//?} >=1.21.10 <=1.21.11 {
-   /*private static Text text(String key) {
-      return Text.translatable(key);
-   }
-
-   private static Text literal(String text) {
-      return Text.literal(text);
-   }
-*///?}
 
    private static YetAnotherConfigLib createConfig() {
       return YetAnotherConfigLib.createBuilder()
