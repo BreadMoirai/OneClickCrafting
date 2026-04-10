@@ -29,6 +29,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
                if (hasOp()) return;
                if (mod.input.repeatLast.guard(key)) return;
                if (isRepeating) return;
+               isRepeating = true;
                fireRepeatCraft();
             });
             ScreenEvents.remove(screen).register(screen2 -> clearOp());

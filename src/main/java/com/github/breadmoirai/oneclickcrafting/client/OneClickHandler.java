@@ -1,36 +1,44 @@
 package com.github.breadmoirai.oneclickcrafting.client;
 
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickOperation;
+
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 
 public abstract class OneClickHandler {
    protected OneClickCraftingMod mod;
-   protected int repeatTicks;
    protected boolean isRepeating;
+   protected int repeatDelayInitial;
+   protected int repeatDelayInterval;
    protected OneClickOperation op;
 
    public OneClickHandler(OneClickCraftingMod mod) {
       this.mod = mod;
-      this.repeatTicks = 0;
       this.isRepeating = false;
-      op = null;
+      this.repeatDelayInitial = -1;
+      this.repeatDelayInterval = -1;
+      this.op = null;
    }
 
    public abstract void onInitialize();
 
    public final void tick() {
       if (!mod.input.repeatLast.isDown()) {
-         repeatTicks = 0;
          isRepeating = false;
+         repeatDelayInitial = -1;
+         repeatDelayInterval = -1;
          return;
       }
-      if (op != null) return;
-      if (isRepeating) return;
-      repeatTicks += 1;
-      if (repeatTicks < mod.config.getRepeatDelay()) return;
-      debug("tick: repeat delay elapsed (ticks=" + repeatTicks + "), firing repeat craft");
-      isRepeating = true;
-      fireRepeatCraft();
+      if (repeatDelayInitial > 0) {
+         repeatDelayInitial--;
+         if (repeatDelayInitial == 0) {
+            fireRepeatCraft();
+         }
+      } else if (repeatDelayInterval > 0) {
+         repeatDelayInterval--;
+      } else if (repeatDelayInterval == 0) {
+         repeatDelayInterval = -1;
+         fireRepeatCraft();
+      }
    }
 
    /**
@@ -40,12 +48,27 @@ public abstract class OneClickHandler {
     */
    protected void onCraftComplete() {
       debug("onCraftComplete: clearing op, isRepeating=" + isRepeating);
+      debug("onCraftComplete: repeatDelayInitial = " + repeatDelayInitial);
+      debug("onCraftComplete: repeatDelayInterval = " + repeatDelayInterval);
       clearOp();
       if (!isRepeating) return;
-      fireRepeatCraft();
+      if (repeatDelayInitial == -1) {
+         repeatDelayInitial = mod.config.getRepeatDelay();
+         debug("onCraftComplete: set repeatDelayInitial = " + repeatDelayInitial);
+      }
+      if (repeatDelayInterval == -1) {
+         repeatDelayInterval = mod.config.getRepeatInterval();
+         debug("onCraftComplete: set repeatDelayInterval = " + repeatDelayInterval);
+      }
+      if (repeatDelayInitial == 0 && repeatDelayInterval == 0) {
+         repeatDelayInterval = -1;
+         fireRepeatCraft();
+      }
    }
 
-   /** Fires one repeat craft using the last-selected recipe. Implemented by each handler. */
+   /**
+    * Fires one repeat craft using the last-selected recipe. Implemented by each handler.
+    */
    protected abstract void fireRepeatCraft();
 
    protected boolean hasOp() {

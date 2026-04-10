@@ -1,6 +1,5 @@
 package com.github.breadmoirai.oneclickcrafting.input;
 
-import com.github.breadmoirai.oneclickcrafting.input.v26_1.InputBindingImpl;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;

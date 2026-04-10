@@ -23,11 +23,10 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
             ScreenEvents.afterTick(screen).register(_ -> tick());
             ScreenKeyboardEvents.beforeKeyPress(screen).register((_, key) -> {
-               debug("hasOp() = " + hasOp());
                if (hasOp()) return;
                if (mod.input.repeatLast.guard(key)) return;
-               debug("isRepeating = " + isRepeating);
                if (isRepeating) return;
+               isRepeating = true;
                fireRepeatCraft();
             });
             ScreenEvents.remove(screen).register(_ -> clearOp());

@@ -1,8 +1,5 @@
-//? >=1.21.10 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.input.v26_1;
+package com.github.breadmoirai.oneclickcrafting.input;
 
-import com.github.breadmoirai.oneclickcrafting.input.InputBinding;
-import com.github.breadmoirai.oneclickcrafting.input.OneClickCraftingInput;
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -28,12 +25,22 @@ public class InputBindingImpl implements InputBinding<KeyMapping, KeyEvent> {
 
    @Override
    public boolean guard(KeyEvent key) {
-      return !bind.matches(key);
+      return !matches(key);
    }
 
    @Override
    public boolean guard(int keycode) {
-      return ((KeyMappingAccessor) bind).getKey().getValue() != keycode;
+      return !matches(keycode);
+   }
+
+   @Override
+   public boolean matches(KeyEvent key) {
+      return bind.matches(key);
+   }
+
+   @Override
+   public boolean matches(int keycode) {
+      return ((KeyMappingAccessor) bind).getKey().getValue() == keycode;
    }
 
    @Override
@@ -46,5 +53,3 @@ public class InputBindingImpl implements InputBinding<KeyMapping, KeyEvent> {
       this.bind.setKey(InputConstants.Type.KEYSYM.getOrCreate(keycode));
    }
 }
-
-*///?}

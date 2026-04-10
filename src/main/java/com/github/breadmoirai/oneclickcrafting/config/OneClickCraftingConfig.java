@@ -34,6 +34,7 @@ public class OneClickCraftingConfig {
    private boolean ctrlHold = true;
    private boolean dropEnable = true;
    private int repeatDelay = 6;
+   private int repeatInterval = 0;
    private boolean debugLogging = false;
    private int toggleHoldKeycode = -1;
    private int repeatLastKeycode = -1;
@@ -56,6 +57,7 @@ public class OneClickCraftingConfig {
             instance.ctrlHold = config.ctrlHold;
             instance.dropEnable = config.dropEnable;
             instance.repeatDelay = config.repeatDelay;
+            instance.repeatInterval = config.repeatInterval;
             instance.debugLogging = config.debugLogging;
             instance.toggleHoldKeycode = config.toggleHoldKeycode;
             instance.repeatLastKeycode = config.repeatLastKeycode;
@@ -139,6 +141,14 @@ public class OneClickCraftingConfig {
 
    public void setRepeatDelay(int repeatDelay) {
       this.repeatDelay = repeatDelay;
+   }
+
+   public int getRepeatInterval() {
+      return repeatInterval;
+   }
+
+   public void setRepeatInterval(int repeatInterval) {
+      this.repeatInterval = repeatInterval;
    }
 
    public boolean isDebugLogging() {
