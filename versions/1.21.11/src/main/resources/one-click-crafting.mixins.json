@@ -7,7 +7,7 @@
   "client": [
     "v21_11.ClientPlayNetworkHandlerMixin",
     "AbstractRecipeBookScreenAccessor",
-    "AbstractWidgetMixin",
+    "OverlayRecipeButtonMixin",
     "ClientRecipeBookAccessor",
     "KeyMappingAccessor",
     "OverlayRecipeComponentMixin",

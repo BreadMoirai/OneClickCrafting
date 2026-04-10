@@ -8,7 +8,7 @@
     "v26_1.AbstractCraftingMenuMixin",
     "v26_1.StonecutterMenuMixin",
     "AbstractRecipeBookScreenAccessor",
-    "AbstractWidgetMixin",
+    "OverlayRecipeButtonMixin",
     "ClientRecipeBookAccessor",
     "KeyMappingAccessor",
     "OverlayRecipeComponentMixin",
