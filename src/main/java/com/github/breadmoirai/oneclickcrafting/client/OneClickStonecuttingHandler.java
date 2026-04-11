@@ -6,6 +6,8 @@ import com.github.breadmoirai.oneclickcrafting.operation.OneClickStonecuttingOpe
 import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutterRecipe;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
@@ -25,13 +27,16 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
       ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
          if (screen instanceof StonecutterScreen) {
             ScreenEvents.afterTick(screen).register(screen2 -> tick());
-            ScreenKeyboardEvents.beforeKeyPress(screen).register((screen2, key) -> {
-               if (hasOp()) return;
-               if (mod.input.repeatLast.guard(key)) return;
-               if (isRepeating) return;
-               isRepeating = true;
-               fireRepeatCraft();
-            });
+            ScreenKeyboardEvents.beforeKeyPress(screen)
+               //$ if >= 1.21.9 '.register((screen2, key) -> {' else '.register((screen2, key, unused1, unused2) -> {'
+               .register((screen2, key, unused3, unused4) -> {
+                  if (hasOp()) return;
+                  //~ if >=1.21.9 'key' -> 'key.key()'
+                  if (mod.input.repeatLast.guard(key)) return;
+                  if (isRepeating) return;
+                  isRepeating = true;
+                  fireRepeatCraft();
+               });
             ScreenEvents.remove(screen).register(screen2 -> clearOp());
          }
       });
@@ -42,13 +47,16 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
       if (hasOp()) return;
       debug("fireRepeatCraft(stonecutter): repeating recipe=" + lastSelected);
       mod.stonecutter.selectRecipe(lastSelected);
-//      onStonecutterClick(lastSelected, mod.config.isEnableLeftClick() ? 0 : 1);
    }
 
    @Override
    public void onResultSlotUpdate(OneClickItemStack stack) {
       if (!hasOp()) {
-         debug("onResultSlotUpdate(stonecutter): no active operation, ignoring");
+         debug("onResultSlotUpdate(stonecutter): no active operation, ignoring " + stack.count() + " " + stack.stack()
+            .getItemName().getString(), () -> {
+            Screen screen = Minecraft.getInstance().screen;
+            return screen instanceof StonecutterScreen;
+         });
          return;
       }
       if (!op.checkOutput(stack)) {

@@ -3,9 +3,13 @@ package com.github.breadmoirai.oneclickcrafting.client;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickCraftingOperation;
+
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
+
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 
@@ -19,17 +23,20 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    public void onInitialize() {
       OneClickEvents.RECIPE_CLICK.register(this);
       OneClickEvents.RESULT_SLOT_UPDATE.register(this);
-      ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
+      ScreenEvents.BEFORE_INIT.register((unused1, screen, unused2, unused3) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
-            ScreenEvents.afterTick(screen).register(_ -> tick());
-            ScreenKeyboardEvents.beforeKeyPress(screen).register((_, key) -> {
-               if (hasOp()) return;
-               if (mod.input.repeatLast.guard(key)) return;
-               if (isRepeating) return;
-               isRepeating = true;
-               fireRepeatCraft();
-            });
-            ScreenEvents.remove(screen).register(_ -> clearOp());
+            ScreenEvents.afterTick(screen).register(unused4 -> tick());
+            ScreenKeyboardEvents.beforeKeyPress(screen)
+               //$ if >= 1.21.9 '.register((screen2, key) -> {' else '.register((screen2, key, unused5, unused6) -> {'
+               .register((screen2, key, unused7, unused8) -> {
+                  if (hasOp()) return;
+                  //~ if >=1.21.9 'key' -> 'key.key()'
+                  if (mod.input.repeatLast.guard(key)) return;
+                  if (isRepeating) return;
+                  isRepeating = true;
+                  fireRepeatCraft();
+               });
+            ScreenEvents.remove(screen).register(unused9 -> clearOp());
          }
       });
    }
@@ -61,12 +68,17 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
 
    @Override
    public void onResultSlotUpdate(OneClickItemStack stack) {
-      if (op == null) {
-         debug("onResultSlotUpdate(crafting): no active operation, ignoring");
+      if (!hasOp()) {
+         debug("onResultSlotUpdate(crafting): no active operation, ignoring " + stack.count() + " " + stack.stack()
+            .getItemName().getString(), () -> {
+            Screen screen = Minecraft.getInstance().screen;
+            return screen instanceof InventoryScreen || screen instanceof CraftingScreen;
+         });
          return;
       }
       if (!op.checkOutput(stack)) {
-         debug("onResultSlotUpdate(crafting): output mismatch (expected=" + op.getResult() + " got=" + stack + "), ignoring");
+         debug(
+            "onResultSlotUpdate(crafting): output mismatch (expected=" + op.getResult() + " got=" + stack + "), ignoring");
          return;
       }
       debug("onResultSlotUpdate(crafting): output matched " + stack + ", executing craft");

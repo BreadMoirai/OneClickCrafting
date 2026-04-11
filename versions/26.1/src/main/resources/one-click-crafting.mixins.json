@@ -5,17 +5,17 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
-    "v26_1.AbstractCraftingMenuMixin",
-    "v26_1.StonecutterMenuMixin",
     "AbstractRecipeBookScreenAccessor",
-    "OverlayRecipeButtonMixin",
     "ClientRecipeBookAccessor",
     "KeyMappingAccessor",
-    "OverlayRecipeComponentMixin",
-    "RecipeBookComponentAccessor",
-    "RecipeBookComponentMixin",
-    "RecipeBookPageMixin",
-    "StonecutterScreenMixin"
+    "v21_9.OverlayRecipeButtonMixin",
+    "v21_9.OverlayRecipeComponentMixin",
+    "v21_9.RecipeBookComponentAccessor",
+    "v21_9.RecipeBookComponentMixin",
+    "v21_9.RecipeBookPageMixin",
+    "v21_9.StonecutterScreenMixin",
+    "v26_1.AbstractCraftingMenuMixin",
+    "v26_1.StonecutterMenuMixin"
   ],
   "injectors": {
     "defaultRequire": 1

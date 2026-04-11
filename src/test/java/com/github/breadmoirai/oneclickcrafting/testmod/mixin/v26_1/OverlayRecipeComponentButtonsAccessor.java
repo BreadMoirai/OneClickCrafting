@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
@@ -16,4 +16,4 @@ public interface OverlayRecipeComponentButtonsAccessor {
    @Accessor("recipeButtons")
    List<AbstractWidget> getRecipeButtons();
 }
-//?}
+*///?}

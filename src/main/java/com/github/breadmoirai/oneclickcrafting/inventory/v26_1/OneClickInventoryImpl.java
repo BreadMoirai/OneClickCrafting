@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.inventory.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.inventory.v21_8;
 
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;
@@ -32,7 +32,7 @@ public class OneClickInventoryImpl extends OneClickInventory {
       if (minecraft.gameMode == null) return;
       AbstractContainerMenu menu = getMenu();
       if (menu == null) return;
-      minecraft.gameMode.handleContainerInput(menu.containerId, slotNum, mouseButton, action.mapping(), player);
+      minecraft.gameMode.handleClickType(menu.containerId, slotNum, mouseButton, action.mapping(), player);
    }
 
    @Override
@@ -61,4 +61,4 @@ public class OneClickInventoryImpl extends OneClickInventory {
 
 }
 
-//?}
+*///?}

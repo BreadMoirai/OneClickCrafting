@@ -1,10 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.breadmoirai.oneclickcrafting.testmod.mixin.v21_11",
+  "package": "com.github.breadmoirai.oneclickcrafting.testmod.mixin.v21_9",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [
-  ],
+  "mixins": [],
   "client": [
     "InputUtilMixin"
   ],

@@ -4,11 +4,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.ConfigHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
-//? 26.1 {
-import com.github.breadmoirai.oneclickcrafting.testmod.context.v26_1.StonecutterContextImpl;
-//?} >=1.21.10 <=1.21.11 {
-/*import com.github.breadmoirai.oneclickcrafting.testmod.context.v21_11.StonecutterContextImpl;
-*///?}
+import com.github.breadmoirai.oneclickcrafting.testmod.context.v21_8.StonecutterContextImpl;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class StonecutterContext extends CraftContext {

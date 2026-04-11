@@ -44,7 +44,7 @@ public abstract class TestSuite {
          .setUseConsistentSettings(true)
          .create();
       //~ if >=26.1 '.getClientWorld()' -> '.getClientLevel()'
-      world.getClientLevel().waitForChunksDownload();
+      world.getClientWorld().waitForChunksDownload();
       // @a required — runCommand runs as the server console (@s = server, not player)
       world.getServer().runCommand("time set day");
       // Suppress hunger drain so survival mechanics don't interfere with tests

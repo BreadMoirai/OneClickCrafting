@@ -1,10 +1,11 @@
 package com.github.breadmoirai.oneclickcrafting.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import com.mojang.blaze3d.platform.Window;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
@@ -29,14 +30,17 @@ public class OneClickCraftingInput {
 
    public void registerBindings() {
       List<InputBindingImpl> bindings = Arrays.asList(toggleHold, repeatLast);
-      Identifier categoryId = Identifier.fromNamespaceAndPath("oneclickcrafting", "keybindings");
+      //? >=1.21.9 {
+      /*ResourceLocation categoryId = ResourceLocation.fromNamespaceAndPath("oneclickcrafting", "keybindings");
       KeyMapping.Category category = KeyMapping.Category.register(categoryId);
+      *///? }
       for (InputBindingImpl binding : bindings) {
-         KeyMapping mapping = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+         KeyMapping mapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             binding.getId(),
             InputConstants.Type.KEYSYM,
             GLFW_KEY_UNKNOWN,
-            category
+            //$ if >=1.21.9 'category' else '"key.categories.oneclickcrafting"'
+            "key.categories.oneclickcrafting"
          ));
          binding.setBind(mapping);
       }
@@ -44,7 +48,12 @@ public class OneClickCraftingInput {
 
    public static boolean isKeyDown(int keycode) {
       if (keycode == GLFW_KEY_UNKNOWN) return false;
-      return InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), keycode);
+      //? >=1.21.9 {
+      /*Window window = Minecraft.getInstance().getWindow();
+      *///? } else {
+      long window = Minecraft.getInstance().getWindow().getWindow();
+      //? }
+      return InputConstants.isKeyDown(window, keycode);
    }
 
    public boolean isShiftDown() {

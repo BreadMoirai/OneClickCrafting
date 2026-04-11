@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.VirtualKeyState;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -19,4 +19,4 @@ public class InputConstantsMixin {
         }
     }
 }
-//?}
+*///?}

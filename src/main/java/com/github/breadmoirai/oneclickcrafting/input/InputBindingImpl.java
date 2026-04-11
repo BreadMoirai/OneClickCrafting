@@ -3,9 +3,8 @@ package com.github.breadmoirai.oneclickcrafting.input;
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.input.KeyEvent;
 
-public class InputBindingImpl implements InputBinding<KeyMapping, KeyEvent> {
+public class InputBindingImpl implements InputBinding<KeyMapping> {
    private final String id;
    private KeyMapping bind;
 
@@ -24,18 +23,8 @@ public class InputBindingImpl implements InputBinding<KeyMapping, KeyEvent> {
    }
 
    @Override
-   public boolean guard(KeyEvent key) {
-      return !matches(key);
-   }
-
-   @Override
    public boolean guard(int keycode) {
       return !matches(keycode);
-   }
-
-   @Override
-   public boolean matches(KeyEvent key) {
-      return bind.matches(key);
    }
 
    @Override

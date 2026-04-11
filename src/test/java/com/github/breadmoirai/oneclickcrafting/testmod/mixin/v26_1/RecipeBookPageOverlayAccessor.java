@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
 
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
@@ -11,4 +11,4 @@ public interface RecipeBookPageOverlayAccessor {
    @Accessor
    OverlayRecipeComponent getOverlay();
 }
-//?}
+*///?}

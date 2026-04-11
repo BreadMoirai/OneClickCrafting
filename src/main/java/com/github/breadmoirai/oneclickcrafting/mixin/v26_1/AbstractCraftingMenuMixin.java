@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
@@ -31,4 +31,4 @@ public abstract class AbstractCraftingMenuMixin extends RecipeBookMenu {
       }
    }
 }
-//?}
+*///?}

@@ -1,10 +1,10 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_8;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.RecipeBookComponentAccessor;
+import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
 import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
 import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.OverlayRecipeButtonRecipeAccessor;
 import com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1.OverlayRecipeComponentButtonsAccessor;
@@ -133,8 +133,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
             ItemStack stack = entry.display().result().resolveForFirstStack(ctx);
             if (!stack.isEmpty() &&
                   BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(targetItemId)) {
-               ((RecipeBookComponentAccessor) component).callTryPlaceRecipe(
-                  button.getCollection(), id, true);
+               OneClickRecipeBook.getInstance().craftRecipe(button.getCollection(), id, true);
                OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(id.index(), 0);
                return;
             }
@@ -145,15 +144,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
 
    @Override
    public void placeLastRecipe() {
-      context.runOnClient(mc -> {
-         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return;
-         RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
-         RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) component;
-         var lastRecipe = accessor.getLastRecipe();
-         var lastCollection = accessor.getLastRecipeCollection();
-         if (lastRecipe == null || lastCollection == null) return;
-         accessor.callTryPlaceRecipe(lastCollection, lastRecipe, false);
-      });
+      context.runOnClient(mc -> OneClickRecipeBook.getInstance().selectLast(false));
    }
 
    @Override
@@ -237,10 +228,10 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    // Reflection helpers
    // -------------------------------------------------------------------------
 
-   /**
+   /^*
     * Accesses the current {@link RecipeBookPage} from the {@link RecipeBookComponent}.
     * The field name may vary by Mojang mapping version; tries common names in order.
-    */
+    ^/
    private static RecipeBookPage getRecipeBookPage(RecipeBookComponent<?> component) {
       try {
          Field field = RecipeBookComponent.class.getDeclaredField("recipeBookPage");
@@ -256,4 +247,4 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    }
 
 }
-//?}
+*///?}

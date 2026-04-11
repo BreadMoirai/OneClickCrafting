@@ -10,8 +10,10 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.input.MouseButtonEvent;
+//? >=1.21.9 {
+/*import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
+*///? }
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -63,8 +65,12 @@ public class ConfigHelper {
                if ("one-click-crafting".equals(id)) {
                   int rowTop = (int) modList.getClass()
                      .getMethod("getRowTop", int.class).invoke(modList, i);
-                  int rowHeight = (int) entry.getClass()
+                  //? >=1.21.9 {
+                  /*int rowHeight = (int) entry.getClass()
                      .getMethod("getHeight").invoke(entry);
+                  *///? } else {
+                  int rowHeight = 36; // ModMenu 15.x fixed row height
+                  //? }
                   int listX = (int) modList.getClass()
                      .getMethod("getX").invoke(modList);
                   int listWidth = (int) modList.getClass()
@@ -97,7 +103,11 @@ public class ConfigHelper {
             }
             double cx = btn.getX() + btn.getWidth() / 2.0;
             double cy = btn.getY() + btn.getHeight() / 2.0;
-            btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+            //? >=1.21.9 {
+            /*btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+            *///? } else {
+            btn.mouseClicked(cx, cy, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+            //? }
          } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
          }
@@ -146,7 +156,11 @@ public class ConfigHelper {
          OptionListWidget list = findOptionListWidget(screen);
          OptionListWidget.OptionEntry entry = findOptionEntry(list, label);
          var dim = entry.widget.getDimension();
-         entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+         //? >=1.21.9 {
+         /*entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+         *///? } else {
+         entry.widget.mouseClicked(dim.centerX(), dim.centerY(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+         //? }
       });
       context.waitTick();
    }
@@ -162,12 +176,23 @@ public class ConfigHelper {
    // -------------------------------------------------------------------------
 
    private static OptionListWidget findOptionListWidget(YACLScreen screen) {
-      for (GuiEventListener child : screen.children()) {
-         if (child instanceof OptionListWidget optList) {
-            return optList;
+      OptionListWidget result = findInChildren(screen.children(), OptionListWidget.class);
+      if (result != null) return result;
+      throw new AssertionError("OptionListWidget not found among YACLScreen children: "
+         + screen.children().stream().map(c -> c.getClass().getSimpleName()).toList());
+   }
+
+   @SuppressWarnings("unchecked")
+   private static <T extends GuiEventListener> T findInChildren(
+         java.util.List<? extends GuiEventListener> children, Class<T> type) {
+      for (GuiEventListener child : children) {
+         if (type.isInstance(child)) return type.cast(child);
+         if (child instanceof net.minecraft.client.gui.components.events.ContainerEventHandler container) {
+            T nested = findInChildren(container.children(), type);
+            if (nested != null) return nested;
          }
       }
-      throw new AssertionError("OptionListWidget not found among YACLScreen children");
+      return null;
    }
 
    private static OptionListWidget.OptionEntry findOptionEntry(

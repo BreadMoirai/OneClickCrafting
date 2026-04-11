@@ -11,6 +11,9 @@ import net.fabricmc.api.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Supplier;
+
+
 @Environment(EnvType.CLIENT)
 public class OneClickCraftingMod implements ClientModInitializer {
 
@@ -18,7 +21,11 @@ public class OneClickCraftingMod implements ClientModInitializer {
    private static OneClickCraftingMod INSTANCE;
 
    public static void debug(String message) {
-      if (INSTANCE != null && INSTANCE.config.isDebugLogging()) {
+      debug(message, () -> true);
+   }
+
+   public static void debug(String message, Supplier<Boolean> condition) {
+      if (INSTANCE != null && INSTANCE.config.isDebugLogging() && condition.get()) {
          LOGGER.info("[OCC] {}", message);
       }
    }

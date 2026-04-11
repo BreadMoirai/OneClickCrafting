@@ -5,11 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
-    "RecipeBookPageButtonsAccessor",
-    "RecipeBookPageOverlayAccessor",
-    "OverlayRecipeComponentButtonsAccessor",
+    "InputConstantsMixin",
     "OverlayRecipeButtonRecipeAccessor",
-    "InputConstantsMixin"
+    "OverlayRecipeComponentButtonsAccessor",
+    "RecipeBookPageButtonsAccessor",
+    "RecipeBookPageOverlayAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

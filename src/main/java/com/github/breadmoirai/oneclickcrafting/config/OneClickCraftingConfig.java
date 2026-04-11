@@ -16,7 +16,19 @@ public class OneClickCraftingConfig {
    private static final Path CONFIG_PATH;
    private static final OneClickCraftingConfig INSTANCE;
    private static final Gson GSON;
-
+   public static final boolean DEFAULT_ENABLE_STONECUTTER = true;
+   public static final boolean DEFAULT_ENABLE_LEFT_CLICK = false;
+   public static final boolean DEFAULT_ENABLE_RIGHT_CLICK = true;
+   public static final boolean DEFAULT_ALWAYS_ON = true;
+   public static final boolean DEFAULT_ALT_HOLD = true;
+   public static final boolean DEFAULT_CTRL_HOLD = true;
+   public static final boolean DEFAULT_DROP_ENABLE = true;
+   public static final int DEFAULT_REPEAT_DELAY = 6;
+   //~ if >= 1.21.9 '1' -> '0'
+   public static final int DEFAULT_REPEAT_INTERVAL = 1;
+   public static final boolean DEFAULT_DEBUG_LOGGING = false;
+   public static final int DEFAULT_TOGGLE_HOLD_KEYCODE = -1;
+   public static final int DEFAULT_REPEAT_LAST_KEYCODE = -1;
    static {
       CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("oneclickcrafting.json");
       INSTANCE = new OneClickCraftingConfig();
@@ -26,18 +38,18 @@ public class OneClickCraftingConfig {
               .create();
    }
 
-   private boolean enableStonecutter = true;
-   private boolean enableLeftClick = false;
-   private boolean enableRightClick = true;
-   private boolean alwaysOn = true;
-   private boolean altHold = true;
-   private boolean ctrlHold = true;
-   private boolean dropEnable = true;
-   private int repeatDelay = 6;
-   private int repeatInterval = 0;
-   private boolean debugLogging = false;
-   private int toggleHoldKeycode = -1;
-   private int repeatLastKeycode = -1;
+   private boolean enableStonecutter = DEFAULT_ENABLE_STONECUTTER;
+   private boolean enableLeftClick = DEFAULT_ENABLE_LEFT_CLICK;
+   private boolean enableRightClick = DEFAULT_ENABLE_RIGHT_CLICK;
+   private boolean alwaysOn = DEFAULT_ALWAYS_ON;
+   private boolean altHold = DEFAULT_ALT_HOLD;
+   private boolean ctrlHold = DEFAULT_CTRL_HOLD;
+   private boolean dropEnable = DEFAULT_DROP_ENABLE;
+   private int repeatDelay = DEFAULT_REPEAT_DELAY;
+   private int repeatInterval = DEFAULT_REPEAT_INTERVAL;
+   private boolean debugLogging = DEFAULT_DEBUG_LOGGING;
+   private int toggleHoldKeycode = DEFAULT_TOGGLE_HOLD_KEYCODE;
+   private int repeatLastKeycode = DEFAULT_REPEAT_LAST_KEYCODE;
 
    public static OneClickCraftingConfig getInstance() {
       return INSTANCE;

@@ -1,10 +1,10 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v21_8;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.RecipeBookComponentAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_9.RecipeBookComponentAccessor;
 import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -38,6 +38,14 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
    }
 
    @Override
+   public void craftRecipe(RecipeCollection collection, RecipeDisplayId id, boolean shift) {
+      Minecraft minecraft = Minecraft.getInstance();
+      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return;
+      RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
+      accessor.callTryPlaceRecipe(collection, id, shift);
+   }
+
+   @Override
    public OneClickItemStack recipeResult(int recipeId) {
       Minecraft minecraft = Minecraft.getInstance();
       if (minecraft.level == null) return null;
@@ -49,4 +57,4 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
    }
 }
 
-//?}
+*///?}

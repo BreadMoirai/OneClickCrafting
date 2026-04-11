@@ -2,7 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper;
 
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 
-import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1.RecipeBookHelperImpl;
+import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_8.RecipeBookHelperImpl;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class RecipeBookHelper {
