@@ -38,21 +38,37 @@ jobs:
           name: ${{ env.MOD_VERSION }}
           files: build/libs/${{ env.MOD_VERSION }}/*.jar
 
-      - name: Publish 1.21.11
+      - name: Publish 1.21.8
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
-          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.11*.jar
-          name: "${{ env.MOD_VERSION }}+1.21.11"
-          version: "${{ env.MOD_VERSION }}+1.21.11"
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.8*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.8"
+          version: "${{ env.MOD_VERSION }}+1.21.8"
           version-type: release
           loaders: fabric
-          game-versions: "1.21.11"
+          game-versions: "1.21.8"
           java: 21
           dependencies: |
             fabric-api
             modmenu
-            yacl
+            yacl      
+
+      - name: Publish 1.21.9
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.9*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.9"
+          version: "${{ env.MOD_VERSION }}+1.21.9"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.9"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl      
 
       - name: Publish 1.21.10
         uses: Kir-Antipov/mc-publish@v3.3
@@ -64,6 +80,22 @@ jobs:
           version-type: release
           loaders: fabric
           game-versions: "1.21.10"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+
+      - name: Publish 1.21.11
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.11*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.11"
+          version: "${{ env.MOD_VERSION }}+1.21.11"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.11"
           java: 21
           dependencies: |
             fabric-api
