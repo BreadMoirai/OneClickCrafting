@@ -1,15 +1,15 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1",
+  "package": "com.github.breadmoirai.oneclickcrafting.testmod.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
-    "InputConstantsMixin",
-    "OverlayRecipeButtonRecipeAccessor",
-    "OverlayRecipeComponentButtonsAccessor",
-    "RecipeBookPageButtonsAccessor",
-    "RecipeBookPageOverlayAccessor"
+    "v21_9.InputConstantsMixin",
+    "v26_1.OverlayRecipeButtonRecipeAccessor",
+    "v26_1.OverlayRecipeComponentButtonsAccessor",
+    "v26_1.RecipeBookPageButtonsAccessor",
+    "v26_1.RecipeBookPageOverlayAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

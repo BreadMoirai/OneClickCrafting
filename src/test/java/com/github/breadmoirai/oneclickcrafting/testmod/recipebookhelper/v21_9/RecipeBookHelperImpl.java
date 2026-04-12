@@ -1,5 +1,5 @@
 //? >=1.21.9 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_8;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("UnstableApiUsage")
 public class RecipeBookHelperImpl extends RecipeBookHelper {
 
    public RecipeBookHelperImpl(ClientGameTestContext context) {
@@ -104,38 +105,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
       });
 
       context.getInput().setCursorPos(windowCoords[0], windowCoords[1]);
-      context.getInput().pressMouse(mouseButton);
-   }
-
-   @Override
-   public void clickRecipeButtonCraftAll(String targetItemId) {
-      context.runOnClient(mc -> {
-         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
-            throw new AssertionError("clickRecipeButtonCraftAll: not in an AbstractRecipeBookScreen");
-         }
-         RecipeBookComponent<?> recipeBook = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
-         RecipeBookPage recipesArea = getRecipesArea(recipeBook);
-         List<RecipeButton> buttons = getResultButtons(recipesArea);
-         Map<RecipeDisplayId, RecipeDisplayEntry> known =
-            ((ClientRecipeBookAccessor) mc.player.getRecipeBook()).getKnown();
-         ContextMap ctx = SlotDisplayContext.fromLevel(mc.level);
-
-         for (RecipeButton button : buttons) {
-            RecipeDisplayId id = button.getCurrentRecipe();
-            if (id == null) continue;
-            RecipeDisplayEntry entry = known.get(id);
-            if (entry == null) continue;
-            ItemStack stack = entry.display().result().resolveForFirstStack(ctx);
-            if (!stack.isEmpty() &&
-                  BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(targetItemId)) {
-               OneClickRecipeBook.getInstance().craftRecipe(button.getCollection(), button.getCurrentRecipe(), true);
-               OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(
-                  button.getCurrentRecipe().index(), 0);
-               return;
-            }
-         }
-         throw new AssertionError("Recipe button not found for item: " + targetItemId);
-      });
+      input.pressMouse(mouseButton);
    }
 
    @Override
@@ -172,7 +142,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
       });
 
       context.getInput().setCursorPos(windowCoords[0], windowCoords[1]);
-      context.getInput().pressMouse(mouseButton);
+      input.pressMouse(mouseButton);
       return selectedItem[0];
    }
 
@@ -213,7 +183,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
       });
 
       context.getInput().setCursorPos(windowCoords[0], windowCoords[1]);
-      context.getInput().pressMouse(mouseButton);
+      input.pressMouse(mouseButton);
    }
 
    @Override

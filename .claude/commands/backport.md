@@ -157,7 +157,7 @@ When the API surface, method signatures, or behavior changed incompatibly:
 **Every mixin that has version-specific method signatures or behavior must be a separate class file in a versioned package.** Do NOT add inline stonecutter conditions inside a mixin class in a versioned package — there must be no nested conditions within versioned package files.
 
 - If a mixin needs different behavior across versions, create separate `v21_8/FooMixin.java`, `v21_9/FooMixin.java`, etc.
-- The outer condition at the top of the file (e.g. `//? <1.21.9 {`) is the only condition allowed in a versioned package file.
+- The outer condition at the top of the file (e.g. `//? <=1.21.8 {`) is the only condition allowed in a versioned package file.
 - Register each versioned mixin separately in the appropriate `versions/*/src/main/resources/one-click-crafting.mixins.json`.
 - Mixin entries in `mixins.json` **must be alphabetically sorted**.
 

@@ -1,16 +1,19 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper;
 
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.InputHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 
-import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_8.RecipeBookHelperImpl;
+import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1.RecipeBookHelperImpl;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class RecipeBookHelper {
 
    protected final ClientGameTestContext context;
+   protected final InputHelper input;
 
    protected RecipeBookHelper(ClientGameTestContext context) {
       this.context = context;
+      this.input = InputHelper.getInstance(context);
    }
 
    public static RecipeBookHelper create(ClientGameTestContext context) {
@@ -23,14 +26,6 @@ public abstract class RecipeBookHelper {
     */
    public abstract void open();
 
-   public void leftClick(String targetItemId) {
-      clickRecipeButton(targetItemId, 0);
-   }
-
-   public void rightClick(String targetItemId) {
-      clickRecipeButton(targetItemId, 1);
-   }
-
    /**
     * Finds the recipe button displaying {@code targetItemId} in the currently open
     * recipe book, positions the cursor over it, and simulates a mouse click.
@@ -39,15 +34,6 @@ public abstract class RecipeBookHelper {
     * @param mouseButton  {@code 0} for left-click, {@code 1} for right-click
     */
    public abstract void clickRecipeButton(String targetItemId, int mouseButton);
-
-   /**
-    * Finds the recipe button displaying {@code targetItemId} and directly invokes
-    * the recipe book's select method with {@code craftAll=true}, then fires the
-    * recipe-click event.
-    *
-    * @param targetItemId namespaced item ID, e.g. {@code "minecraft:oak_planks"}
-    */
-   public abstract void clickRecipeButtonCraftAll(String targetItemId);
 
    /**
     * Calls {@code tryPlaceRecipe} for the last selected recipe.  This is the

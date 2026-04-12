@@ -8,7 +8,7 @@
     "AbstractRecipeBookScreenAccessor",
     "ClientRecipeBookAccessor",
     "KeyMappingAccessor",
-    "v21_9.ClientPlayNetworkHandlerMixin",
+    "v21_8.ClientPlayNetworkHandlerMixin",
     "v21_9.OverlayRecipeButtonMixin",
     "v21_9.OverlayRecipeComponentMixin",
     "v21_9.RecipeBookComponentAccessor",

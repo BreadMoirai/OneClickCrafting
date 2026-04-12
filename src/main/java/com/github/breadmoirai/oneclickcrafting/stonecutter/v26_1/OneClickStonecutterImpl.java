@@ -1,5 +1,5 @@
 //? 26.1 {
-/*package com.github.breadmoirai.oneclickcrafting.stonecutter.v21_9;
+package com.github.breadmoirai.oneclickcrafting.stonecutter.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -61,4 +61,4 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
 
 }
 
-*///?}
+//?}

@@ -1,5 +1,5 @@
 //? >=1.21.8 <=1.21.11 {
-package com.github.breadmoirai.oneclickcrafting.inventory.v21_8;
+/*package com.github.breadmoirai.oneclickcrafting.inventory.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;
@@ -53,4 +53,4 @@ public class OneClickInventoryImpl extends OneClickInventory {
    }
 
 }
-//?}
+*///?}

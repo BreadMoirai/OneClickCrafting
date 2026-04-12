@@ -1,6 +1,6 @@
 package com.github.breadmoirai.oneclickcrafting.inventory;
 
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 
 public enum OneClickInventoryAction {
    PICKUP,
@@ -11,8 +11,8 @@ public enum OneClickInventoryAction {
    QUICK_CRAFT,
    PICKUP_ALL;
 
-   public ClickType mapping() {
-      return ClickType.valueOf(this.name());
+   public ContainerInput mapping() {
+      return ContainerInput.valueOf(this.name());
    }
    
    

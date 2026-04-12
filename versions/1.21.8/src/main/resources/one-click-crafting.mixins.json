@@ -14,7 +14,7 @@
     "v21_8.RecipeBookComponentMixin",
     "v21_8.RecipeBookPageMixin",
     "v21_8.StonecutterScreenMixin",
-    "v21_9.ClientPlayNetworkHandlerMixin"
+    "v21_8.ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

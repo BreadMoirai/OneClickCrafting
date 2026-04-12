@@ -1,5 +1,5 @@
 //? >=1.21.9 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.recipebook.v21_8;
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
@@ -33,14 +33,6 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       accessor.callTryPlaceRecipe(accessor.getLastRecipeCollection(), accessor.getLastRecipe(), isShift);
       AbstractWidget.playButtonClickSound(minecraft.getSoundManager());
       return accessor.getLastRecipe().index();
-   }
-
-   @Override
-   public void craftRecipe(RecipeCollection collection, RecipeDisplayId id, boolean shift) {
-      Minecraft minecraft = Minecraft.getInstance();
-      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return;
-      RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
-      accessor.callTryPlaceRecipe(collection, id, shift);
    }
 
    @Override

@@ -41,14 +41,6 @@ public abstract class CraftContext extends TestSuite {
     public abstract void click(int mouseButton);
 
     /**
-     * Trigger a left-click that requests a full-stack fill ({@code craftAll=true}).
-     * The default implementation delegates to {@code click(0)}.
-     */
-    public void clickAll() {
-        click(0);
-    }
-
-    /**
      * The config-toggle label whose value enables or disables this crafting feature.
      * Used by tests that verify the "disabled" behaviour.
      */

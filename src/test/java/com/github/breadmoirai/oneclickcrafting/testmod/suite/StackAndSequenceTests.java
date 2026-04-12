@@ -2,8 +2,10 @@ package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.context.CraftContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.VirtualKeyState;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import org.lwjgl.glfw.GLFW;
 
 
 /**
@@ -19,20 +21,6 @@ public class StackAndSequenceTests extends OneClickTests {
 
    public StackAndSequenceTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
-   }
-
-   private void enableLeftClick() {
-      config.openConfigViaModMenu();
-      config.setYaclToggle(LABEL_LEFT_CLICK, true);
-      config.saveAndCloseYacl();
-      config.closeModsScreen();
-   }
-
-   private void disableLeftClick() {
-      config.openConfigViaModMenu();
-      config.setYaclToggle(LABEL_LEFT_CLICK, false);
-      config.saveAndCloseYacl();
-      config.closeModsScreen();
    }
 
    // =========================================================================
@@ -82,8 +70,11 @@ public class StackAndSequenceTests extends OneClickTests {
       for (CraftContext ctx : craftingContexts) {
          ctx.prepare(64 - ctx.inputCount);
 
-         ctx.clickAll();
+         input.holdShift();
+         System.out.println("VirtualKeyState.isHeld(GLFW.GLFW_KEY_LEFT_SHIFT) = " + VirtualKeyState.isHeld(GLFW.GLFW_KEY_LEFT_SHIFT));
+         ctx.click(0);
          wait(2);
+         input.releaseShift();
          giveItem(ctx.inputItem, ctx.inputCount);
          ctx.click(1);
          wait(2);
@@ -97,7 +88,9 @@ public class StackAndSequenceTests extends OneClickTests {
       for (CraftContext ctx : craftingContexts) {
          ctx.prepare(64);
 
-         ctx.clickAll();
+         input.holdShift();
+         ctx.click(0);
+         input.releaseShift();
          wait(2);
 
          ctx.click(1);
@@ -112,7 +105,9 @@ public class StackAndSequenceTests extends OneClickTests {
       for (CraftContext ctx : craftingContexts) {
          ctx.prepare(32 - ctx.inputCount);
 
-         ctx.clickAll();
+         input.holdShift();
+         ctx.click(0);
+         input.releaseShift();
          wait(2);
          giveItem(ctx.inputItem, ctx.inputCount);
          ctx.click(1);
@@ -127,7 +122,9 @@ public class StackAndSequenceTests extends OneClickTests {
       for (CraftContext ctx : craftingContexts) {
          ctx.prepare(32);
 
-         ctx.clickAll();
+         input.holdShift();
+         ctx.click(0);
+         input.releaseShift();
          wait(2);
          ctx.click(1);
          wait(2);

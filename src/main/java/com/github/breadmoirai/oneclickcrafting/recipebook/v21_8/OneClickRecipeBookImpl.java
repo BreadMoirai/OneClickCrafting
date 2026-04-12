@@ -1,5 +1,5 @@
-//? <1.21.9 {
-package com.github.breadmoirai.oneclickcrafting.recipebook.v21_8;
+//? <=1.21.8 {
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
@@ -36,22 +36,6 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
    }
 
    @Override
-   public void craftRecipe(RecipeCollection collection, RecipeDisplayId id, boolean shift) {
-      Minecraft minecraft = Minecraft.getInstance();
-      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return;
-      RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
-      if (shift) {
-         // MC 1.21.8's tryPlaceRecipe has no shift param; send up to 64 packets so the
-         // server crafts all available ingredients (excess calls are silently ignored).
-         for (int i = 0; i < 64; i++) {
-            accessor.callTryPlaceRecipe(collection, id);
-         }
-      } else {
-         accessor.callTryPlaceRecipe(collection, id);
-      }
-   }
-
-   @Override
    public OneClickItemStack recipeResult(int recipeId) {
       Minecraft minecraft = Minecraft.getInstance();
       if (minecraft.level == null) return null;
@@ -62,4 +46,4 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       return new OneClickItemStack(recipes.get(new RecipeDisplayId(recipeId)).display().result().resolveForFirstStack(context));
    }
 }
-//?}
+*///?}

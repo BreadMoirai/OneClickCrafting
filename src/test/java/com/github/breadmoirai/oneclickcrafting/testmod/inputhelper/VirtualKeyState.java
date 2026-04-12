@@ -1,4 +1,4 @@
-package com.github.breadmoirai.oneclickcrafting.testmod;
+package com.github.breadmoirai.oneclickcrafting.testmod.inputhelper;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

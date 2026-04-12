@@ -1,5 +1,5 @@
-//? <1.21.9 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v21_8;
+//? <=1.21.8 {
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_8;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -19,4 +19,4 @@ public class RecipeBookComponentMixin {
       }
    }
 }
-//?}
+*///?}

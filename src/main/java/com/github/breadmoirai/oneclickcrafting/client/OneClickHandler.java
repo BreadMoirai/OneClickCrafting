@@ -44,7 +44,7 @@ public abstract class OneClickHandler {
    /**
     * Called immediately after a craft cycle completes. If the repeat key is held and the
     * initial delay has elapsed, fires the next craft without waiting for the next tick.
-    * Otherwise resets state so {@link #tick()} can fire it once the delay elapses.
+    * Otherwise, resets state so {@link #tick()} can fire it once the delay elapses.
     */
    protected void onCraftComplete() {
       debug("onCraftComplete: clearing op, isRepeating=" + isRepeating);

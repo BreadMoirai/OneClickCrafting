@@ -1,5 +1,5 @@
 //? 26.1 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
+package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
 
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
@@ -13,4 +13,4 @@ public interface RecipeBookPageButtonsAccessor {
    @Accessor
    List<RecipeButton> getButtons();
 }
-*///?}
+//?}

@@ -5,6 +5,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.context.CraftContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.context.CraftingTableContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.context.InventoryContext;
 import com.github.breadmoirai.oneclickcrafting.testmod.context.StonecutterContext;
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.InputHelper;
 import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
 import com.github.breadmoirai.oneclickcrafting.testmod.suite.TestSuite;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -17,6 +18,7 @@ public class OneClickTests extends TestSuite {
 
    protected RecipeBookHelper recipeBook;
    protected ConfigHelper config;
+   protected InputHelper input;
    protected final List<CraftContext> contexts;
    /** Crafting-only contexts (recipe-book inventory + crafting table), excluding stonecutter. */
    protected final List<CraftContext> craftingContexts;
@@ -34,6 +36,7 @@ public class OneClickTests extends TestSuite {
       super(context, world);
       this.recipeBook = RecipeBookHelper.create(context);
       this.config = new ConfigHelper(context);
+      this.input = InputHelper.getInstance(context);
       context.runOnClient(mc -> OneClickCraftingConfig.getInstance().setDebugLogging(true));
       InventoryContext inv = new InventoryContext(context, world, "minecraft:oak_log", 1, "minecraft:oak_planks", 4);
       CraftingTableContext table = new CraftingTableContext(context, world, "minecraft:oak_log", 1, "minecraft:oak_planks", 4);

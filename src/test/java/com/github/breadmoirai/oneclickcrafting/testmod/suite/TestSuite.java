@@ -1,7 +1,7 @@
 package com.github.breadmoirai.oneclickcrafting.testmod.suite;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.ConfigHelper;
-import com.github.breadmoirai.oneclickcrafting.testmod.VirtualKeyState;
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.VirtualKeyState;
 import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -44,7 +44,7 @@ public abstract class TestSuite {
          .setUseConsistentSettings(true)
          .create();
       //~ if >=26.1 '.getClientWorld()' -> '.getClientLevel()'
-      world.getClientWorld().waitForChunksDownload();
+      world.getClientLevel().waitForChunksDownload();
       // @a required — runCommand runs as the server console (@s = server, not player)
       world.getServer().runCommand("time set day");
       // Suppress hunger drain so survival mechanics don't interfere with tests
@@ -106,23 +106,6 @@ public abstract class TestSuite {
       });
       context.waitForScreen(screen);
    }
-
-   // -------------------------------------------------------------------------
-   // Drop-key helpers
-   // -------------------------------------------------------------------------
-
-   protected void holdDrop() {
-      int code = context.computeOnClient(mc -> ((KeyMappingAccessor) mc.options.keyDrop).getKey().getValue());
-      VirtualKeyState.hold(code);
-      context.getInput().holdKey(code);
-   }
-
-   protected void releaseDrop() {
-      int code = context.computeOnClient(mc -> ((KeyMappingAccessor) mc.options.keyDrop).getKey().getValue());
-      VirtualKeyState.release(code);
-      context.getInput().releaseKey(code);
-   }
-
 
    // -------------------------------------------------------------------------
    // Wait helpers

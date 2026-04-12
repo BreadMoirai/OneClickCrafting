@@ -43,11 +43,6 @@ public class InventoryContext extends CraftContext {
    }
 
    @Override
-   public void clickAll() {
-      recipeBook.clickRecipeButtonCraftAll(outputItem);
-   }
-
-   @Override
    public String featureToggleLabel() {
       return ConfigHelper.LABEL_RIGHT_CLICK;
    }

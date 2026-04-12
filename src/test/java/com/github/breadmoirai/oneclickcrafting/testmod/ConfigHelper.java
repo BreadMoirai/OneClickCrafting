@@ -11,9 +11,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.TitleScreen;
 //? >=1.21.9 {
-/*import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
-*///? }
+//? }
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -66,11 +66,11 @@ public class ConfigHelper {
                   int rowTop = (int) modList.getClass()
                      .getMethod("getRowTop", int.class).invoke(modList, i);
                   //? >=1.21.9 {
-                  /*int rowHeight = (int) entry.getClass()
+                  int rowHeight = (int) entry.getClass()
                      .getMethod("getHeight").invoke(entry);
-                  *///? } else {
-                  int rowHeight = 36; // ModMenu 15.x fixed row height
-                  //? }
+                  //? } else {
+                  /*int rowHeight = 36; // ModMenu 15.x fixed row height
+                  *///? }
                   int listX = (int) modList.getClass()
                      .getMethod("getX").invoke(modList);
                   int listWidth = (int) modList.getClass()
@@ -104,10 +104,10 @@ public class ConfigHelper {
             double cx = btn.getX() + btn.getWidth() / 2.0;
             double cy = btn.getY() + btn.getHeight() / 2.0;
             //? >=1.21.9 {
-            /*btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-            *///? } else {
-            btn.mouseClicked(cx, cy, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-            //? }
+            btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+            //? } else {
+            /*btn.mouseClicked(cx, cy, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+            *///? }
          } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
          }
@@ -157,10 +157,10 @@ public class ConfigHelper {
          OptionListWidget.OptionEntry entry = findOptionEntry(list, label);
          var dim = entry.widget.getDimension();
          //? >=1.21.9 {
-         /*entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-         *///? } else {
-         entry.widget.mouseClicked(dim.centerX(), dim.centerY(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
-         //? }
+         entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
+         //? } else {
+         /*entry.widget.mouseClicked(dim.centerX(), dim.centerY(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
+         *///? }
       });
       context.waitTick();
    }

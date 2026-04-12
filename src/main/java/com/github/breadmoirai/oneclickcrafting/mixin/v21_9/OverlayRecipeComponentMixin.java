@@ -1,5 +1,5 @@
 //? >=1.21.9 <=26.1 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -38,4 +38,4 @@ public abstract class OverlayRecipeComponentMixin {
       OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(this.lastRecipeClicked.index(), click.button());
    }
 }
-*///?}
+//?}

@@ -1,5 +1,6 @@
 package com.github.breadmoirai.oneclickcrafting.testmod;
 
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.InputHelper;
 import com.github.breadmoirai.oneclickcrafting.testmod.suite.TestSuite;
 import com.github.breadmoirai.oneclickcrafting.testmod.suite.*;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -16,7 +17,7 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
 
     @Override
     public void runTest(ClientGameTestContext context) {
-//         Suite 1: Config persistence (no world needed)
+        // Suite 1: Config persistence (no world needed)
         ConfigSuite.testConfigDefaultsShownInUi(context);
         ConfigSuite.testConfigPersistenceViaUi(context);
 
@@ -47,7 +48,7 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
             repeatLastTests.repeatLastDropKeyDropsManyItems();
 
             // Suite 6 (alt): Repeat last (bound to space)
-            RepeatLastTests.REPEAT_KEY_CODE = GLFW.GLFW_KEY_SPACE;
+            InputHelper.REPEAT_KEY_CODE = GLFW.GLFW_KEY_SPACE;
             repeatLastTests.repeatLastReCrafts();
             repeatLastTests.repeatLastStack();
             repeatLastTests.repeatLastStacksFullInventory();

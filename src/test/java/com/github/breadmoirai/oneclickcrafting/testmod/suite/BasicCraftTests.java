@@ -94,10 +94,10 @@ public class BasicCraftTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          clearGroundItems();
          ctx.prepare();
-         holdDrop();
+         input.holdDrop();
          ctx.click(1);
          wait(2);
-         releaseDrop();
+         input.releaseDrop();
          assertItemOnGround(ctx.outputItem);
          assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
@@ -113,10 +113,10 @@ public class BasicCraftTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          clearGroundItems();
          ctx.prepare();
-         holdDrop();
+         input.holdDrop();
          ctx.click(1);
          wait(2);
-         releaseDrop();
+         input.releaseDrop();
          assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
          assertNoItemOnGround(ctx.outputItem);
          ctx.close();
@@ -132,12 +132,12 @@ public class BasicCraftTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          clearGroundItems();
          ctx.prepare();
-         context.getInput().holdShift();
-         holdDrop();
+         input.holdShift();
+         input.holdDrop();
          ctx.click(1);
          wait(2);
-         releaseDrop();
-         context.getInput().releaseShift();
+         input.releaseDrop();
+         input.releaseShift();
          assertItemOnGround(ctx.outputItem);
          assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
