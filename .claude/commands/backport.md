@@ -90,6 +90,12 @@ For each match, widen the lower bound to include the new version:
 - Inline conditions like `*///?} >=1.21.9 <=1.21.11 {` → `*///?} >=$ARGUMENTS <=1.21.11 {`
 - Do this for ALL files in the versioned package dirs AND their test equivalents
 
+Also search for **exact-version conditions** targeting the nearest existing version — these also need widening:
+```bash
+grep -rn "//? {NEAREST_VERSION} {" src/
+```
+For example `//? 1.21.8 {` must become `//? >=$ARGUMENTS <=1.21.8 {` when backporting to $ARGUMENTS.
+
 After changes, resync Stonecutter:
 ```
 ./gradlew "Set active project to $ARGUMENTS"
@@ -266,6 +272,36 @@ Look for `BUILD SUCCESSFUL` at the end. If tests fail, read the log file for the
 grep -E "(ERROR|AssertionError|Expected)" versions/$ARGUMENTS/run/logs/latest.log
 ```
 Then fix and re-run.
+
+### Test timing for versions below 1.21.8
+
+In MC versions before 1.21.8, `tryPlaceRecipe` may send more intermediate `ClientboundContainerSetSlotPacket` updates for the result slot before the final output stabilises, making each repeat craft cycle slower. This manifests as `RepeatLastTests` failures of the form:
+
+```
+AssertionError: Expected inventory {minecraft:oak_planks=256} but found {minecraft:oak_log=41, minecraft:oak_planks=92}
+```
+
+**Verify the root cause first** — check the log for the "output mismatch" pattern between crafts:
+```bash
+grep "output mismatch\|output matched\|Operation created" versions/$ARGUMENTS/run/logs/latest.log | head -30
+```
+If you see 4–5 consecutive "output mismatch (got=air)" lines before each "output matched", the server is sending extra intermediate updates and the fix below applies. If you see 0–1 mismatch lines per craft, the issue is something else.
+
+**Fix**: add version-conditional waits around the `holdRepeatKey` blocks in `RepeatLastTests`. For the no-shift variants, multiply the existing wait by ~3:
+
+```java
+input.holdRepeatKey();
+//? if <1.21.8 {
+/*wait(200);*/
+//? } else {
+wait(65);
+//? }
+input.releaseRepeatKey();
+```
+
+The shift-hold variant (`repeatLastStacksFullInventory`) runs faster because the server bulk-processes with shift, so it needs a smaller multiplier — bump `wait(24)` to approximately `wait(35)` rather than 3×.
+
+After adjusting, resync and re-run the tests to confirm.
 
 ## Step 12 — Report
 

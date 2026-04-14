@@ -1,11 +1,28 @@
 {
   "permissions": {
     "allow": [
-      "Bash(*:*)",
-      "WebFetch(domain:api.modrinth.com)",
-      "WebFetch(domain:meta.fabricmc.net)",
-      "Bash(javap:*)",
-      "Bash(echo ===:*)"
+      "WebFetch",
+      "WebSearch",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tree *)",
+      "Bash(wc *)",
+      "Bash(which *)",
+      "Bash(echo *)",
+
+      "Bash(grep:*)",
+      "Bash(grep *)",
+      "Bash(find:*)",
+      "Bash(find *)",
+      "Bash(sort:*)",
+      "Bash(sort *)",
+
+      "Bash(curl *)",
+      "Bash(javap *)",
+      "Bash(python3 *)",
+      "Bash(./gradlew *)"
+
     ]
   },
   "defaultMode": "bypassPermissions"

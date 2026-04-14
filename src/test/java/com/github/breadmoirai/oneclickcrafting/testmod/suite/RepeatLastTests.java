@@ -75,7 +75,11 @@ public class RepeatLastTests extends OneClickTests {
          wait(2);
 
          input.holdRepeatKey();
+         //? if <1.21.8 {
+         /*wait(200);
+         *///? } else {
          wait(65);
+         //? }
          input.releaseRepeatKey();
 
          ctx.close();
@@ -97,7 +101,11 @@ public class RepeatLastTests extends OneClickTests {
 
          input.holdShift();
          input.holdRepeatKey();
+         //? if <1.21.8 {
+         /*wait(35);
+         *///? } else {
          wait(24);
+         //? }
          input.releaseShift();
          input.releaseRepeatKey();
 
@@ -122,7 +130,11 @@ public class RepeatLastTests extends OneClickTests {
          wait(2);
 
          input.holdRepeatKey();
+         //? if <1.21.8 {
+         /*wait(200);
+         *///? } else {
          wait(66);
+         //? }
          input.releaseRepeatKey();
          input.releaseDrop();
 

@@ -1,4 +1,4 @@
-//? >=1.21.8 <=1.21.11 {
+//? >=1.21.7 <=1.21.11 {
 /*package com.github.breadmoirai.oneclickcrafting.stonecutter.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
