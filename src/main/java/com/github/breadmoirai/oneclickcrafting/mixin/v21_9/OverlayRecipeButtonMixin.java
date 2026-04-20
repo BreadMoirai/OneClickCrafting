@@ -1,5 +1,5 @@
 //? >=1.21.9 <=26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -21,4 +21,4 @@ public abstract class OverlayRecipeButtonMixin extends AbstractWidget {
       return super.isValidClickButton(buttonInfo);
    }
 }
-//?}
+*///?}

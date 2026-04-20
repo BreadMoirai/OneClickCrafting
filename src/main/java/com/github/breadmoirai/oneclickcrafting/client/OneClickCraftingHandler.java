@@ -23,20 +23,20 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    public void onInitialize() {
       OneClickEvents.RECIPE_CLICK.register(this);
       OneClickEvents.RESULT_SLOT_UPDATE.register(this);
-      ScreenEvents.BEFORE_INIT.register((_, screen, _, _) -> {
+      ScreenEvents.BEFORE_INIT.register((unused1, screen, unused2, unused3) -> {
          if (screen instanceof InventoryScreen || screen instanceof CraftingScreen) {
-            ScreenEvents.afterTick(screen).register(_ -> tick());
+            ScreenEvents.afterTick(screen).register(unused4 -> tick());
             ScreenKeyboardEvents.beforeKeyPress(screen)
-               //$ if >= 1.21.9 '.register((screen2, key) -> {' else '.register((screen2, key, _, _) -> {'
-               .register((screen2, key) -> {
+               //$ if >= 1.21.9 '.register((screen2, key) -> {' else '.register((screen2, key, unused5, unused6) -> {'
+               .register((screen2, key, unused5, unused6) -> {
                   if (hasOp()) return;
                   //~ if >=1.21.9 'key' -> 'key.key()'
-                  if (mod.input.repeatLast.guard(key.key())) return;
+                  if (mod.input.repeatLast.guard(key)) return;
                   if (isRepeating) return;
                   isRepeating = true;
                   fireRepeatCraft();
                });
-            ScreenEvents.remove(screen).register(_ -> clearOp());
+            ScreenEvents.remove(screen).register(unused9 -> clearOp());
          }
       });
    }

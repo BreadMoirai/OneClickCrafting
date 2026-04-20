@@ -1,5 +1,5 @@
 //? >=1.21.9 <1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.v21_5;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.InputHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;

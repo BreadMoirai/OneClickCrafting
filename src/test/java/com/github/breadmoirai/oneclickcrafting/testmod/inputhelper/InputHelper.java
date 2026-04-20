@@ -2,7 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.testmod.inputhelper;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
-import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.v26_1.InputHelperImpl;
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.v21_5.InputHelperImpl;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;

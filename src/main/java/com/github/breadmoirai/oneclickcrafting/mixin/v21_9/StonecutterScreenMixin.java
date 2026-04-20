@@ -1,5 +1,5 @@
 //? >=1.21.9 <=26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
@@ -23,4 +23,4 @@ public class StonecutterScreenMixin {
       }
    }
 }
-//?}
+*///?}

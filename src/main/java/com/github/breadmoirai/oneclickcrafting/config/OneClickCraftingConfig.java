@@ -25,7 +25,7 @@ public class OneClickCraftingConfig {
    public static final boolean DEFAULT_DROP_ENABLE = true;
    public static final int DEFAULT_REPEAT_DELAY = 6;
    //~ if >= 1.21.9 '1' -> '0'
-   public static final int DEFAULT_REPEAT_INTERVAL = 0;
+   public static final int DEFAULT_REPEAT_INTERVAL = 1;
    public static final boolean DEFAULT_DEBUG_LOGGING = false;
    public static final int DEFAULT_TOGGLE_HOLD_KEYCODE = -1;
    public static final int DEFAULT_REPEAT_LAST_KEYCODE = -1;

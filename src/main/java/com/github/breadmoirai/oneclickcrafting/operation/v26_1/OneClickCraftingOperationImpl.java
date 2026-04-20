@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.operation.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.operation.v21_5;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
@@ -73,4 +73,4 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
       return true;
    }
 }
-//?}
+*///?}

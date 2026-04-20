@@ -4,7 +4,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.ConfigHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
-import com.github.breadmoirai.oneclickcrafting.testmod.context.v26_1.StonecutterContextImpl;
+import com.github.breadmoirai.oneclickcrafting.testmod.context.v21_6.StonecutterContextImpl;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class StonecutterContext extends CraftContext {

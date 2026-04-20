@@ -2,10 +2,10 @@ package com.github.breadmoirai.oneclickcrafting.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Arrays;
@@ -31,16 +31,16 @@ public class OneClickCraftingInput {
    public void registerBindings() {
       List<InputBindingImpl> bindings = Arrays.asList(toggleHold, repeatLast);
       //? >=1.21.9 {
-      Identifier categoryId = Identifier.fromNamespaceAndPath("oneclickcrafting", "keybindings");
+      /*ResourceLocation categoryId = ResourceLocation.fromNamespaceAndPath("oneclickcrafting", "keybindings");
       KeyMapping.Category category = KeyMapping.Category.register(categoryId);
-      //? }
+      *///? }
       for (InputBindingImpl binding : bindings) {
-         KeyMapping mapping = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+         KeyMapping mapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(
             binding.getId(),
             InputConstants.Type.KEYSYM,
             GLFW_KEY_UNKNOWN,
             //$ if >=1.21.9 'category' else '"key.category.oneclickcrafting.keybindings"'
-            category
+            "key.category.oneclickcrafting.keybindings"
          ));
          binding.setBind(mapping);
       }
@@ -49,10 +49,10 @@ public class OneClickCraftingInput {
    public static boolean isKeyDown(int keycode) {
       if (keycode == GLFW_KEY_UNKNOWN) return false;
       //? >=1.21.9 {
-      Window window = Minecraft.getInstance().getWindow();
-      //? } else {
-      /*long window = Minecraft.getInstance().getWindow().getWindow();
-      *///? }
+      /*Window window = Minecraft.getInstance().getWindow();
+      *///? } else {
+      long window = Minecraft.getInstance().getWindow().getWindow();
+      //? }
       return InputConstants.isKeyDown(window, keycode);
    }
 

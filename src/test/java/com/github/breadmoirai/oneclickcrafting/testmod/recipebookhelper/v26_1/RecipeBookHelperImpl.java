@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_6;
 
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
@@ -194,10 +194,10 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    // Reflection helpers
    // -------------------------------------------------------------------------
 
-   /**
+   /^*
     * Accesses the current {@link RecipeBookPage} from the {@link RecipeBookComponent}.
     * The field name may vary by Mojang mapping version; tries common names in order.
-    */
+    ^/
    private static RecipeBookPage getRecipeBookPage(RecipeBookComponent<?> component) {
       try {
          Field field = RecipeBookComponent.class.getDeclaredField("recipeBookPage");
@@ -213,4 +213,4 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    }
 
 }
-//?}
+*///?}

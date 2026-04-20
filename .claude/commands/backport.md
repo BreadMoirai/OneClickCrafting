@@ -66,7 +66,7 @@ afterEvaluate {
 }
 ```
 
-The `transformUnnamedVars` task replaces `_` (JDK 22 unnamed vars) with `unusedN` for MC versions that don't support JDK 22 features. Use `restoreUnnamedVars` only for the `26.1` NeoForge version.
+The `transformUnnamedVars` task replaces `_` (JDK 22 unnamed vars) with `unusedN` for MC versions that don't support JDK 22 features. Use `restoreUnnamedVars` only for the `26.1` version.
 
 ## Step 5 — Set active project to the new version
 
@@ -205,7 +205,7 @@ Stonecutter rejects "Ambiguous replacement" when two version entries map the sam
 ),
 ```
 
-Factory files (e.g., `OneClickRecipeBook.java`, `StonecutterContext.java`) use the highest/latest version's import in the vcsVersion source (e.g., `v26_1` for NeoForge). When Stonecutter switches to an older version, it applies the swap chain in reverse — unwinding each version's swaps in order to produce the correct import for that version.
+Factory files (e.g., `OneClickRecipeBook.java`, `StonecutterContext.java`) use the highest/latest version's import in the vcsVersion source (e.g., `v26_1` for MC 26.1). When Stonecutter switches to an older version, it applies the swap chain in reverse — unwinding each version's swaps in order to produce the correct import for that version.
 
 ### Accessor abstraction
 
@@ -259,6 +259,39 @@ Before running tests, confirm you haven't broken any other version:
 ./gradlew compileJava
 ```
 
+## Step 10.5 — Rename versioned packages to match their new lower bound
+
+After a successful backport, any versioned package whose lower bound was extended must be renamed so the package name reflects the new minimum. For example, if `v21_8` now runs on `>=1.21.6 <=1.21.11`, it must be renamed to `v21_6`.
+
+**Which packages need renaming:** every package directory whose version condition lower bound was changed in Step 6.
+
+**Rename procedure** (do all in one pass, then resync once):
+
+1. **Create new dirs and copy files** — use `sed` to rewrite every occurrence of the old package fragment:
+   ```bash
+   mkdir -p src/main/java/.../subsystem/v21_6
+   sed 's/oneclickcrafting\.subsystem\.v21_8/oneclickcrafting.subsystem.v21_6/g' \
+       src/main/java/.../subsystem/v21_8/Foo.java \
+       > src/main/java/.../subsystem/v21_6/Foo.java
+   ```
+   Repeat for every file/directory that moved.
+
+2. **Update factory file imports** — the shared factory files (`OneClickInventory.java`, `OneClickStonecutter.java`, etc.) reference the old package name in the *currently active* view. Change them directly to the new name (e.g. `v21_8` → `v21_6`). The swap chain carries the rename forward to higher versions at build time.
+
+3. **Update `stonecutter-swaps.gradle.kts`** — replace old package fragment with new one in every swap entry. Also update any intermediate-version files (e.g. `v21_9/OneClickRecipeBookImpl.java`) whose commented-out "else branch" package declaration (line 2) still names the old package — update it to the new name so the swap chain resolves correctly.
+
+4. **Update `versions/*/src/main/resources/one-click-crafting.mixins.json`** — for every version that uses the renamed mixin package, replace `v21_8.MixinName` → `v21_6.MixinName`. Likewise for `versions/*/src/test/resources/oneclickcraftingtestmod.mixins.json`.
+
+5. **Update `v26_1/` commented-out "else branch" refs** — the `v26_1/` files contain a comment showing the older package name on line 2. Update those to the new name.
+
+6. **Delete old directories.**
+
+7. **Resync and compile all versions:**
+   ```bash
+   ./gradlew "Set active project to $ARGUMENTS"
+   ./gradlew compileJava compileTestJava
+   ```
+
 ## Step 11 — Run tests
 
 Once the build succeeds, run the test client **for the new version**:
@@ -303,7 +336,29 @@ The shift-hold variant (`repeatLastStacksFullInventory`) runs faster because the
 
 After adjusting, resync and re-run the tests to confirm.
 
-## Step 12 — Report
+## Step 12 — Add publish step to modrinth.yml
+
+Add a new publish step to `.github/workflows/modrinth.yml` for the new version, placed in ascending version order before the next higher version's publish step. Copy the structure of the adjacent step, substituting the new version. Use `java: 21` for versions up to 1.21.x and `java: 25` for MC 26.1.
+
+```yaml
+      - name: Publish $ARGUMENTS
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+$ARGUMENTS*.jar
+          name: "${{ env.MOD_VERSION }}+$ARGUMENTS"
+          version: "${{ env.MOD_VERSION }}+$ARGUMENTS"
+          version-type: release
+          loaders: fabric
+          game-versions: "$ARGUMENTS"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+```
+
+## Step 13 — Report
 
 Summarize what changed:
 - Dependency versions used (Fabric loader, Fabric API, YACL, ModMenu)

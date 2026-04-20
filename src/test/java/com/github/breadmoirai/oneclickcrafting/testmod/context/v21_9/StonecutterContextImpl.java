@@ -1,5 +1,5 @@
 //? >=1.21.9 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.context.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.context.v21_6;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.context.StonecutterContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -9,7 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StonecutterMenu;
 
@@ -76,11 +76,11 @@ public class StonecutterContextImpl extends StonecutterContext {
                "putOneItemInInputSlot: item not found in player inventory: " + itemId);
          }
          // Pick up the full stack from inventory
-         mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot.index, 0, ContainerInput.PICKUP, mc.player);
+         mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot.index, 0, ClickType.PICKUP, mc.player);
          // Place one item in stonecutter input slot (slot 0) using right-click
-         mc.gameMode.handleInventoryMouseClick(menu.containerId, 0, 1, ContainerInput.PICKUP, mc.player);
+         mc.gameMode.handleInventoryMouseClick(menu.containerId, 0, 1, ClickType.PICKUP, mc.player);
          // Return cursor stack to inventory slot
-         mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot.index, 0, ContainerInput.PICKUP, mc.player);
+         mc.gameMode.handleInventoryMouseClick(menu.containerId, sourceSlot.index, 0, ClickType.PICKUP, mc.player);
       });
       wait(2);
    }

@@ -2,7 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.inventory;
 
 import java.util.function.Predicate;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.inventory.v26_1.OneClickInventoryImpl;
+import com.github.breadmoirai.oneclickcrafting.inventory.v21_5.OneClickInventoryImpl;
 
 public abstract class OneClickInventory {
 

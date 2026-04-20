@@ -1,5 +1,5 @@
 //? >=1.21.9 <=26.1 {
-package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
@@ -19,4 +19,4 @@ public interface RecipeBookComponentAccessor {
    @Invoker
    boolean callTryPlaceRecipe(RecipeCollection collection, RecipeDisplayId recipeDisplayId, boolean shift);
 }
-//?}
+*///?}

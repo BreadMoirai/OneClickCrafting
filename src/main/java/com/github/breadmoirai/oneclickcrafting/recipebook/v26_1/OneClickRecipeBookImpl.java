@@ -1,5 +1,5 @@
 //? 26.1 {
-package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v21_6;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
@@ -49,4 +49,4 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
    }
 }
 
-//?}
+*///?}

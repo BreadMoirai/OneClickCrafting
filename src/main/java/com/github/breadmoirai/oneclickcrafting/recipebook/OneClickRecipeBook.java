@@ -1,7 +1,7 @@
 package com.github.breadmoirai.oneclickcrafting.recipebook;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.recipebook.v26_1.OneClickRecipeBookImpl;
+import com.github.breadmoirai.oneclickcrafting.recipebook.v21_6.OneClickRecipeBookImpl;
 
 public interface OneClickRecipeBook {
    static OneClickRecipeBook getInstance() {

@@ -1,5 +1,5 @@
 //? >=1.21.9 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1;
+/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_6;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
