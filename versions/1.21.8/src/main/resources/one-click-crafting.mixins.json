@@ -8,13 +8,13 @@
     "AbstractRecipeBookScreenAccessor",
     "ClientRecipeBookAccessor",
     "KeyMappingAccessor",
-    "v21_5.OverlayRecipeButtonMixin",
-    "v21_5.OverlayRecipeComponentMixin",
-    "v21_5.RecipeBookComponentAccessor",
-    "v21_5.RecipeBookComponentMixin",
-    "v21_5.RecipeBookPageMixin",
-    "v21_5.StonecutterScreenMixin",
-    "v21_5.ClientPlayNetworkHandlerMixin"
+    "v21_2.OverlayRecipeButtonMixin",
+    "v21_2.OverlayRecipeComponentMixin",
+    "v21_2.RecipeBookComponentAccessor",
+    "v21_2.RecipeBookComponentMixin",
+    "v21_2.RecipeBookPageMixin",
+    "v21_2.StonecutterScreenMixin",
+    "v21_2.ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

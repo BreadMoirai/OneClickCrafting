@@ -86,6 +86,7 @@ public class OneClickStonecuttingOperation extends OneClickOperation {
                getMod().stonecutter.selectRecipe(getRecipeId());
                onNextUpdate = () -> {
                   getMod().inventory.shiftClickSlot(1);
+                  refill();
                   return null;
                };
                return false;

@@ -1,10 +1,10 @@
-//? <=1.21.8 {
-package com.github.breadmoirai.oneclickcrafting.recipebook.v21_6;
+//? >=1.21.2 <=1.21.8 {
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v21_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
-import com.github.breadmoirai.oneclickcrafting.mixin.v21_5.RecipeBookComponentAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_2.RecipeBookComponentAccessor;
 import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -46,4 +46,4 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       return new OneClickItemStack(recipes.get(new RecipeDisplayId(recipeId)).display().result().resolveForFirstStack(context));
    }
 }
-//?}
+*///?}

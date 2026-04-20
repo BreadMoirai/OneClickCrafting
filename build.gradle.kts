@@ -98,10 +98,17 @@ if (sc.current.parsed < "26") {
     tasks.withType<JavaCompile>().configureEach { dependsOn(transformForBuild) }
 }
 
+val hasClientGameTestApi = property("minecraft_version").toString() >= "1.21.4"
+
 sourceSets {
     named("test") {
-        compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.test.get().compileClasspath
-        runtimeClasspath += sourceSets.main.get().runtimeClasspath + sourceSets.test.get().runtimeClasspath
+        if (!hasClientGameTestApi) {
+            java.setSrcDirs(emptyList<File>())
+            resources.setSrcDirs(emptyList<File>())
+        } else {
+            compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.test.get().compileClasspath
+            runtimeClasspath += sourceSets.main.get().runtimeClasspath + sourceSets.test.get().runtimeClasspath
+        }
     }
 }
 

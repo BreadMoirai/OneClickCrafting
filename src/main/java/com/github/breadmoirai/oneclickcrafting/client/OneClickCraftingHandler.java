@@ -70,7 +70,7 @@ public class OneClickCraftingHandler extends OneClickHandler implements OneClick
    public void onResultSlotUpdate(OneClickItemStack stack) {
       if (!hasOp()) {
          debug("onResultSlotUpdate(crafting): no active operation, ignoring " + stack.count() + " " + stack.stack()
-            .getItemName().getString(), () -> {
+            .getHoverName().getString(), () -> {
             Screen screen = Minecraft.getInstance().screen;
             return screen instanceof InventoryScreen || screen instanceof CraftingScreen;
          });

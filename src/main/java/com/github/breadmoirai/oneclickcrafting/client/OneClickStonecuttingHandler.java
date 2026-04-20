@@ -53,7 +53,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
    public void onResultSlotUpdate(OneClickItemStack stack) {
       if (!hasOp()) {
          debug("onResultSlotUpdate(stonecutter): no active operation, ignoring " + stack.count() + " " + stack.stack()
-            .getItemName().getString(), () -> {
+            .getHoverName().getString(), () -> {
             Screen screen = Minecraft.getInstance().screen;
             return screen instanceof StonecutterScreen;
          });

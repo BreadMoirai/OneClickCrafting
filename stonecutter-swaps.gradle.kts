@@ -9,10 +9,10 @@ extra["swaps"] = mapOf(
         "oneclickcrafting.input.v21_9" to "oneclickcrafting.input.v26_1",
         "oneclickcrafting.item.v21_9" to "oneclickcrafting.item.v26_1",
         "oneclickcrafting.recipebook.v21_9" to "oneclickcrafting.recipebook.v26_1",
-        "oneclickcrafting.stonecutter.v21_5" to "oneclickcrafting.stonecutter.v26_1",
+        "oneclickcrafting.stonecutter.v21_2" to "oneclickcrafting.stonecutter.v26_1",
 
-        "oneclickcrafting.inventory.v21_5" to "oneclickcrafting.inventory.v26_1",
-        "oneclickcrafting.operation.v21_5" to "oneclickcrafting.operation.v26_1",
+        "oneclickcrafting.inventory.v21_2" to "oneclickcrafting.inventory.v26_1",
+        "oneclickcrafting.operation.v21_2" to "oneclickcrafting.operation.v26_1",
 
         "oneclickcrafting.testmod.context.v21_9" to "oneclickcrafting.testmod.context.v26_1",
         "oneclickcrafting.testmod.recipebookhelper.v21_9" to "oneclickcrafting.testmod.recipebookhelper.v26_1",
@@ -28,7 +28,14 @@ extra["swaps"] = mapOf(
 
         "oneclickcrafting.testmod.context.v21_6" to "oneclickcrafting.testmod.context.v21_9",
         "oneclickcrafting.testmod.recipebookhelper.v21_6" to "oneclickcrafting.testmod.recipebookhelper.v21_9",
-        "oneclickcrafting.testmod.inputhelper.v21_5" to "oneclickcrafting.testmod.inputhelper.v21_9",
-
-        )
+        "oneclickcrafting.testmod.inputhelper.v21_4" to "oneclickcrafting.testmod.inputhelper.v21_9",
+    ),
+    "1.21.2" to mapOf(
+        "oneclickcrafting.stonecutter.v21_1" to "oneclickcrafting.stonecutter.v21_2",
+        "oneclickcrafting.operation.v21_1" to "oneclickcrafting.operation.v21_2",
+        "oneclickcrafting.recipebook.v21_1" to "oneclickcrafting.recipebook.v21_6",
+    ),
+    "1.21.1" to mapOf(
+        "getItemName()" to "getHoverName()",
+    )
 )

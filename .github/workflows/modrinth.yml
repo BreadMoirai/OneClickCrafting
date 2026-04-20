@@ -38,6 +38,70 @@ jobs:
           name: ${{ env.MOD_VERSION }}
           files: build/libs/${{ env.MOD_VERSION }}/*.jar
 
+      - name: Publish 1.21.1
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.1*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.1"
+          version: "${{ env.MOD_VERSION }}+1.21.1"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.1"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+
+      - name: Publish 1.21.2
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.2*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.2"
+          version: "${{ env.MOD_VERSION }}+1.21.2"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.2"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+
+      - name: Publish 1.21.3
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.3*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.3"
+          version: "${{ env.MOD_VERSION }}+1.21.3"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.3"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+
+      - name: Publish 1.21.4
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.4*.jar
+          name: "${{ env.MOD_VERSION }}+1.21.4"
+          version: "${{ env.MOD_VERSION }}+1.21.4"
+          version-type: release
+          loaders: fabric
+          game-versions: "1.21.4"
+          java: 21
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl
+
       - name: Publish 1.21.5
         uses: Kir-Antipov/mc-publish@v3.3
         with:

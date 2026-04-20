@@ -1,6 +1,6 @@
 package com.github.breadmoirai.oneclickcrafting.stonecutter;
 
-import com.github.breadmoirai.oneclickcrafting.stonecutter.v21_5.OneClickStonecutterImpl;
+import com.github.breadmoirai.oneclickcrafting.stonecutter.v21_1.OneClickStonecutterImpl;
 
 public interface OneClickStonecutter {
    static OneClickStonecutter getInstance() {

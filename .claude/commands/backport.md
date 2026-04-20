@@ -88,7 +88,9 @@ grep -rn ">=1.21.9 <=1.21.11" src/
 For each match, widen the lower bound to include the new version:
 - `//? >=1.21.9 <=1.21.11 {` → `//? >=$ARGUMENTS <=1.21.11 {`
 - Inline conditions like `*///?} >=1.21.9 <=1.21.11 {` → `*///?} >=$ARGUMENTS <=1.21.11 {`
-- Do this for ALL files in the versioned package dirs AND their test equivalents
+- Do this for files in versioned **main** package dirs only
+
+**IMPORTANT — do NOT extend test code conditions below 1.21.4.** Test code in `src/test/` requires the Fabric client gametest API which only exists for MC >= 1.21.4. If the new version is below 1.21.4, skip `src/test/` entirely when extending conditions — the test srcDirs are already cleared in `build.gradle.kts` for those versions.
 
 Also search for **exact-version conditions** targeting the nearest existing version — these also need widening:
 ```bash
@@ -105,8 +107,14 @@ After changes, resync Stonecutter:
 
 ```
 ./gradlew :$ARGUMENTS:compileJava
+```
+
+For versions >= 1.21.4 that have the client gametest API, also run:
+```
 ./gradlew :$ARGUMENTS:compileTestJava
 ```
+
+For versions < 1.21.4, `compileTestJava` will show `NO-SOURCE` — this is correct and expected, skip it.
 
 Collect all compiler errors. Do not fix anything yet — read and understand all errors first.
 
@@ -247,10 +255,17 @@ oldBlock();
 After each category of fixes, resync stonecutter then rebuild:
 ```
 ./gradlew "Set active project to $ARGUMENTS"
-./gradlew :$ARGUMENTS:compileJava :$ARGUMENTS:compileTestJava
+./gradlew :$ARGUMENTS:compileJava
 ```
 
-Repeat Step 8→9 until both compiles succeed. Note: `./gradlew :$ARGUMENTS:build` will FAIL because game tests use `runTestClient` not JUnit — this is expected and pre-existing across all versions.
+For versions >= 1.21.4 also verify test compile:
+```
+./gradlew :$ARGUMENTS:compileTestJava
+```
+
+Repeat until compile succeeds. Note: `./gradlew :$ARGUMENTS:build` will FAIL because game tests use `runTestClient` not JUnit — this is expected and pre-existing across all versions.
+
+**Gradle timeout guidance:** resync and compile tasks each take 1–2 minutes. Use 120000ms timeouts (2 minutes) for these commands. Use `GRADLE_USER_HOME=/tmp/gradle-home --no-daemon --project-cache-dir /tmp/gradle-proj-cache` flags if WSL2 I/O errors occur.
 
 ## Step 10 — Verify existing versions still compile
 
@@ -258,6 +273,8 @@ Before running tests, confirm you haven't broken any other version:
 ```bash
 ./gradlew compileJava
 ```
+
+This is sufficient — `compileTestJava` for versions < 1.21.4 is `NO-SOURCE` (harmless), and Stonecutter already applies the correct swaps per version.
 
 ## Step 10.5 — Rename versioned packages to match their new lower bound
 
@@ -280,7 +297,7 @@ After a successful backport, any versioned package whose lower bound was extende
 
 3. **Update `stonecutter-swaps.gradle.kts`** — replace old package fragment with new one in every swap entry. Also update any intermediate-version files (e.g. `v21_9/OneClickRecipeBookImpl.java`) whose commented-out "else branch" package declaration (line 2) still names the old package — update it to the new name so the swap chain resolves correctly.
 
-4. **Update `versions/*/src/main/resources/one-click-crafting.mixins.json`** — for every version that uses the renamed mixin package, replace `v21_8.MixinName` → `v21_6.MixinName`. Likewise for `versions/*/src/test/resources/oneclickcraftingtestmod.mixins.json`.
+4. **Update `versions/*/src/main/resources/one-click-crafting.mixins.json`** — for every version that uses the renamed mixin package, replace `v21_8.MixinName` → `v21_6.MixinName`. Likewise for `versions/*/src/test/resources/oneclickcraftingtestmod.mixins.json` **only for versions >= 1.21.4** (earlier versions have empty test srcDirs and their test mixins.json client array should be empty).
 
 5. **Update `v26_1/` commented-out "else branch" refs** — the `v26_1/` files contain a comment showing the older package name on line 2. Update those to the new name.
 
@@ -289,10 +306,43 @@ After a successful backport, any versioned package whose lower bound was extende
 7. **Resync and compile all versions:**
    ```bash
    ./gradlew "Set active project to $ARGUMENTS"
-   ./gradlew compileJava compileTestJava
+   ./gradlew compileJava
    ```
 
+**Test package naming exception:** Test versioned packages (`testmod/inputhelper/vXX`, `testmod/mixin/vXX`) are named after the minimum version that has the client gametest API, not the minimum MC version the code runs on. If you extended a main code package from `>=1.21.4` to `>=1.21.2`, the main package is renamed `v21_2` but the test package **stays** `v21_4` — tests don't run on 1.21.2 or 1.21.3 regardless.
+
 ## Step 11 — Run tests
+
+### Check for client gametest API availability
+
+The test infrastructure depends on `net.fabricmc.fabric.api.client.gametest.v1` from `fabric-client-gametest-api-v1`. This module was **added in Fabric API 0.119.x (MC 1.21.4)** and does **not** exist in earlier Fabric API versions (e.g. 0.114.1+1.21.3).
+
+Note: the older `fabric-gametest-api-v1` (server-side game tests) goes back to MC 1.17 and is present in all versions — but that is a different module from the client gametest API used here.
+
+To check whether the new version's Fabric API includes the client gametest module:
+```bash
+curl -s "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/{FABRIC_VERSION}/fabric-api-{FABRIC_VERSION}.pom" | grep "client.*gametest\|gametest.*client"
+```
+
+**If the module is absent**, clear the test sourceSets for that version in `build.gradle.kts` so `compileTestJava` passes trivially:
+
+```kotlin
+val hasClientGameTestApi = property("minecraft_version").toString() >= "1.21.4"
+
+sourceSets {
+    named("test") {
+        if (!hasClientGameTestApi) {
+            java.setSrcDirs(emptyList<File>())
+            resources.setSrcDirs(emptyList<File>())
+        } else {
+            compileClasspath += sourceSets.main.get().compileClasspath + sourceSets.test.get().compileClasspath
+            runtimeClasspath += sourceSets.main.get().runtimeClasspath + sourceSets.test.get().runtimeClasspath
+        }
+    }
+}
+```
+
+Update the lower-bound version string as needed. Skip the rest of Step 11 for versions without the client gametest API.
 
 Once the build succeeds, run the test client **for the new version**:
 ```
