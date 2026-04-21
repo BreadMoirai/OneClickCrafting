@@ -1,5 +1,5 @@
-//? 1.21.1 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v20_1;
+//? <1.21.1 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v20_1;
 
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
@@ -11,4 +11,4 @@ public interface RecipeBookComponentAccessor {
    @Accessor
    RecipeBookPage getRecipeBookPage();
 }
-*///? }
+//? }

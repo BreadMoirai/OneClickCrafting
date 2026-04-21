@@ -1,5 +1,5 @@
-//? >=1.21.1 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_2;
+//? <1.21.1 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v20_1;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
@@ -30,4 +30,4 @@ public class ClientPlayNetworkHandlerMixin {
       }
    }
 }
-*///?}
+//? }

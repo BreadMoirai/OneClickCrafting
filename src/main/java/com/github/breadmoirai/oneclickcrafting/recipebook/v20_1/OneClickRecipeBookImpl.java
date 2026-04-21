@@ -1,5 +1,5 @@
-//? 1.21.1 {
-/*package com.github.breadmoirai.oneclickcrafting.recipebook.v20_1;
+//? <1.21.1 {
+package com.github.breadmoirai.oneclickcrafting.recipebook.v20_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.v20_1.RecipeBookComponentAccessor;
@@ -12,7 +12,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 
 public class OneClickRecipeBookImpl implements OneClickRecipeBook {
 
@@ -34,10 +34,10 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
          return -1;
       }
       RecipeBookPage page = ((RecipeBookComponentAccessor) recipeBook).getRecipeBookPage();
-      RecipeHolder<?> lastRecipe = page.getLastClickedRecipe();
+      Recipe<?> lastRecipe = page.getLastClickedRecipe();
       if (lastRecipe == null) return -1;
       if (minecraft.level != null) {
-         lastRecipeResult = lastRecipe.value().getResultItem(minecraft.level.registryAccess());
+         lastRecipeResult = lastRecipe.getResultItem(minecraft.level.registryAccess());
       }
       minecraft.gameMode.handlePlaceRecipe(containerId, lastRecipe, isShift);
       minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -50,4 +50,4 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       return new OneClickItemStack(lastRecipeResult);
    }
 }
-*///? }
+//? }

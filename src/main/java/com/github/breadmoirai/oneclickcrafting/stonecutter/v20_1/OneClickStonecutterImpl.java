@@ -1,5 +1,5 @@
-//? >=1.21.2 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.stonecutter.v20_1;
+//? <1.21.1 {
+package com.github.breadmoirai.oneclickcrafting.stonecutter.v20_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -10,12 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.SelectableRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+
+import java.util.List;
 
 import static com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod.debug;
 
@@ -39,17 +38,18 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
       if (minecraft.level == null) return OneClickStonecutterRecipe.EMPTY;
       if (!(minecraft.screen instanceof StonecutterScreen screen)) return OneClickStonecutterRecipe.EMPTY;
       StonecutterMenu menu = screen.getMenu();
-      if (menu.getNumberOfVisibleRecipes() == 0) {
-         debug("onStonecutterClick: getAvailableRecipes() is empty, ignoring");
+      List<StonecutterRecipe> recipes = menu.getRecipes();
+      if (recipeId < 0 || recipeId >= recipes.size()) {
+         debug("onStonecutterClick: recipe index out of bounds, ignoring");
          return OneClickStonecutterRecipe.EMPTY;
       }
-      SelectableRecipe.SingleInputEntry<StonecutterRecipe> entry = menu.getVisibleRecipes().entries().get(recipeId);
-      ContextMap context = SlotDisplayContext.fromLevel(minecraft.level);
-      ItemStack result = entry.recipe().optionDisplay().resolveForFirstStack(context);
+      StonecutterRecipe recipe = recipes.get(recipeId);
+      ItemStack result = recipe.getResultItem(minecraft.level.registryAccess());
       if (result.isEmpty()) return OneClickStonecutterRecipe.EMPTY;
-      return new OneClickStonecutterRecipe(new OneClickItemStack(result), ingredient -> entry.input().test(ingredient.stack()));
+      return new OneClickStonecutterRecipe(
+         new OneClickItemStack(result),
+         ingredient -> recipe.getIngredients().get(0).test(ingredient.stack())
+      );
    }
-
 }
-
-*///?}
+//? }

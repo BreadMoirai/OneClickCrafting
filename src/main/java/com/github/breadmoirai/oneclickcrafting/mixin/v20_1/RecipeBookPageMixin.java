@@ -1,5 +1,5 @@
-//? 1.21.1 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v20_1;
+//? <1.21.1 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v20_1;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,17 +23,17 @@ import java.util.List;
 public abstract class RecipeBookPageMixin {
 
    @Shadow @Final private List<RecipeButton> buttons;
-   @Shadow @Nullable private RecipeHolder<?> lastClickedRecipe;
+   @Shadow @Nullable private Recipe<?> lastClickedRecipe;
    @Shadow @Nullable private RecipeCollection lastClickedRecipeCollection;
 
    @Inject(method = "mouseClicked(DDIIIII)Z", at = @At(value = "RETURN", ordinal = 3))
    private void onButtonClicked(double mouseX, double mouseY, int btn, int left, int top, int width, int height, CallbackInfoReturnable<Boolean> cir) {
       for (RecipeButton button : this.buttons) {
          if (!button.isMouseOver(mouseX, mouseY)) continue;
-         RecipeHolder<?> recipe = button.getRecipe();
+         Recipe<?> recipe = button.getRecipe();
          if (recipe == null) return;
          if (Minecraft.getInstance().level != null) {
-            OneClickRecipeBookImpl.lastRecipeResult = recipe.value().getResultItem(Minecraft.getInstance().level.registryAccess());
+            OneClickRecipeBookImpl.lastRecipeResult = recipe.getResultItem(Minecraft.getInstance().level.registryAccess());
          }
          if (btn == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick() && button.isOnlyOption()) {
             this.lastClickedRecipe = recipe;
@@ -46,4 +46,4 @@ public abstract class RecipeBookPageMixin {
       }
    }
 }
-*///? }
+//? }

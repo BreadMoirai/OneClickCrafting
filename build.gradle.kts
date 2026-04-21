@@ -11,8 +11,8 @@ base.archivesName = property("mod.id") as String
 val requiredJava = when {
     sc.current.parsed >= "26" -> 25
     sc.current.parsed >= "1.20.5" -> 21
-    sc.current.parsed >= "1.18" -> 17
-    sc.current.parsed >= "1.17" -> 16
+    sc.current.parsed >= "1.18" -> 21
+    sc.current.parsed >= "1.17" -> 21
     else -> 8
 }
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(requiredJava))
@@ -113,7 +113,7 @@ sourceSets {
 }
 
 val testTasks = listOf("runTestClient", "compileTestJava")
-val runningTests = gradle.startParameter.taskNames.any { name -> testTasks.any { name.endsWith(it) } }
+val runningTests = hasClientGameTestApi && gradle.startParameter.taskNames.any { name -> testTasks.any { name.endsWith(it) } }
 
 loom {
     accessWidenerPath.set {
@@ -122,11 +122,13 @@ loom {
     }
 
     runs {
-        register("TestClient") {
-            client()
-            name("Test Client")
-            source(sourceSets.test.get())
-            vmArgs("-Dfabric.client.gametest", "-Dfabric.client.gametest.disableNetworkSynchronizer")
+        if (hasClientGameTestApi) {
+            register("TestClient") {
+                client()
+                name("Test Client")
+                source(sourceSets.test.get())
+                vmArgs("-Dfabric.client.gametest", "-Dfabric.client.gametest.disableNetworkSynchronizer")
+            }
         }
     }
 

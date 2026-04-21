@@ -1,5 +1,5 @@
 //? 26.1 {
-/*package com.github.breadmoirai.oneclickcrafting.inventory.v21_2;
+/*package com.github.breadmoirai.oneclickcrafting.inventory.v20_1;
 
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;

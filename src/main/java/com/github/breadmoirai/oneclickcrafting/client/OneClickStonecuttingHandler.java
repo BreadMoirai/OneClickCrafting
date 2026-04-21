@@ -81,7 +81,7 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
       }
       debug("onStonecutterClick: recipe=" + selectedRecipe + " button=" + button);
       OneClickStonecutterRecipe recipe = mod.stonecutter.getRecipe(selectedRecipe);
-      setOp(new OneClickStonecuttingOperation(mod, selectedRecipe, recipe, button));
+      setOp(OneClickStonecuttingOperation.create(mod, selectedRecipe, recipe, button));
       if (op.notValid()) {
          debug("onStonecutterClick: operation invalid, discarding");
          clearOp();

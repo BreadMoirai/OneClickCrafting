@@ -5,6 +5,7 @@ extra["swaps"] = mapOf(
         "KeyBindingHelper.registerKeyBinding" to "KeyMappingHelper.registerKeyMapping",
         "InputConstants.KEY_SPACE" to "InputConstants.GLFW_KEY_SPACE",
         "ClickType" to "ContainerInput",
+        "getHoverName()" to "getItemName()",
 
         "oneclickcrafting.input.v21_9" to "oneclickcrafting.input.v26_1",
         "oneclickcrafting.item.v21_9" to "oneclickcrafting.item.v26_1",
@@ -36,6 +37,10 @@ extra["swaps"] = mapOf(
         "oneclickcrafting.recipebook.v21_1" to "oneclickcrafting.recipebook.v21_6",
     ),
     "1.21.1" to mapOf(
-        "getItemName()" to "getHoverName()",
-    )
+        "oneclickcrafting.recipebook.v20_1" to "oneclickcrafting.recipebook.v21_1",
+        "oneclickcrafting.mixin.v20_1" to "oneclickcrafting.mixin.v21_1",
+        "oneclickcrafting.stonecutter.v20_1" to "oneclickcrafting.stonecutter.v21_1",
+        "oneclickcrafting.operation.v20_1" to "oneclickcrafting.operation.v21_1",
+        "oneclickcrafting.inventory.v20_1" to "oneclickcrafting.inventory.v21_2",
+    ),
 )

@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.breadmoirai.oneclickcrafting.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "KeyMappingAccessor",
+    "v20_1.ClientPlayNetworkHandlerMixin",
+    "v20_1.OverlayRecipeComponentMixin",
+    "v20_1.RecipeBookComponentAccessor",
+    "v20_1.RecipeBookPageMixin",
+    "v21_2.OverlayRecipeButtonMixin",
+    "v21_2.RecipeBookComponentMixin",
+    "v21_2.StonecutterScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
