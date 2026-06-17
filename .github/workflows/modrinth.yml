@@ -39,7 +39,7 @@ jobs:
           files: build/libs/${{ env.MOD_VERSION }}/*.jar
 
       - name: Publish 1.20.1
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.20.1*.jar
@@ -55,7 +55,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.1
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.1*.jar
@@ -71,7 +71,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.2
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.2*.jar
@@ -87,7 +87,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.3
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.3*.jar
@@ -103,7 +103,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.4
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.4*.jar
@@ -119,7 +119,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.5
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.5*.jar
@@ -135,7 +135,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.6
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.6*.jar
@@ -151,7 +151,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.7
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.7*.jar
@@ -167,7 +167,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.8
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.8*.jar
@@ -183,7 +183,7 @@ jobs:
             yacl      
 
       - name: Publish 1.21.9
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.9*.jar
@@ -199,7 +199,7 @@ jobs:
             yacl      
 
       - name: Publish 1.21.10
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.10*.jar
@@ -215,7 +215,7 @@ jobs:
             yacl
 
       - name: Publish 1.21.11
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+1.21.11*.jar
@@ -231,7 +231,7 @@ jobs:
             yacl
 
       - name: Publish 26.1
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+26.1*.jar

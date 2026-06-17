@@ -392,7 +392,7 @@ Add a new publish step to `.github/workflows/modrinth.yml` for the new version, 
 
 ```yaml
       - name: Publish $ARGUMENTS
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: BreadMoirai/mc-publish@master
         with:
           modrinth-token: ${{ secrets.M_TOKEN }}
           files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+$ARGUMENTS*.jar
