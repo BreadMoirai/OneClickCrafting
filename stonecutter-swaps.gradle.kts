@@ -1,4 +1,10 @@
 extra["swaps"] = mapOf(
+    "26.2" to mapOf(
+        "Minecraft.getInstance().screen" to "Minecraft.getInstance().gui.screen()",
+        "minecraft.screen" to "minecraft.gui.screen()",
+        "client.screen instanceof" to "client.gui.screen() instanceof",
+        "mc.screen" to "mc.gui.screen()",
+    ),
     "26.1" to mapOf(
         "net.minecraft.client.resources.sounds" to "net.minecraft.client.sounds",
         "net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper" to "net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper",

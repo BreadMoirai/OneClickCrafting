@@ -56,4 +56,5 @@ afterEvaluate {
     tasks.findByName("stonecutterSwitchTo1.21.10")?.finalizedBy("transformUnnamedVars")
     tasks.findByName("stonecutterSwitchTo1.21.11")?.finalizedBy("transformUnnamedVars")
     tasks.findByName("stonecutterSwitchTo26.1")?.finalizedBy("restoreUnnamedVars")
+    tasks.findByName("stonecutterSwitchTo26.2")?.finalizedBy("restoreUnnamedVars")
 }

@@ -1,4 +1,4 @@
-//? 26.1 {
+//? >=26.1 <26.3 {
 /*package com.github.breadmoirai.oneclickcrafting.testmod.mixin.v26_1;
 
 import net.minecraft.client.gui.components.AbstractWidget;
