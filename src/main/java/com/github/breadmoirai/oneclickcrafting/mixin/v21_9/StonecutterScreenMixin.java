@@ -1,4 +1,4 @@
-//? >=1.21.9 <=26.1 {
+//? >=1.21.9 <26.3 {
 /*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;

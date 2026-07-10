@@ -1,4 +1,4 @@
-//? 26.1 {
+//? >=26.1 <26.3 {
 /*package com.github.breadmoirai.oneclickcrafting.operation.v20_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;

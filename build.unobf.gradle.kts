@@ -66,6 +66,10 @@ tasks {
         options.encoding = "UTF-8"
     }
 
+    withType<Test> {
+        failOnNoDiscoveredTests = false
+    }
+
     // Builds the version into a shared folder in `build/libs/${mod version}/`
     register<Copy>("buildAndCollect") {
         group = "build"
