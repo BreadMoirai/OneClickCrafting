@@ -20,6 +20,13 @@ public class RepeatLastTests extends OneClickTests {
 
    public static int REPEAT_KEY_CODE = InputConstants.KEY_R;
 
+   /** Upper bound for holding the repeat key until all crafts are done (slow CI machines need far more
+    * ticks than a desktop, so the hold waits on the result instead of a fixed tick count). */
+   private static final int REPEAT_TIMEOUT_TICKS = 400;
+   /** Keep holding briefly after the last craft: releasing mid-attempt can leave the client inventory
+    * out of sync with the server until the next repeat attempt resyncs it. */
+   private static final int REPEAT_SETTLE_TICKS = 20;
+
    public RepeatLastTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
    }
@@ -75,11 +82,8 @@ public class RepeatLastTests extends OneClickTests {
          wait(2);
 
          input.holdRepeatKey();
-         //? if <1.21.8 {
-         /*wait(200);
-         *///? } else {
-         wait(65);
-         //? }
+         waitUntil(mc -> inventoryCount(mc, ctx.outputItem) >= ctx.outputCount * 64, REPEAT_TIMEOUT_TICKS);
+         wait(REPEAT_SETTLE_TICKS);
          input.releaseRepeatKey();
 
          ctx.close();
@@ -101,11 +105,8 @@ public class RepeatLastTests extends OneClickTests {
 
          input.holdShift();
          input.holdRepeatKey();
-         //? if <1.21.8 {
-         /*wait(35);
-         *///? } else {
-         wait(24);
-         //? }
+         waitUntil(mc -> inventoryCount(mc, ctx.outputItem) >= ctx.outputCount * 9 * 64, REPEAT_TIMEOUT_TICKS);
+         wait(REPEAT_SETTLE_TICKS);
          input.releaseShift();
          input.releaseRepeatKey();
 
@@ -130,11 +131,8 @@ public class RepeatLastTests extends OneClickTests {
          wait(2);
 
          input.holdRepeatKey();
-         //? if <1.21.8 {
-         /*wait(200);
-         *///? } else {
-         wait(66);
-         //? }
+         waitUntil(mc -> groundCount(mc, ctx.outputItem) >= ctx.outputCount * 64, REPEAT_TIMEOUT_TICKS);
+         wait(REPEAT_SETTLE_TICKS);
          input.releaseRepeatKey();
          input.releaseDrop();
 

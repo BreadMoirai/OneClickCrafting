@@ -5,6 +5,8 @@ on: [ pull_request ]
 jobs:
   test:
     runs-on: ubuntu-latest
+    # A Minecraft client that fails to start can hang instead of exiting; don't burn the 6h default.
+    timeout-minutes: 60
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -19,7 +21,8 @@ jobs:
             21
             25
 
-      # Client game tests launch a real Minecraft client per version, so they need a virtual display.
+      # Loom runs each client under xvfb-run on CI, so no display setup is needed here.
       # Capped workers: each client is memory/GPU heavy and too many in parallel can hang.
+      # --continue so one failing version doesn't hide the results of the others.
       - name: Run Client Game Tests
-        run: xvfb-run -a bash ./gradlew runTestClient --max-workers=2
+        run: bash ./gradlew runTestClient --max-workers=2 --continue
