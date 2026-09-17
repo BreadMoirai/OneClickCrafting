@@ -261,3 +261,19 @@ jobs:
             fabric-api
             modmenu
             yacl
+
+      - name: Publish 26.3
+        uses: BreadMoirai/mc-publish@master
+        with:
+          modrinth-token: ${{ secrets.M_TOKEN }}
+          files: build/libs/${{ env.MOD_VERSION }}/one-click-crafting-${{ env.MOD_VERSION }}+26.3*.jar
+          name: "${{ env.MOD_VERSION }}+26.3"
+          version: "${{ env.MOD_VERSION }}+26.3"
+          version-type: release
+          loaders: fabric
+          game-versions: "26.3"
+          java: 25
+          dependencies: |
+            fabric-api
+            modmenu
+            yacl

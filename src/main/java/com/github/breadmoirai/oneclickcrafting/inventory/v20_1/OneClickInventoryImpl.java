@@ -1,5 +1,5 @@
 //? <1.21.1 {
-package com.github.breadmoirai.oneclickcrafting.inventory.v20_1;
+/*package com.github.breadmoirai.oneclickcrafting.inventory.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventory;
 import com.github.breadmoirai.oneclickcrafting.inventory.OneClickInventoryAction;
@@ -17,7 +17,7 @@ public class OneClickInventoryImpl extends OneClickInventory {
 
    private static AbstractContainerMenu getMenu() {
       Minecraft minecraft = Minecraft.getInstance();
-      if (!(minecraft.screen instanceof AbstractContainerScreen<? extends AbstractContainerMenu> containerScreen))
+      if (!(minecraft.gui.screen() instanceof AbstractContainerScreen<? extends AbstractContainerMenu> containerScreen))
          return null;
       return containerScreen.getMenu();
    }
@@ -52,4 +52,4 @@ public class OneClickInventoryImpl extends OneClickInventory {
       return -1;
    }
 }
-//? }
+*///? }

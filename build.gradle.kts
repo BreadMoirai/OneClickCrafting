@@ -102,7 +102,7 @@ if (sc.current.parsed < "26") {
     tasks.withType<JavaCompile>().configureEach { dependsOn(transformForBuild) }
 }
 
-val hasClientGameTestApi = property("minecraft_version").toString() >= "1.21.4"
+val hasClientGameTestApi = sc.current.parsed >= "1.21.4"
 
 sourceSets {
     named("test") {

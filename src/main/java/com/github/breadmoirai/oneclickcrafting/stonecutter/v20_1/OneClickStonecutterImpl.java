@@ -1,5 +1,5 @@
 //? <1.21.1 {
-package com.github.breadmoirai.oneclickcrafting.stonecutter.v20_1;
+/*package com.github.breadmoirai.oneclickcrafting.stonecutter.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -8,7 +8,7 @@ import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutter;
 import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutterRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
    public void selectRecipe(int recipeId) {
       Minecraft minecraft = Minecraft.getInstance();
       if (minecraft.gameMode == null) return;
-      if (!(minecraft.screen instanceof StonecutterScreen screen)) return;
+      if (!(minecraft.gui.screen() instanceof StonecutterScreen screen)) return;
       StonecutterMenu menu = screen.getMenu();
       menu.clickMenuButton(minecraft.player, recipeId);
       minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0F));
@@ -36,7 +36,7 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
    public OneClickStonecutterRecipe getRecipe(int recipeId) {
       Minecraft minecraft = Minecraft.getInstance();
       if (minecraft.level == null) return OneClickStonecutterRecipe.EMPTY;
-      if (!(minecraft.screen instanceof StonecutterScreen screen)) return OneClickStonecutterRecipe.EMPTY;
+      if (!(minecraft.gui.screen() instanceof StonecutterScreen screen)) return OneClickStonecutterRecipe.EMPTY;
       StonecutterMenu menu = screen.getMenu();
       List<StonecutterRecipe> recipes = menu.getRecipes();
       if (recipeId < 0 || recipeId >= recipes.size()) {
@@ -52,4 +52,4 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
       );
    }
 }
-//? }
+*///? }

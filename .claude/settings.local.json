@@ -10,19 +10,22 @@
       "Bash(wc *)",
       "Bash(which *)",
       "Bash(echo *)",
-
       "Bash(grep:*)",
       "Bash(grep *)",
       "Bash(find:*)",
       "Bash(find *)",
       "Bash(sort:*)",
       "Bash(sort *)",
-
       "Bash(curl *)",
       "Bash(javap *)",
       "Bash(python3 *)",
-      "Bash(./gradlew *)"
-
+      "Bash(./gradlew *)",
+      "Bash(mkdir -p ~/.claude/plugins/cache/local/minecraft-claude/1.0.0)",
+      "Bash(rmdir ~/.claude/plugins/cache/local/minecraft-claude/1.0.0)",
+      "Bash(ln -s /mnt/h/Repo/MinecraftClaude ~/.claude/plugins/cache/local/minecraft-claude/1.0.0)",
+      "Read(//home/local/.claude/plugins/cache/local/**)",
+      "Read(//mnt/h/Repo/**)",
+      "Bash(ls -la ../)"
     ]
   },
   "defaultMode": "bypassPermissions"

@@ -1,5 +1,5 @@
-//? >=26.1 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v21_6;
+//? >=26.1 {
+package com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
@@ -37,7 +37,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    @Override
    public void open() {
       if (context.computeOnClient(mc -> {
-         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+         if (!(mc.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
             throw new AssertionError("openRecipeBook: not in an AbstractRecipeBookScreen");
          }
          RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
@@ -54,7 +54,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    @Override
    public void clickRecipeButton(String targetItemId, int mouseButton) {
       double[] windowCoords = context.computeOnClient(mc -> {
-         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+         if (!(mc.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
             throw new AssertionError("clickRecipeButton: not in an AbstractRecipeBookScreen");
          }
          RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
@@ -117,7 +117,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    public String clickMultiOptionButton(int mouseButton, String... possibleItems) {
       Set<String> possible = new HashSet<>(Arrays.asList(possibleItems));
       String[] data = context.computeOnClient(mc -> {
-         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+         if (!(mc.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
             throw new AssertionError("clickMultiOptionButton: not in an AbstractRecipeBookScreen");
          }
          RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
@@ -155,7 +155,7 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    @Override
    public void clickOverlayButton(String targetItemId, int mouseButton) {
       double[] windowCoords = context.computeOnClient(mc -> {
-         if (!(mc.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+         if (!(mc.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
             throw new AssertionError("clickOverlayButton: not in an AbstractRecipeBookScreen");
          }
          RecipeBookComponent<?> component = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
@@ -194,10 +194,10 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    // Reflection helpers
    // -------------------------------------------------------------------------
 
-   /^*
+   /**
     * Accesses the current {@link RecipeBookPage} from the {@link RecipeBookComponent}.
     * The field name may vary by Mojang mapping version; tries common names in order.
-    ^/
+    */
    private static RecipeBookPage getRecipeBookPage(RecipeBookComponent<?> component) {
       try {
          Field field = RecipeBookComponent.class.getDeclaredField("recipeBookPage");
@@ -213,4 +213,4 @@ public class RecipeBookHelperImpl extends RecipeBookHelper {
    }
 
 }
-*///?}
+//?}

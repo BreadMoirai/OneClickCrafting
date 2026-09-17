@@ -28,11 +28,11 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
          if (screen instanceof StonecutterScreen) {
             ScreenEvents.afterTick(screen).register(screen2 -> tick());
             ScreenKeyboardEvents.beforeKeyPress(screen)
-               //$ if >= 1.21.9 '.register((screen2, key) -> {' else '.register((screen2, key, unused1, unused2) -> {'
-               .register((screen2, key, unused1, unused2) -> {
+               //$ if >= 1.21.9 '.register((screen2, key) -> {' else '.register((screen2, key, _, _) -> {'
+               .register((screen2, key) -> {
                   if (hasOp()) return;
                   //~ if >=1.21.9 'key' -> 'key.key()'
-                  if (mod.input.repeatLast.guard(key)) return;
+                  if (mod.input.repeatLast.guard(key.key())) return;
                   if (isRepeating) return;
                   isRepeating = true;
                   fireRepeatCraft();
@@ -53,8 +53,8 @@ public class OneClickStonecuttingHandler extends OneClickHandler implements OneC
    public void onResultSlotUpdate(OneClickItemStack stack) {
       if (!hasOp()) {
          debug("onResultSlotUpdate(stonecutter): no active operation, ignoring " + stack.count() + " " + stack.stack()
-            .getHoverName().getString(), () -> {
-            Screen screen = Minecraft.getInstance().screen;
+            .getItemName().getString(), () -> {
+            Screen screen = Minecraft.getInstance().gui.screen();
             return screen instanceof StonecutterScreen;
          });
          return;

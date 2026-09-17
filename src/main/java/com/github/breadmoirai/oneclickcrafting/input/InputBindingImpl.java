@@ -39,6 +39,6 @@ public class InputBindingImpl implements InputBinding<KeyMapping> {
 
    @Override
    public void setKey(int keycode) {
-      this.bind.setKey(InputConstants.Type.KEYSYM.getOrCreate(keycode));
+      this.bind.setKey(InputConstants.Type.KEYBOARD.getOrCreate(keycode));
    }
 }

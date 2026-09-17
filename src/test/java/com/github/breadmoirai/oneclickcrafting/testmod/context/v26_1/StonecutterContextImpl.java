@@ -1,5 +1,5 @@
-//? >=26.1 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.testmod.context.v21_6;
+//? >=26.1 {
+package com.github.breadmoirai.oneclickcrafting.testmod.context.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.testmod.context.StonecutterContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -9,7 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.StonecutterMenu;
 
@@ -34,7 +34,7 @@ public class StonecutterContextImpl extends StonecutterContext {
       // Wait for the server to process any previous craft before clicking again.
       wait(3);
       context.runOnClient(mc -> {
-         if (!(mc.screen instanceof StonecutterScreen screen)) {
+         if (!(mc.gui.screen() instanceof StonecutterScreen screen)) {
             throw new AssertionError("clickRecipeButton: not in a StonecutterScreen");
          }
          StonecutterMenu menu = screen.getMenu();
@@ -59,7 +59,7 @@ public class StonecutterContextImpl extends StonecutterContext {
    @Override
    protected void putOneItemInInputSlot(String itemId) {
       context.runOnClient(mc -> {
-         if (!(mc.screen instanceof StonecutterScreen screen)) {
+         if (!(mc.gui.screen() instanceof StonecutterScreen screen)) {
             throw new AssertionError("putOneItemInInputSlot: not in a StonecutterScreen");
          }
          StonecutterMenu menu = screen.getMenu();
@@ -76,13 +76,13 @@ public class StonecutterContextImpl extends StonecutterContext {
                "putOneItemInInputSlot: item not found in player inventory: " + itemId);
          }
          // Pick up the full stack from inventory
-         mc.gameMode.handleClickType(menu.containerId, sourceSlot.index, 0, ClickType.PICKUP, mc.player);
+         mc.gameMode.handleContainerInput(menu.containerId, sourceSlot.index, 0, ContainerInput.PICKUP, mc.player);
          // Place one item in stonecutter input slot (slot 0) using right-click
-         mc.gameMode.handleClickType(menu.containerId, 0, 1, ClickType.PICKUP, mc.player);
+         mc.gameMode.handleContainerInput(menu.containerId, 0, 1, ContainerInput.PICKUP, mc.player);
          // Return cursor stack to inventory slot
-         mc.gameMode.handleClickType(menu.containerId, sourceSlot.index, 0, ClickType.PICKUP, mc.player);
+         mc.gameMode.handleContainerInput(menu.containerId, sourceSlot.index, 0, ContainerInput.PICKUP, mc.player);
       });
       wait(2);
    }
 }
-*///?}
+//?}

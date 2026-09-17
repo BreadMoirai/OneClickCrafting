@@ -1,5 +1,5 @@
-//? >=26.1 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.operation.v20_1;
+//? >=26.1 {
+package com.github.breadmoirai.oneclickcrafting.operation.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
@@ -26,7 +26,7 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
    @Override
    public boolean anySlotMax() {
       Minecraft minecraft = Minecraft.getInstance();
-      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
+      if (!(minecraft.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) {
          return false;
       }
       int maxGridSlot = screen instanceof InventoryScreen ? 4 : 9;
@@ -55,7 +55,7 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
    @Override
    public boolean craft() {
       Minecraft minecraft = Minecraft.getInstance();
-      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu>)) {
+      if (!(minecraft.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu>)) {
          return false;
       }
       if (isDrop()) {
@@ -73,4 +73,4 @@ public class OneClickCraftingOperationImpl extends OneClickCraftingOperation {
       return true;
    }
 }
-*///?}
+//?}

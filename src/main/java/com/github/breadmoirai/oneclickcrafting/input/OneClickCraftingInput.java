@@ -2,16 +2,13 @@ package com.github.breadmoirai.oneclickcrafting.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Window;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import org.lwjgl.glfw.GLFW;
+import net.minecraft.resources.Identifier;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_UNKNOWN;
 
 public class OneClickCraftingInput {
    public final DropBinding drop;
@@ -31,40 +28,45 @@ public class OneClickCraftingInput {
    public void registerBindings() {
       List<InputBindingImpl> bindings = Arrays.asList(toggleHold, repeatLast);
       //? >=1.21.9 {
-      /*ResourceLocation categoryId = ResourceLocation.fromNamespaceAndPath("oneclickcrafting", "keybindings");
+      Identifier categoryId = Identifier.fromNamespaceAndPath("oneclickcrafting", "keybindings");
       KeyMapping.Category category = KeyMapping.Category.register(categoryId);
-      *///? }
+      //? }
       for (InputBindingImpl binding : bindings) {
-         KeyMapping mapping = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+         KeyMapping mapping = KeyMappingHelper.registerKeyMapping(new KeyMapping(
             binding.getId(),
-            InputConstants.Type.KEYSYM,
-            GLFW_KEY_UNKNOWN,
+            InputConstants.Type.KEYBOARD,
+            InputConstants.UNKNOWN.getValue(),
             //$ if >=1.21.9 'category' else '"key.category.oneclickcrafting.keybindings"'
-            "key.category.oneclickcrafting.keybindings"
+            category
          ));
          binding.setBind(mapping);
       }
    }
 
    public static boolean isKeyDown(int keycode) {
-      if (keycode == GLFW_KEY_UNKNOWN) return false;
+      if (keycode == InputConstants.UNKNOWN.getValue()) return false;
       //? >=1.21.9 {
-      /*Window window = Minecraft.getInstance().getWindow();
-      *///? } else {
-      long window = Minecraft.getInstance().getWindow().getWindow();
-      //? }
-      return InputConstants.isKeyDown(window, keycode);
+      Window window = Minecraft.getInstance().getWindow();
+      //? } else {
+      /*long window = Minecraft.getInstance().getWindow().getWindow();
+      *///? }
+      // MC 26.3 (SDL) dropped the window argument; `window` is unused there.
+      //? if >=26.3 {
+      return InputConstants.isKeyDown(keycode);
+      //? } else {
+      /*return InputConstants.isKeyDown(window, keycode);
+      *///? }
    }
 
    public boolean isShiftDown() {
-      return isKeyDown(GLFW.GLFW_KEY_LEFT_SHIFT) || isKeyDown(GLFW.GLFW_KEY_RIGHT_SHIFT);
+      return isKeyDown(InputConstants.KEY_LSHIFT) || isKeyDown(InputConstants.KEY_RSHIFT);
    }
 
    public boolean isControlDown() {
-      return isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) || isKeyDown(GLFW.GLFW_KEY_RIGHT_CONTROL);
+      return isKeyDown(InputConstants.KEY_LCONTROL) || isKeyDown(InputConstants.KEY_RCONTROL);
    }
 
    public boolean isAltDown() {
-      return isKeyDown(GLFW.GLFW_KEY_LEFT_ALT) || isKeyDown(GLFW.GLFW_KEY_RIGHT_ALT);
+      return isKeyDown(InputConstants.KEY_LALT) || isKeyDown(InputConstants.KEY_RALT);
    }
 }

@@ -116,6 +116,17 @@ loom {
     }
 
     runs {
+        // MC 26.x on Windows (JDK 25+): pre-commit each thread's whole stack at thread start.
+        // Without this, ~10-50% of client launches die in the first resource reload with
+        // NTSTATUS 0xC0000005 / 0xC0000409 and no hs_err file: JIT-compiled code on a
+        // Worker-Main thread stack-bangs past the Windows guard page, HotSpot's Windows fault
+        // handler commits the stack range manually (leaving no guard page below it), and VM
+        // call-site resolution (SharedRuntime::find_callee_*) then runs off the committed
+        // region or corrupts its own frame. Pre-touching avoids that path entirely.
+        // Verified 0/40 crashes vs 5/40+ without; see the update skill api-divergences.md.
+        configureEach {
+            vmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+AlwaysPreTouchStacks")
+        }
         register("TestClient") {
             client()
             name("Test Client")

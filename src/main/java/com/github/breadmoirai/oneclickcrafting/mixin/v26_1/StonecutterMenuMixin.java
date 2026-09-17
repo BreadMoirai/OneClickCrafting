@@ -1,5 +1,5 @@
-//? >=26.1 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
+//? >=26.1 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
@@ -18,10 +18,10 @@ public class StonecutterMenuMixin {
 
    @Inject(at = @At("TAIL"), method = "setItem(IILnet/minecraft/world/item/ItemStack;)V")
    public void onSetItem(int slot, int stateId, ItemStack itemStack, CallbackInfo ci) {
-      if (!(Minecraft.getInstance().screen instanceof StonecutterScreen)) return;
+      if (!(Minecraft.getInstance().gui.screen() instanceof StonecutterScreen)) return;
       if (slot == StonecutterMenu.RESULT_SLOT && !itemStack.isEmpty()) {
          OneClickEvents.RESULT_SLOT_UPDATE.invoker().onResultSlotUpdate(new OneClickItemStack(itemStack));
       }
    }
 }
-*///?}
+//?}

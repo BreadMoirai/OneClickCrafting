@@ -1,4 +1,16 @@
 extra["swaps"] = mapOf(
+    // MC 26.3 swapped GLFW for SDL: org.lwjgl.glfw.GLFW is gone from the client classpath and
+    // InputConstants.Type.KEYSYM/SCANCODE became a single KEYBOARD constant. Key/mouse codes and
+    // InputConstants.UNKNOWN are unchanged, so only the enum constant needs a swap.
+    // The client-gametest API jumped to 6.x for 26.3 and moved the chunk-load/level accessors off
+    // TestSingleplayerContext onto a new TestServerConnection (test code only):
+    //   TestSingleplayerContext.getClientLevel() -> getConnection()
+    // Entries are ordered NEWEST FIRST so switching down unwinds a twice-renamed symbol
+    // (getClientWorld -> getClientLevel -> getConnection) newest-rename-first.
+    "26.3" to mapOf(
+        "InputConstants.Type.KEYSYM" to "InputConstants.Type.KEYBOARD",
+        "getClientLevel" to "getConnection",
+    ),
     "26.2" to mapOf(
         "Minecraft.getInstance().screen" to "Minecraft.getInstance().gui.screen()",
         "minecraft.screen" to "minecraft.gui.screen()",
@@ -9,7 +21,7 @@ extra["swaps"] = mapOf(
         "net.minecraft.client.resources.sounds" to "net.minecraft.client.sounds",
         "net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper" to "net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper",
         "KeyBindingHelper.registerKeyBinding" to "KeyMappingHelper.registerKeyMapping",
-        "InputConstants.KEY_SPACE" to "InputConstants.GLFW_KEY_SPACE",
+        "getClientWorld" to "getClientLevel",
         "ClickType" to "ContainerInput",
         "getHoverName()" to "getItemName()",
 

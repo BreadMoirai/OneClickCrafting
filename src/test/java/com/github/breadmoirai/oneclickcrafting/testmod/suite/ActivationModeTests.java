@@ -31,7 +31,7 @@ public class ActivationModeTests extends OneClickTests {
 
       for (CraftContext ctx : contexts) {
          ctx.prepare();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
@@ -56,7 +56,7 @@ public class ActivationModeTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          ctx.prepare();
          context.getInput().holdControl();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          context.getInput().releaseControl();
          assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
@@ -77,7 +77,7 @@ public class ActivationModeTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          ctx.prepare();
          context.getInput().holdControl();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          context.getInput().releaseControl();
          assertInventoryCount(ctx.outputItem, 0);
@@ -93,7 +93,7 @@ public class ActivationModeTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          ctx.prepare();
          context.getInput().holdAlt();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          context.getInput().releaseAlt();
          assertInventoryCount(ctx.outputItem, 0);

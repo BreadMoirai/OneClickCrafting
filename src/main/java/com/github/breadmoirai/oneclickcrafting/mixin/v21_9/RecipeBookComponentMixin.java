@@ -1,5 +1,5 @@
-//? >=1.21.9 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+//? >=1.21.9 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -17,13 +17,11 @@ public class RecipeBookComponentMixin {
          target = "Lnet/minecraft/client/input/KeyEvent;isSelection()Z")
    )
    private boolean overrideIsSelection(KeyEvent event) {
-      System.out.println("event.key() = " + event.key());
       OneClickCraftingMod mod = OneClickCraftingMod.getInstance();
       if (event.isSelection() && mod != null && mod.input.repeatLast.matches(event.key())) {
-         System.out.println("suppress!");
          return false;
       }
       return event.isSelection();
    }
 }
-*///?}
+//?}

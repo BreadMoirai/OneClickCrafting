@@ -20,7 +20,7 @@ public class ClientPlayNetworkHandlerMixin {
 
    @Inject(at = @At("TAIL"), method = "handleContainerSetSlot(Lnet/minecraft/network/protocol/game/ClientboundContainerSetSlotPacket;)V")
    private void onScreenHandlerSlotUpdate(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
-      Screen screen = Minecraft.getInstance().screen;
+      Screen screen = Minecraft.getInstance().gui.screen();
       if (screen instanceof CraftingScreen || screen instanceof InventoryScreen) {
          if (packet.getSlot() == 0)
             OneClickEvents.RESULT_SLOT_UPDATE.invoker().onResultSlotUpdate(new OneClickItemStack(packet.getItem()));

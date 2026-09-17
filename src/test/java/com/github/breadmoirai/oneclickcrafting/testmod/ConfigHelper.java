@@ -5,15 +5,15 @@ import dev.isxander.yacl3.api.Option;
 import dev.isxander.yacl3.gui.OptionListWidget;
 import dev.isxander.yacl3.gui.YACLScreen;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.TitleScreen;
 //? >=1.21.9 {
-/*import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
-*///? }
+//? }
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -49,7 +49,7 @@ public class ConfigHelper {
       context.waitForScreen(ModsScreen.class);
 
       int[] entryCenter = context.computeOnClient(mc -> {
-         ModsScreen screen = (ModsScreen) mc.screen;
+         ModsScreen screen = (ModsScreen) mc.gui.screen();
          try {
             Field modListField = ModsScreen.class.getDeclaredField("modList");
             modListField.setAccessible(true);
@@ -66,11 +66,11 @@ public class ConfigHelper {
                   int rowTop = (int) modList.getClass()
                      .getMethod("getRowTop", int.class).invoke(modList, i);
                   //? >=1.21.9 {
-                  /*int rowHeight = (int) entry.getClass()
+                  int rowHeight = (int) entry.getClass()
                      .getMethod("getHeight").invoke(entry);
-                  *///? } else {
-                  int rowHeight = 36; // ModMenu 15.x fixed row height
-                  //? }
+                  //? } else {
+                  /*int rowHeight = 36; // ModMenu 15.x fixed row height
+                  *///? }
                   int listX = (int) modList.getClass()
                      .getMethod("getX").invoke(modList);
                   int listWidth = (int) modList.getClass()
@@ -88,11 +88,11 @@ public class ConfigHelper {
       });
 
       context.getInput().setCursorPos(entryCenter[0], entryCenter[1]);
-      context.getInput().pressMouse(GLFW.GLFW_MOUSE_BUTTON_LEFT);
+      context.getInput().pressMouse(InputConstants.MOUSE_BUTTON_LEFT);
       context.waitTick();
 
       context.runOnClient(mc -> {
-         ModsScreen screen = (ModsScreen) mc.screen;
+         ModsScreen screen = (ModsScreen) mc.gui.screen();
          try {
             Field configField = ModsScreen.class.getDeclaredField("configureButton");
             configField.setAccessible(true);
@@ -104,10 +104,10 @@ public class ConfigHelper {
             double cx = btn.getX() + btn.getWidth() / 2.0;
             double cy = btn.getY() + btn.getHeight() / 2.0;
             //? >=1.21.9 {
-            /*btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-            *///? } else {
-            btn.mouseClicked(cx, cy, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-            //? }
+            btn.mouseClicked(new MouseButtonEvent(cx, cy, new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
+            //? } else {
+            /*btn.mouseClicked(cx, cy, InputConstants.MOUSE_BUTTON_LEFT);
+            *///? }
          } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
          }
@@ -124,15 +124,15 @@ public class ConfigHelper {
    public void saveAndCloseYacl() {
       context.tryClickScreenButton("yacl.gui.save");
       context.clickScreenButton("gui.done");
-      context.waitFor(mc -> !YACLScreen.class.isInstance(mc.screen));
+      context.waitFor(mc -> !YACLScreen.class.isInstance(mc.gui.screen()));
    }
 
    /**
     * Closes ModsScreen by pressing Escape.
     */
    public void closeModsScreen() {
-      context.getInput().pressKey(GLFW.GLFW_KEY_ESCAPE);
-      context.waitFor(mc -> mc.screen == null || mc.screen instanceof TitleScreen);
+      context.getInput().pressKey(InputConstants.KEY_ESCAPE);
+      context.waitFor(mc -> mc.gui.screen() == null || mc.gui.screen() instanceof TitleScreen);
    }
 
    // -------------------------------------------------------------------------
@@ -141,7 +141,7 @@ public class ConfigHelper {
 
    public boolean getYaclToggleState(String label) {
       return context.computeOnClient(mc -> {
-         YACLScreen screen = (YACLScreen) mc.screen;
+         YACLScreen screen = (YACLScreen) mc.gui.screen();
          OptionListWidget list = findOptionListWidget(screen);
          OptionListWidget.OptionEntry entry = findOptionEntry(list, label);
          @SuppressWarnings("unchecked")
@@ -152,15 +152,15 @@ public class ConfigHelper {
 
    public void clickYaclToggle(String label) {
       context.runOnClient(mc -> {
-         YACLScreen screen = (YACLScreen) mc.screen;
+         YACLScreen screen = (YACLScreen) mc.gui.screen();
          OptionListWidget list = findOptionListWidget(screen);
          OptionListWidget.OptionEntry entry = findOptionEntry(list, label);
          var dim = entry.widget.getDimension();
          //? >=1.21.9 {
-         /*entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(GLFW.GLFW_MOUSE_BUTTON_LEFT, 0)), false);
-         *///? } else {
-         entry.widget.mouseClicked(dim.centerX(), dim.centerY(), GLFW.GLFW_MOUSE_BUTTON_LEFT);
-         //? }
+         entry.widget.mouseClicked(new MouseButtonEvent(dim.centerX(), dim.centerY(), new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
+         //? } else {
+         /*entry.widget.mouseClicked(dim.centerX(), dim.centerY(), InputConstants.MOUSE_BUTTON_LEFT);
+         *///? }
       });
       context.waitTick();
    }

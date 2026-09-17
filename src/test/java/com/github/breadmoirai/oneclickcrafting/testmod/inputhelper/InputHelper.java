@@ -2,14 +2,14 @@ package com.github.breadmoirai.oneclickcrafting.testmod.inputhelper;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
-import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.v21_4.InputHelperImpl;
+import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.v26_1.InputHelperImpl;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.minecraft.client.KeyMapping;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class InputHelper {
-   public static int REPEAT_KEY_CODE = GLFW.GLFW_KEY_R;
+   public static int REPEAT_KEY_CODE = InputConstants.KEY_R;
 
    public static InputHelper getInstance(ClientGameTestContext context) {
       return new InputHelperImpl(context);
@@ -22,15 +22,23 @@ public abstract class InputHelper {
    }
 
    public void holdShift() {
-      keyDown(GLFW.GLFW_KEY_LEFT_SHIFT);
+      keyDown(InputConstants.KEY_LSHIFT);
    }
 
    public void releaseShift() {
-      keyUp(GLFW.GLFW_KEY_LEFT_SHIFT);
+      keyUp(InputConstants.KEY_LSHIFT);
    }
 
+   // InputConstants.MOD_SHIFT only exists from 1.21.9 on; before that the modifier bit came from
+   // GLFW_MOD_SHIFT, which has the same value (1).
+   //? if >=1.21.9 {
+   private static final int MOD_SHIFT = InputConstants.MOD_SHIFT;
+   //? } else {
+   /*private static final int MOD_SHIFT = 1;
+   *///? }
+
    public int getShiftMod() {
-      return VirtualKeyState.isHeld(GLFW.GLFW_KEY_LEFT_SHIFT) ? GLFW.GLFW_MOD_SHIFT : 0;
+      return VirtualKeyState.isHeld(InputConstants.KEY_LSHIFT) ? MOD_SHIFT : 0;
    }
 
    public void holdDrop() {
@@ -76,7 +84,7 @@ public abstract class InputHelper {
 
    public void unbindRepeatKey() {
       context.runOnClient(mc -> {
-         OneClickCraftingMod.getInstance().input.repeatLast.setKey(GLFW.GLFW_KEY_UNKNOWN);
+         OneClickCraftingMod.getInstance().input.repeatLast.setKey(InputConstants.UNKNOWN.getValue());
          KeyMapping.resetMapping();
       });
    }
@@ -98,11 +106,11 @@ public abstract class InputHelper {
    }
 
    private void mouseDown(int button) {
-      mouseAction(button, GLFW.GLFW_PRESS);
+      mouseAction(button, InputConstants.PRESS);
    }
 
    private void mouseUp(int button) {
-      mouseAction(button, GLFW.GLFW_RELEASE);
+      mouseAction(button, InputConstants.RELEASE);
    }
 
    protected abstract void mouseAction(int button, int action);

@@ -5,7 +5,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.VirtualKeySta
 import com.github.breadmoirai.oneclickcrafting.testmod.recipebookhelper.RecipeBookHelper;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
 import net.minecraft.client.gui.screens.Screen;
@@ -27,6 +27,11 @@ import java.util.Map;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class TestSuite {
+   /** GUI mouse-button codes. MC 26.3 moved from GLFW (left=0, right=1) to SDL
+    * (left=1, right=3), so never hard-code these. */
+   protected static final int LEFT = InputConstants.MOUSE_BUTTON_LEFT;
+   protected static final int RIGHT = InputConstants.MOUSE_BUTTON_RIGHT;
+
    protected ClientGameTestContext context;
    protected TestSingleplayerContext world;
    protected RecipeBookHelper recipeBook;
@@ -43,8 +48,7 @@ public abstract class TestSuite {
       TestSingleplayerContext world = context.worldBuilder()
          .setUseConsistentSettings(true)
          .create();
-      //~ if >=26.1 '.getClientWorld()' -> '.getClientLevel()'
-      world.getClientWorld().waitForChunksDownload();
+      world.getConnection().waitForChunksDownload();
       // @a required — runCommand runs as the server console (@s = server, not player)
       world.getServer().runCommand("time set day");
       // Suppress hunger drain so survival mechanics don't interfere with tests
@@ -55,11 +59,32 @@ public abstract class TestSuite {
 
    /**
     * Closes the current screen by pressing Escape and waits until the game HUD
-    * is active (screen == null, i.e. back in the world).
+    * is active (screen == null, i.e. back in the world) <em>and</em> the server has
+    * processed the close.
+    *
+    * <p>The client switches back to its inventory menu immediately, but the server keeps
+    * the old menu (e.g. a crafting table's) until the close packet arrives. Inventory
+    * changes made in that window (such as the {@code /clear} + {@code /give} of the next
+    * test's prepare) are sent under the old container id, which the client drops, and
+    * {@code InventoryMenu.transferState} then marks them as already synced — leaving the
+    * client permanently showing the stale inventory.
     */
    protected void closeScreen() {
-      context.getInput().pressKey(GLFW.GLFW_KEY_ESCAPE);
-      context.waitFor(mc -> mc.screen == null);
+      context.getInput().pressKey(InputConstants.KEY_ESCAPE);
+      context.waitFor(mc -> mc.gui.screen() == null);
+      waitForServerMenuClosed();
+   }
+
+   private void waitForServerMenuClosed() {
+      final int timeoutTicks = 100;
+      for (int tick = 0; tick < timeoutTicks; tick++) {
+         boolean closed = world.getServer().computeOnServer(server -> server.getPlayerList().getPlayers().stream()
+            .allMatch(player -> player.containerMenu == player.inventoryMenu));
+         if (closed) return;
+         context.waitTick();
+      }
+      throw new AssertionError("Server did not process the container close within " + timeoutTicks
+         + " ticks [client " + describeClientState() + " | server " + describeServerState() + "]");
    }
 
    // -------------------------------------------------------------------------
@@ -155,7 +180,8 @@ public abstract class TestSuite {
          Map<String, Integer> actual = snapshotInventory();
          throw new AssertionError(
             "Expected inventory " + formatItemMap(items)
-               + " but found " + formatItemMap(actual));
+               + " but found " + formatItemMap(actual)
+               + " [client " + describeClientState() + " | server " + describeServerState() + "]");
       }
    }
 
@@ -253,17 +279,41 @@ public abstract class TestSuite {
    // -------------------------------------------------------------------------
 
    private Map<String, Integer> snapshotInventory() {
+      return context.computeOnClient(mc ->
+         mc.player == null ? new LinkedHashMap<>() : countItems(mc.player.getInventory()));
+   }
+
+   private static String describeMenu(net.minecraft.world.inventory.AbstractContainerMenu menu) {
+      return menu.getClass().getSimpleName() + "#" + menu.containerId + "@" + menu.getStateId();
+   }
+
+   private static Map<String, Integer> countItems(net.minecraft.world.entity.player.Inventory inv) {
+      Map<String, Integer> counts = new LinkedHashMap<>();
+      for (int i = 0; i < inv.getContainerSize(); i++) {
+         ItemStack stack = inv.getItem(i);
+         if (!stack.isEmpty()) counts.merge(
+            BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), stack.getCount(), Integer::sum);
+      }
+      return counts;
+   }
+
+   private String describeClientState() {
       return context.computeOnClient(mc -> {
-         Map<String, Integer> counts = new LinkedHashMap<>();
-         if (mc.player == null) return counts;
-         var inv = mc.player.getInventory();
-         for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack stack = inv.getItem(i);
-            if (!stack.isEmpty()) counts.merge(
-               BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(),
-               stack.getCount(), Integer::sum);
-         }
-         return counts;
+         if (mc.player == null) return "no player";
+         var screen = mc.gui.screen();
+         return "screen=" + (screen == null ? "null" : screen.getClass().getSimpleName())
+            + " menu=" + describeMenu(mc.player.containerMenu)
+            + " inv=" + formatItemMap(countItems(mc.player.getInventory()));
+      });
+   }
+
+   private String describeServerState() {
+      return world.getServer().computeOnServer(server -> {
+         var players = server.getPlayerList().getPlayers();
+         if (players.isEmpty()) return "no player";
+         var player = players.get(0);
+         return "menu=" + describeMenu(player.containerMenu)
+            + " inv=" + formatItemMap(countItems(player.getInventory()));
       });
    }
 
