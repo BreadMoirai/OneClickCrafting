@@ -1,0 +1,33 @@
+name: Test
+
+on: [ pull_request ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # A Minecraft client that fails to start can hang instead of exiting; don't burn the 6h default.
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: |
+            21
+            25
+
+      # MC 26.3 (SDL) can't get an OpenGL context under Xvfb and falls back to Vulkan; this provides
+      # Mesa's software Vulkan driver (lavapipe). Without it the 26.3 client hangs on startup.
+      - name: Install Software Vulkan Driver
+        run: sudo apt-get update && sudo apt-get install -y mesa-vulkan-drivers
+
+      # Loom runs each client under xvfb-run on CI, so no display setup is needed here.
+      # Capped workers: each client is memory/GPU heavy and too many in parallel can hang.
+      # --continue so one failing version doesn't hide the results of the others.
+      - name: Run Client Game Tests
+        run: bash ./gradlew runTestClient --max-workers=2 --continue

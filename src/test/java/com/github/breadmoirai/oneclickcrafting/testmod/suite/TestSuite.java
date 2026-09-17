@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import com.mojang.blaze3d.platform.InputConstants;
 
 import com.github.breadmoirai.oneclickcrafting.mixin.KeyMappingAccessor;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.BlockPos;
@@ -24,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class TestSuite {
@@ -144,6 +146,19 @@ public abstract class TestSuite {
       context.waitTicks(ticks);
    }
 
+   /**
+    * Waits until {@code condition} holds on the client, or {@code timeoutTicks} pass. A timeout is not a
+    * failure: use this to bound a held key that should be released once the work is done (so the test
+    * doesn't depend on how many ticks the machine needs), then assert on the result.
+    */
+   protected void waitUntil(Predicate<Minecraft> condition, int timeoutTicks) {
+      try {
+         context.waitFor(condition, timeoutTicks);
+      } catch (AssertionError timeout) {
+         // The assertion that follows reports what actually happened.
+      }
+   }
+
    // -------------------------------------------------------------------------
    // Inventory assertions
    // -------------------------------------------------------------------------
@@ -186,16 +201,7 @@ public abstract class TestSuite {
    }
 
    protected void assertInventoryCount(String itemId, int expectedCount) {
-      int actual = context.computeOnClient(mc -> {
-         if (mc.player == null) return 0;
-         var inv = mc.player.getInventory();
-         int total = 0;
-         for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack stack = inv.getItem(i);
-            if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
-         }
-         return total;
-      });
+      int actual = context.computeOnClient(mc -> inventoryCount(mc, itemId));
       if (actual != expectedCount) {
          throw new AssertionError(
             "Expected exactly %d of %s in inventory, found %d"
@@ -205,27 +211,9 @@ public abstract class TestSuite {
 
    protected void assertInventoryAtLeast(String itemId, int minCount) {
       try {
-         context.waitFor(mc -> {
-            if (mc.player == null) return false;
-            var inv = mc.player.getInventory();
-            int total = 0;
-            for (int i = 0; i < inv.getContainerSize(); i++) {
-               ItemStack stack = inv.getItem(i);
-               if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
-            }
-            return total >= minCount;
-         }, 20);
+         context.waitFor(mc -> inventoryCount(mc, itemId) >= minCount, 20);
       } catch (AssertionError timeout) {
-         int actual = context.computeOnClient(mc -> {
-            if (mc.player == null) return 0;
-            var inv = mc.player.getInventory();
-            int total = 0;
-            for (int i = 0; i < inv.getContainerSize(); i++) {
-               ItemStack stack = inv.getItem(i);
-               if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
-            }
-            return total;
-         });
+         int actual = context.computeOnClient(mc -> inventoryCount(mc, itemId));
          throw new AssertionError(
             "Expected >= %d of %s in inventory, found %d"
                .formatted(minCount, itemId, actual));
@@ -272,6 +260,27 @@ public abstract class TestSuite {
 
    protected int stacks(int stacks) {
       return stacks * 64;
+   }
+
+   /** Total count of {@code itemId} in the player's inventory (0 if there is no player). */
+   protected static int inventoryCount(Minecraft mc, String itemId) {
+      if (mc.player == null) return 0;
+      var inv = mc.player.getInventory();
+      int total = 0;
+      for (int i = 0; i < inv.getContainerSize(); i++) {
+         ItemStack stack = inv.getItem(i);
+         if (BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(itemId)) total += stack.getCount();
+      }
+      return total;
+   }
+
+   /** Total count of {@code itemId} in item entities within 16 blocks of the player. */
+   protected static int groundCount(Minecraft mc, String itemId) {
+      if (mc.player == null || mc.level == null) return 0;
+      AABB box = mc.player.getBoundingBox().inflate(16.0);
+      return mc.level.getEntitiesOfClass(ItemEntity.class, box,
+            e -> BuiltInRegistries.ITEM.getKey(e.getItem().getItem()).toString().equals(itemId))
+         .stream().mapToInt(e -> e.getItem().getCount()).sum();
    }
 
    // -------------------------------------------------------------------------
