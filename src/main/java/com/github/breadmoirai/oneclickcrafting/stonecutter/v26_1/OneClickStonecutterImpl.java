@@ -1,5 +1,5 @@
-//? >=26.1 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.stonecutter.v20_1;
+//? >=26.1 {
+package com.github.breadmoirai.oneclickcrafting.stonecutter.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
@@ -26,7 +26,7 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
       LocalPlayer player = minecraft.player;
       if (player == null) return;
       if (minecraft.gameMode == null) return;
-      if (!(minecraft.screen instanceof StonecutterScreen stonecutterScreen)) return;
+      if (!(minecraft.gui.screen() instanceof StonecutterScreen stonecutterScreen)) return;
       StonecutterMenu menu = stonecutterScreen.getMenu();
       menu.clickMenuButton(minecraft.player, recipeId);
       minecraft.gameMode.handleInventoryButtonClick(menu.containerId, recipeId);
@@ -39,7 +39,7 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
       LocalPlayer player = minecraft.player;
       if (player == null) return null;
       if (minecraft.level == null) return null;
-      if (!(minecraft.screen instanceof StonecutterScreen stonecutterScreen)) return null;
+      if (!(minecraft.gui.screen() instanceof StonecutterScreen stonecutterScreen)) return null;
       StonecutterMenu menu = stonecutterScreen.getMenu();
       if (menu.getNumberOfVisibleRecipes() == 0) {
          debug("onStonecutterClick: getAvailableRecipes() is empty, ignoring");
@@ -61,4 +61,4 @@ public class OneClickStonecutterImpl implements OneClickStonecutter {
 
 }
 
-*///?}
+//?}

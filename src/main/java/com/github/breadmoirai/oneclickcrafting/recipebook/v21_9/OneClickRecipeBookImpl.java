@@ -1,5 +1,5 @@
 //? >=1.21.9 <=1.21.11 {
-/*package com.github.breadmoirai.oneclickcrafting.recipebook.v20_1;
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.ClientRecipeBookAccessor;
@@ -26,7 +26,7 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       Minecraft minecraft = Minecraft.getInstance();
       LocalPlayer player = minecraft.player;
       if (player == null) return -1;
-      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return -1;
+      if (!(minecraft.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> screen)) return -1;
       RecipeBookComponent<?> recipeBook = ((AbstractRecipeBookScreenAccessor) screen).getRecipeBookComponent();
       RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) recipeBook;
       if (accessor.getLastRecipeCollection() == null || accessor.getLastRecipe() == null) return -1;

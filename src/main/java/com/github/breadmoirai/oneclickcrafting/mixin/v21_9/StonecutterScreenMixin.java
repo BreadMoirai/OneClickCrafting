@@ -1,7 +1,8 @@
-//? >=1.21.9 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+//? >=1.21.9 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
+import com.github.breadmoirai.oneclickcrafting.input.MouseButtons;
 import net.minecraft.client.gui.screens.inventory.StonecutterScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +20,8 @@ public class StonecutterScreenMixin {
       StonecutterScreen screen = (StonecutterScreen) (Object) this;
       int selectedRecipe = screen.getMenu().getSelectedRecipeIndex();
       if (selectedRecipe != -1) {
-         OneClickEvents.STONECUTTER_CLICK.invoker().onStonecutterClick(selectedRecipe, click.button());
+         OneClickEvents.STONECUTTER_CLICK.invoker().onStonecutterClick(selectedRecipe, MouseButtons.toInternal(click.button()));
       }
    }
 }
-*///?}
+//?}

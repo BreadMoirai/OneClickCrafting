@@ -1,9 +1,10 @@
-//? >=1.21.9 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+//? >=1.21.9 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
+import com.github.breadmoirai.oneclickcrafting.input.MouseButtons;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,15 +28,15 @@ public abstract class OverlayRecipeComponentMixin {
       )
    )
    private int overrideLeftClickCondition(MouseButtonEvent click) {
-      System.out.println("OverlayRecipeComponentMixin.click = " + click.button());
-      if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick())
-         return 0;
+      if (click.button() == MouseButtons.RIGHT && OneClickCraftingConfig.getInstance().isEnableRightClick())
+         // Spoof a left-click so vanilla opens/handles the overlay entry as usual.
+         return MouseButtons.LEFT;
       return click.button();
    }
 
    @Inject(method = "mouseClicked(Lnet/minecraft/client/input/MouseButtonEvent;Z)Z", at = @At(value = "RETURN", ordinal = 1))
    private void mouseClickedLeft(MouseButtonEvent click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
-      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(this.lastRecipeClicked.index(), click.button());
+      OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(this.lastRecipeClicked.index(), MouseButtons.toInternal(click.button()));
    }
 }
-*///?}
+//?}

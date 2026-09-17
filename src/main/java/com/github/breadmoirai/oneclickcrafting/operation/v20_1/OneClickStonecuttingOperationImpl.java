@@ -1,5 +1,5 @@
 //? <1.21.1 {
-package com.github.breadmoirai.oneclickcrafting.operation.v20_1;
+/*package com.github.breadmoirai.oneclickcrafting.operation.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.operation.OneClickStonecuttingOperation;
@@ -73,4 +73,4 @@ public class OneClickStonecuttingOperationImpl extends OneClickStonecuttingOpera
       }
    }
 }
-//? }
+*///? }

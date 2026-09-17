@@ -6,7 +6,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.suite.*;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 /**
  * Entry point for all OneClickCrafting client gametests.
@@ -48,7 +48,7 @@ public class OneClickCraftingGameTests implements FabricClientGameTest {
             repeatLastTests.repeatLastDropKeyDropsManyItems();
 
             // Suite 6 (alt): Repeat last (bound to space)
-            InputHelper.REPEAT_KEY_CODE = GLFW.GLFW_KEY_SPACE;
+            InputHelper.REPEAT_KEY_CODE = InputConstants.KEY_SPACE;
             repeatLastTests.repeatLastReCrafts();
             repeatLastTests.repeatLastStack();
             repeatLastTests.repeatLastStacksFullInventory();

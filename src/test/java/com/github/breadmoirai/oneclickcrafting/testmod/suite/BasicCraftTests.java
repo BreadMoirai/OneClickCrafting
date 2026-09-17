@@ -24,7 +24,7 @@ public class BasicCraftTests extends OneClickTests {
    public void leftClickDisabledNoAction() {
       for (CraftContext ctx : contexts) {
          ctx.prepare();
-         ctx.click(0); // left-click
+         ctx.click(LEFT); // left-click
          wait(2);
          assertInventoryEmpty();
          ctx.close();
@@ -40,7 +40,7 @@ public class BasicCraftTests extends OneClickTests {
 
       for (CraftContext ctx : contexts) {
          ctx.prepare();
-         ctx.click(0); // left-click
+         ctx.click(LEFT); // left-click
          wait(2);
          assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
          ctx.close();
@@ -59,7 +59,7 @@ public class BasicCraftTests extends OneClickTests {
    public void rightClickMovesToInventory() {
       for (CraftContext ctx : contexts) {
          ctx.prepare();
-         ctx.click(1); // right-click
+         ctx.click(RIGHT); // right-click
          wait(2);
          assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
          ctx.close();
@@ -74,7 +74,7 @@ public class BasicCraftTests extends OneClickTests {
          config.closeModsScreen();
 
          ctx.prepare();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          assertInventoryCount(ctx.outputItem, 0);
          ctx.close();
@@ -95,7 +95,7 @@ public class BasicCraftTests extends OneClickTests {
          clearGroundItems();
          ctx.prepare();
          input.holdDrop();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          input.releaseDrop();
          assertItemOnGround(ctx.outputItem);
@@ -114,7 +114,7 @@ public class BasicCraftTests extends OneClickTests {
          clearGroundItems();
          ctx.prepare();
          input.holdDrop();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          input.releaseDrop();
          assertInventoryAtLeast(ctx.outputItem, ctx.outputCount);
@@ -134,7 +134,7 @@ public class BasicCraftTests extends OneClickTests {
          ctx.prepare();
          input.holdShift();
          input.holdDrop();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          input.releaseDrop();
          input.releaseShift();

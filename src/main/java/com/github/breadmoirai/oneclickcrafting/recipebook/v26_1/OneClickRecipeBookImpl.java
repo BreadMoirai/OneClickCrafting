@@ -1,5 +1,5 @@
-//? >=26.1 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.recipebook.v20_1;
+//? >=26.1 {
+package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
 import com.github.breadmoirai.oneclickcrafting.mixin.AbstractRecipeBookScreenAccessor;
@@ -26,7 +26,7 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       Minecraft minecraft = Minecraft.getInstance();
       LocalPlayer player = minecraft.player;
       if (player == null) return -1;
-      if (!(minecraft.screen instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> recipeBookScreen)) return -1;
+      if (!(minecraft.gui.screen() instanceof AbstractRecipeBookScreen<? extends RecipeBookMenu> recipeBookScreen)) return -1;
       RecipeBookComponent<?> bookComponent = ((AbstractRecipeBookScreenAccessor) recipeBookScreen).getRecipeBookComponent();
       RecipeBookComponentAccessor bookMixin = (RecipeBookComponentAccessor) bookComponent;
       RecipeDisplayId lastRecipe = bookMixin.getLastRecipe();
@@ -49,4 +49,4 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
    }
 }
 
-*///?}
+//?}

@@ -1,8 +1,9 @@
-//? >=1.21.9 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+//? >=1.21.9 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import net.minecraft.client.gui.components.AbstractWidget;
+import com.github.breadmoirai.oneclickcrafting.input.MouseButtons;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,10 +16,10 @@ public abstract class OverlayRecipeButtonMixin extends AbstractWidget {
 
    @Override
    public boolean isValidClickButton(MouseButtonInfo buttonInfo) {
-      if (buttonInfo.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
+      if (buttonInfo.button() == MouseButtons.RIGHT && OneClickCraftingConfig.getInstance().isEnableRightClick()) {
          return true;
       }
       return super.isValidClickButton(buttonInfo);
    }
 }
-*///?}
+//?}

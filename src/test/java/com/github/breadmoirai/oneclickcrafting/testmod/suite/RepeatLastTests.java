@@ -7,7 +7,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
 import com.github.breadmoirai.oneclickcrafting.testmod.context.StonecutterContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
 
@@ -18,7 +18,7 @@ import net.minecraft.client.KeyMapping;
 @SuppressWarnings("UnstableApiUsage")
 public class RepeatLastTests extends OneClickTests {
 
-   public static int REPEAT_KEY_CODE = GLFW.GLFW_KEY_R;
+   public static int REPEAT_KEY_CODE = InputConstants.KEY_R;
 
    public RepeatLastTests(ClientGameTestContext context, TestSingleplayerContext world) {
       super(context, world);
@@ -39,7 +39,7 @@ public class RepeatLastTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          ctx.prepare(3);
 
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          if (ctx instanceof StonecutterContext) {
             assertInventoryExact(ctx.outputItem, ctx.outputCount, ctx.inputItem, ctx.inputCount);
@@ -71,15 +71,15 @@ public class RepeatLastTests extends OneClickTests {
          setRepeatDelay(0);
 
          ctx.prepare(64);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
 
          input.holdRepeatKey();
          //? if <1.21.8 {
-         wait(200);
-         //? } else {
-         /*wait(65);
-         *///? }
+         /*wait(200);
+         *///? } else {
+         wait(65);
+         //? }
          input.releaseRepeatKey();
 
          ctx.close();
@@ -96,16 +96,16 @@ public class RepeatLastTests extends OneClickTests {
          setRepeatDelay(0);
 
          ctx.prepare(9 * 64);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
 
          input.holdShift();
          input.holdRepeatKey();
          //? if <1.21.8 {
-         wait(35);
-         //? } else {
-         /*wait(24);
-         *///? }
+         /*wait(35);
+         *///? } else {
+         wait(24);
+         //? }
          input.releaseShift();
          input.releaseRepeatKey();
 
@@ -126,15 +126,15 @@ public class RepeatLastTests extends OneClickTests {
          ctx.prepare(64);
 
          input.holdDrop();
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
 
          input.holdRepeatKey();
          //? if <1.21.8 {
-         wait(200);
-         //? } else {
-         /*wait(66);
-         *///? }
+         /*wait(200);
+         *///? } else {
+         wait(66);
+         //? }
          input.releaseRepeatKey();
          input.releaseDrop();
 

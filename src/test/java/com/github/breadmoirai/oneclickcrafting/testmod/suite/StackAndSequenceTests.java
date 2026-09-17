@@ -5,7 +5,7 @@ import com.github.breadmoirai.oneclickcrafting.testmod.OneClickTests;
 import com.github.breadmoirai.oneclickcrafting.testmod.inputhelper.VirtualKeyState;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 
 /**
@@ -35,11 +35,11 @@ public class StackAndSequenceTests extends OneClickTests {
       for (CraftContext ctx : contexts) {
          ctx.prepare(3);
 
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
 
          ctx.close();
@@ -57,7 +57,7 @@ public class StackAndSequenceTests extends OneClickTests {
          ctx.prepare(CRAFTS);
 
          for (int i = 0; i < CRAFTS; i++) {
-            ctx.click(1);
+            ctx.click(RIGHT);
             wait(2);
          }
 
@@ -71,12 +71,12 @@ public class StackAndSequenceTests extends OneClickTests {
          ctx.prepare(64 - ctx.inputCount);
 
          input.holdShift();
-         System.out.println("VirtualKeyState.isHeld(GLFW.GLFW_KEY_LEFT_SHIFT) = " + VirtualKeyState.isHeld(GLFW.GLFW_KEY_LEFT_SHIFT));
-         ctx.click(0);
+         System.out.println("VirtualKeyState.isHeld(InputConstants.KEY_LSHIFT) = " + VirtualKeyState.isHeld(InputConstants.KEY_LSHIFT));
+         ctx.click(LEFT);
          wait(2);
          input.releaseShift();
          giveItem(ctx.inputItem, ctx.inputCount);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          assertInventoryExact(ctx.outputItem, 64 * ctx.outputCount);
 
@@ -89,11 +89,11 @@ public class StackAndSequenceTests extends OneClickTests {
          ctx.prepare(64);
 
          input.holdShift();
-         ctx.click(0);
+         ctx.click(LEFT);
          input.releaseShift();
          wait(2);
 
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          assertInventoryExact(ctx.outputItem, 64 * ctx.outputCount);
 
@@ -106,11 +106,11 @@ public class StackAndSequenceTests extends OneClickTests {
          ctx.prepare(32 - ctx.inputCount);
 
          input.holdShift();
-         ctx.click(0);
+         ctx.click(LEFT);
          input.releaseShift();
          wait(2);
          giveItem(ctx.inputItem, ctx.inputCount);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          assertInventoryExact(ctx.outputItem, 32 * ctx.outputCount);
 
@@ -123,10 +123,10 @@ public class StackAndSequenceTests extends OneClickTests {
          ctx.prepare(32);
 
          input.holdShift();
-         ctx.click(0);
+         ctx.click(LEFT);
          input.releaseShift();
          wait(2);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          assertInventoryExact(ctx.outputItem, 32 * ctx.outputCount);
 
@@ -145,9 +145,9 @@ public class StackAndSequenceTests extends OneClickTests {
    public void leftThenRightSequence() {
       for (CraftContext ctx : craftingContexts) {
          ctx.prepare(2);
-         ctx.click(0);
+         ctx.click(LEFT);
          wait(2);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          ctx.close();
          assertInventoryExact(ctx.outputItem, ctx.outputCount * 2);
@@ -161,13 +161,13 @@ public class StackAndSequenceTests extends OneClickTests {
    public void leftLeftLeftRightSequence() {
       for (CraftContext ctx : craftingContexts) {
          ctx.prepare(4);
-         ctx.click(0);
+         ctx.click(LEFT);
          wait(2);
-         ctx.click(0);
+         ctx.click(LEFT);
          wait(2);
-         ctx.click(0);
+         ctx.click(LEFT);
          wait(2);
-         ctx.click(1);
+         ctx.click(RIGHT);
          wait(2);
          ctx.close();
          assertInventoryExact(ctx.outputItem, ctx.outputCount * 4);

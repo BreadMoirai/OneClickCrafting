@@ -1,11 +1,12 @@
-//? >=1.21.9 <26.3 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
+//? >=1.21.9 {
+package com.github.breadmoirai.oneclickcrafting.mixin.v21_9;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookPage;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.client.gui.screens.recipebook.RecipeCollection;
+import com.github.breadmoirai.oneclickcrafting.input.MouseButtons;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.crafting.display.RecipeDisplayId;
 import org.jetbrains.annotations.Nullable;
@@ -35,15 +36,15 @@ public abstract class RecipeBookPageMixin {
    private void onButtonClicked(MouseButtonEvent click, int left, int top, int width, int height, boolean filtering, CallbackInfoReturnable<Boolean> cir) {
       for (RecipeButton button : this.buttons) {
          if (!button.isMouseOver(click.x(), click.y())) continue;
-         if (click.button() == 1 && OneClickCraftingConfig.getInstance().isEnableRightClick() && button.isOnlyOption()) {
+         if (click.button() == MouseButtons.RIGHT && OneClickCraftingConfig.getInstance().isEnableRightClick() && button.isOnlyOption()) {
             this.lastClickedRecipe = button.getCurrentRecipe();
             this.lastClickedRecipeCollection = button.getCollection();
             OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(button.getCurrentRecipe().index(), 1);
-         } else if (click.button() == 0) {
+         } else if (click.button() == MouseButtons.LEFT) {
             OneClickEvents.RECIPE_CLICK.invoker().onRecipeClick(button.getCurrentRecipe().index(), 0);
          }
          return;
       }
    }
 }
-*///?}
+//?}

@@ -2,7 +2,7 @@ package com.github.breadmoirai.oneclickcrafting.operation;
 
 import com.github.breadmoirai.oneclickcrafting.client.OneClickCraftingMod;
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.operation.v20_1.OneClickStonecuttingOperationImpl;
+import com.github.breadmoirai.oneclickcrafting.operation.v26_1.OneClickStonecuttingOperationImpl;
 import com.github.breadmoirai.oneclickcrafting.stonecutter.OneClickStonecutterRecipe;
 
 public abstract class OneClickStonecuttingOperation extends OneClickOperation {

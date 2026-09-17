@@ -1,11 +1,11 @@
 //? 1.21.1 {
-/*package com.github.breadmoirai.oneclickcrafting.recipebook.v20_1;
+/*package com.github.breadmoirai.oneclickcrafting.recipebook.v26_1;
 
 import com.github.breadmoirai.oneclickcrafting.item.OneClickItemStack;
-import com.github.breadmoirai.oneclickcrafting.mixin.v20_1.RecipeBookComponentAccessor;
+import com.github.breadmoirai.oneclickcrafting.mixin.v21_1.RecipeBookComponentAccessor;
 import com.github.breadmoirai.oneclickcrafting.recipebook.OneClickRecipeBook;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.sounds.SimpleSoundInstance;
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -24,10 +24,10 @@ public class OneClickRecipeBookImpl implements OneClickRecipeBook {
       if (minecraft.player == null) return -1;
       RecipeBookComponent recipeBook;
       int containerId;
-      if (minecraft.screen instanceof InventoryScreen inv) {
+      if (minecraft.gui.screen() instanceof InventoryScreen inv) {
          recipeBook = inv.getRecipeBookComponent();
          containerId = inv.getMenu().containerId;
-      } else if (minecraft.screen instanceof CraftingScreen craft) {
+      } else if (minecraft.gui.screen() instanceof CraftingScreen craft) {
          recipeBook = craft.getRecipeBookComponent();
          containerId = craft.getMenu().containerId;
       } else {

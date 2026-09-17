@@ -1,5 +1,5 @@
 //? if >=1.21.2 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin;
+package com.github.breadmoirai.oneclickcrafting.mixin;
 
 import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
@@ -11,9 +11,9 @@ public interface AbstractRecipeBookScreenAccessor {
    @Accessor
    RecipeBookComponent<?> getRecipeBookComponent();
 }
-*///? } else {
+//? } else {
 
-package com.github.breadmoirai.oneclickcrafting.mixin;
+/*package com.github.breadmoirai.oneclickcrafting.mixin;
 public interface AbstractRecipeBookScreenAccessor {}
 
-//? }
+*///? }

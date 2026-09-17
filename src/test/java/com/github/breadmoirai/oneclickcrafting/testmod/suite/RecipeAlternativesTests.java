@@ -51,7 +51,7 @@ public class RecipeAlternativesTests extends OneClickTests {
     */
    public void multiOptionLeftClickDisabledPlacesRecipe() {
       prepare();
-      recipeBook.clickMultiOptionButton(0, OAK_PLANKS, BIRCH_PLANKS);
+      recipeBook.clickMultiOptionButton(LEFT, OAK_PLANKS, BIRCH_PLANKS);
       wait(2);
       // Recipe placed in crafting grid — no planks produced
       assertInventoryCount(OAK_PLANKS, 0);
@@ -72,7 +72,7 @@ public class RecipeAlternativesTests extends OneClickTests {
       config.closeModsScreen();
 
       prepare();
-      String craftedItem = recipeBook.clickMultiOptionButton(0, OAK_PLANKS, BIRCH_PLANKS);
+      String craftedItem = recipeBook.clickMultiOptionButton(LEFT, OAK_PLANKS, BIRCH_PLANKS);
       wait(2);
       assertInventoryAtLeast(craftedItem, 4); // 1 log → 4 planks
       closeScreen();
@@ -93,9 +93,9 @@ public class RecipeAlternativesTests extends OneClickTests {
     */
    public void multiOptionOverlayRightClickOakPlanks() {
       prepare();
-      recipeBook.clickMultiOptionButton(1, OAK_PLANKS, BIRCH_PLANKS); // open overlay
+      recipeBook.clickMultiOptionButton(RIGHT, OAK_PLANKS, BIRCH_PLANKS); // open overlay
       wait(2);
-      recipeBook.clickOverlayButton(OAK_PLANKS, 1);
+      recipeBook.clickOverlayButton(OAK_PLANKS, RIGHT);
       wait(2);
       assertInventoryAtLeast(OAK_PLANKS, 4);
       closeScreen();
@@ -107,9 +107,9 @@ public class RecipeAlternativesTests extends OneClickTests {
     */
    public void multiOptionOverlayRightClickBirchPlanks() {
       prepare();
-      recipeBook.clickMultiOptionButton(1, OAK_PLANKS, BIRCH_PLANKS); // open overlay
+      recipeBook.clickMultiOptionButton(RIGHT, OAK_PLANKS, BIRCH_PLANKS); // open overlay
       wait(2);
-      recipeBook.clickOverlayButton(BIRCH_PLANKS, 1);
+      recipeBook.clickOverlayButton(BIRCH_PLANKS, RIGHT);
       wait(2);
       assertInventoryAtLeast(BIRCH_PLANKS, 4);
       closeScreen();
@@ -126,9 +126,9 @@ public class RecipeAlternativesTests extends OneClickTests {
       config.closeModsScreen();
 
       prepare();
-      recipeBook.clickMultiOptionButton(1, OAK_PLANKS, BIRCH_PLANKS); // open overlay
+      recipeBook.clickMultiOptionButton(RIGHT, OAK_PLANKS, BIRCH_PLANKS); // open overlay
       wait(2);
-      recipeBook.clickOverlayButton(OAK_PLANKS, 0);
+      recipeBook.clickOverlayButton(OAK_PLANKS, LEFT);
       wait(2);
       assertInventoryAtLeast(OAK_PLANKS, 4);
       closeScreen();
@@ -149,9 +149,9 @@ public class RecipeAlternativesTests extends OneClickTests {
       config.closeModsScreen();
 
       prepare();
-      recipeBook.clickMultiOptionButton(1, OAK_PLANKS, BIRCH_PLANKS); // vanilla opens overlay
+      recipeBook.clickMultiOptionButton(RIGHT, OAK_PLANKS, BIRCH_PLANKS); // vanilla opens overlay
       wait(2);
-      recipeBook.clickOverlayButton(OAK_PLANKS, 1);
+      recipeBook.clickOverlayButton(OAK_PLANKS, RIGHT);
       wait(2);
       assertInventoryCount(OAK_PLANKS, 0);
       assertInventoryCount(BIRCH_PLANKS, 0);

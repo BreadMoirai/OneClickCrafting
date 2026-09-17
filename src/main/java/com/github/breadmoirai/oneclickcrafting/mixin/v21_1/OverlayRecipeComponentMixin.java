@@ -1,9 +1,9 @@
 //? 1.21.1 {
-/*package com.github.breadmoirai.oneclickcrafting.mixin.v20_1;
+/*package com.github.breadmoirai.oneclickcrafting.mixin.v21_1;
 
 import com.github.breadmoirai.oneclickcrafting.config.OneClickCraftingConfig;
 import com.github.breadmoirai.oneclickcrafting.event.OneClickEvents;
-import com.github.breadmoirai.oneclickcrafting.recipebook.v20_1.OneClickRecipeBookImpl;
+import com.github.breadmoirai.oneclickcrafting.recipebook.v26_1.OneClickRecipeBookImpl;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.OverlayRecipeComponent;
 import net.minecraft.world.item.crafting.RecipeHolder;
