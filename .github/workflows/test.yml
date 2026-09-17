@@ -1,0 +1,25 @@
+name: Test
+
+on: [ pull_request ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          submodules: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: |
+            21
+            25
+
+      # Client game tests launch a real Minecraft client per version, so they need a virtual display.
+      # Capped workers: each client is memory/GPU heavy and too many in parallel can hang.
+      - name: Run Client Game Tests
+        run: xvfb-run -a bash ./gradlew runTestClient --max-workers=2
